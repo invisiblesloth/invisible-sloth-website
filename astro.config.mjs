@@ -38,6 +38,7 @@ const tailwindPlugins = tailwindcss().map((plugin) => {
 // https://astro.build/config
 export default defineConfig({
   site: 'https://invisiblesloth.com',
+  base: '/',
   output: 'static',
 
   build: {
