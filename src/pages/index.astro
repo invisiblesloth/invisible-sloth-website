@@ -1,0 +1,56 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/SiteHeader.svelte";
+import Container from "../components/Container.astro";
+import Section from "../components/Section.svelte";
+import Heading from "../components/Heading.svelte";
+import ProjectList from "../components/ProjectList.svelte";
+import SiteFooter from "../components/SiteFooter.svelte";
+
+// Fetch and sort projects from Content Collections
+type ProjectEntry = CollectionEntry<'projects'>;
+
+const projects = await getCollection('projects');
+const sortedProjects = projects.sort((a: ProjectEntry, b: ProjectEntry) => a.data.order - b.data.order);
+const astroContainer = await AstroContainer.create();
+
+// Map project data to format expected by ProjectList
+const projectsData = await Promise.all(
+  sortedProjects
+    .filter((project: ProjectEntry) => project.data.title !== 'This Website')
+    .map(async (project: ProjectEntry) => {
+      const { Content } = await project.render();
+      const descriptionHtml = await astroContainer.renderToString(Content);
+
+      return {
+        title: project.data.title,
+        subhead: project.data.subhead,
+        description: project.data.description,
+        descriptionHtml,
+        badges: project.data.badges,
+        button: project.data.button,
+        showButton: project.data.showButton
+      };
+    })
+);
+---
+
+<BaseLayout title="Invisible Sloth" description="Invisible Sloth projects">
+	<SiteHeader class="page-fade--root page-fade--1" homeHref="/" logoAlt="Invisible Sloth" />
+
+	<main class="site-main">
+		<Section>
+			<Container padded={false} size="md" class="stack">
+				<div class="measure--content text-center page-fade page-fade--2">
+					<Heading level="h1" text="What’s up at Invisible&nbsp;Sloth?" />
+				</div>
+
+				<ProjectList class="page-fade page-fade--3" projects={projectsData} client:load />
+			</Container>
+		</Section>
+	</main>
+
+	<SiteFooter class="page-fade page-fade--4" homeHref="/" logoAlt="Invisible Sloth" ariaLabel="Invisible Sloth home" />
+</BaseLayout>

@@ -1,0 +1,92 @@
+/* ==========================================
+   INLINE LINK STYLES
+   Reusable raised link treatment for body copy
+   ========================================== */
+
+@layer components {
+  /* Base raised inline link */
+  .text-link {
+    position: relative;
+    display: inline-block;
+
+    font-weight: var(--font-weight-medium);
+    color: currentColor;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: var(--text-link-underline, var(--color-link-underline-on-surface));
+    text-decoration-thickness: 0.12em;
+    text-underline-offset: 0.125em;
+    text-decoration-skip-ink: none;
+  
+    border-radius: var(--radius-full);
+    padding: 1px 6px;
+    margin: -1px -6px;
+    outline: var(--focus-outline-width) solid transparent;
+    outline-offset: 0.125em;
+    transition: transform var(--animation-duration-extra-fast) var(--animation-easing-standard);
+    will-change: transform;
+    -webkit-tap-highlight-color: transparent;
+  
+    background-color: transparent;
+    box-shadow: none;
+  }
+  
+  /* Desktop hover/press (pointer: fine) */
+  @media (hover: hover) and (pointer: fine) {
+    .text-link:where(:hover):not(:focus-visible) {
+      text-decoration-color: currentcolor;
+    }
+  
+    .text-link:where(:active):not(:focus-visible) {
+      background-color: transparent;
+      text-decoration-color: currentcolor;
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+  }
+  
+  /* Touch adjustments (pointer: coarse) */
+  @media (hover: none) and (pointer: coarse) {
+    .text-link {
+      text-decoration-color: currentcolor;
+    }
+  
+    .text-link,
+    .text-link:hover {
+      transform: translate(0, 0);
+    }
+  
+    .text-link:active:not(:focus-visible) {
+      transform: translateY(1px);
+    }
+  }
+  
+  /* Keyboard focus */
+  .text-link:focus-visible {
+    outline-color: var(--color-focus);
+    text-decoration: none;
+    transform: translate(0, 0);
+    background-color: transparent;
+    box-shadow: none;
+  }
+  
+  /* Reduced motion: remove animation and lift */
+  @media (prefers-reduced-motion: reduce) {
+    .text-link {
+      transition: none;
+      transform: none;
+    }
+    .text-link:hover,
+    .text-link:active,
+    .text-link:focus-visible {
+      transform: none;
+    }
+  
+    /* Touch devices stay flat even on press */
+    @media (hover: none) and (pointer: coarse) {
+      .text-link:active:not(:focus-visible) {
+        transform: none;
+      }
+    }
+  }
+}

@@ -1,0 +1,378 @@
+/* ==========================================
+   TYPOGRAPHY UTILITY CLASSES
+   Text styles from Figma design system
+   ========================================== */
+
+@layer components {
+  /* ==========================================
+     DISPLAY STYLES (Sigmar)
+     Large headline text for hero sections
+     ========================================== */
+
+  .text-display-extra-large {
+    font-family: var(--typography-display-extra-large-family);
+    font-size: var(--typography-display-extra-large-size);
+    font-weight: var(--typography-display-extra-large-weight);
+    line-height: var(--typography-display-extra-large-line-height);
+    letter-spacing: var(--typography-display-extra-large-letter-spacing);
+  }
+
+  .text-display-large {
+    font-family: var(--typography-display-large-family);
+    font-size: var(--typography-display-large-size);
+    font-weight: var(--typography-display-large-weight);
+    line-height: var(--typography-display-large-line-height);
+    letter-spacing: var(--typography-display-large-letter-spacing);
+  }
+
+  .text-display-medium {
+    font-family: var(--typography-display-medium-family);
+    font-size: var(--typography-display-medium-size);
+    font-weight: var(--typography-display-medium-weight);
+    line-height: var(--typography-display-medium-line-height);
+    letter-spacing: var(--typography-display-medium-letter-spacing);
+  }
+
+  .text-display-small {
+    font-family: var(--typography-display-small-family);
+    font-size: var(--typography-display-small-size);
+    font-weight: var(--typography-display-small-weight);
+    line-height: var(--typography-display-small-line-height);
+    letter-spacing: var(--typography-display-small-letter-spacing);
+  }
+
+  .text-display-extra-small {
+    font-family: var(--typography-display-extra-small-family);
+    font-size: var(--typography-display-extra-small-size);
+    font-weight: var(--typography-display-extra-small-weight);
+    line-height: var(--typography-display-extra-small-line-height);
+    letter-spacing: var(--typography-display-extra-small-letter-spacing);
+  }
+
+  /* ==========================================
+     HEADLINE STYLES (Work Sans)
+     Section headings and titles
+     ========================================== */
+
+  .text-headline-large {
+    font-family: var(--typography-headline-large-family);
+    font-size: var(--typography-headline-large-size);
+    font-weight: var(--typography-headline-large-weight);
+    line-height: var(--typography-headline-large-line-height);
+    letter-spacing: var(--typography-headline-large-letter-spacing);
+  }
+
+  .text-headline-large-prominent {
+    font-family: var(--typography-headline-large-family);
+    font-size: var(--typography-headline-large-size);
+    font-weight: var(--typography-headline-large-weight-prominent);
+    line-height: var(--typography-headline-large-line-height);
+    letter-spacing: var(--typography-headline-large-letter-spacing);
+  }
+
+  .text-headline-medium {
+    font-family: var(--typography-headline-medium-family);
+    font-size: var(--typography-headline-medium-size);
+    font-weight: var(--typography-headline-medium-weight);
+    line-height: var(--typography-headline-medium-line-height);
+    letter-spacing: var(--typography-headline-medium-letter-spacing);
+  }
+
+  .text-headline-medium-prominent {
+    font-family: var(--typography-headline-medium-family);
+    font-size: var(--typography-headline-medium-size);
+    font-weight: var(--typography-headline-medium-weight-prominent);
+    line-height: var(--typography-headline-medium-line-height);
+    letter-spacing: var(--typography-headline-medium-letter-spacing);
+  }
+
+  .text-headline-small {
+    font-family: var(--typography-headline-small-family);
+    font-size: var(--typography-headline-small-size);
+    font-weight: var(--typography-headline-small-weight);
+    line-height: var(--typography-headline-small-line-height);
+    letter-spacing: var(--typography-headline-small-letter-spacing);
+  }
+
+  .text-headline-small-prominent {
+    font-family: var(--typography-headline-small-family);
+    font-size: var(--typography-headline-small-size);
+    font-weight: var(--typography-headline-small-weight-prominent);
+    line-height: var(--typography-headline-small-line-height);
+    letter-spacing: var(--typography-headline-small-letter-spacing);
+  }
+
+  /* ==========================================
+     TITLE STYLES (Work Sans)
+     Card titles, section headers
+     ========================================== */
+
+  .text-title-large {
+    font-family: var(--typography-title-large-family);
+    font-size: var(--typography-title-large-size);
+    font-weight: var(--typography-title-large-weight);
+    line-height: var(--typography-title-large-line-height);
+    letter-spacing: var(--typography-title-large-letter-spacing);
+  }
+
+  .text-title-large-prominent {
+    font-family: var(--typography-title-large-family);
+    font-size: var(--typography-title-large-size);
+    font-weight: var(--typography-title-large-weight-prominent);
+    line-height: var(--typography-title-large-line-height);
+    letter-spacing: var(--typography-title-large-letter-spacing);
+  }
+
+  .text-title-medium {
+    font-family: var(--typography-title-medium-family);
+    font-size: var(--typography-title-medium-size);
+    font-weight: var(--typography-title-medium-weight);
+    line-height: var(--typography-title-medium-line-height);
+    letter-spacing: var(--typography-title-medium-letter-spacing);
+  }
+
+  .text-title-medium-prominent {
+    font-family: var(--typography-title-medium-family);
+    font-size: var(--typography-title-medium-size);
+    font-weight: var(--typography-title-medium-weight-prominent);
+    line-height: var(--typography-title-medium-line-height);
+    letter-spacing: var(--typography-title-medium-letter-spacing);
+  }
+
+  .text-title-small {
+    font-family: var(--typography-title-small-family);
+    font-size: var(--typography-title-small-size);
+    font-weight: var(--typography-title-small-weight);
+    line-height: var(--typography-title-small-line-height);
+    letter-spacing: var(--typography-title-small-letter-spacing);
+  }
+
+  .text-title-small-prominent {
+    font-family: var(--typography-title-small-family);
+    font-size: var(--typography-title-small-size);
+    font-weight: var(--typography-title-small-weight-prominent);
+    line-height: var(--typography-title-small-line-height);
+    letter-spacing: var(--typography-title-small-letter-spacing);
+  }
+
+  /* ==========================================
+     LABEL STYLES (Work Sans)
+     Buttons, form labels, UI elements
+     ========================================== */
+
+  .text-label-extra-large {
+    font-family: var(--typography-label-extra-large-family);
+    font-size: var(--typography-label-extra-large-size);
+    font-weight: var(--typography-label-extra-large-weight);
+    line-height: var(--typography-label-extra-large-line-height);
+    letter-spacing: var(--typography-label-extra-large-letter-spacing);
+  }
+
+  .text-label-extra-large-prominent {
+    font-family: var(--typography-label-extra-large-family);
+    font-size: var(--typography-label-extra-large-size);
+    font-weight: var(--typography-label-extra-large-weight-prominent);
+    line-height: var(--typography-label-extra-large-line-height);
+    letter-spacing: var(--typography-label-extra-large-letter-spacing);
+  }
+
+  .text-label-large {
+    font-family: var(--typography-label-large-family);
+    font-size: var(--typography-label-large-size);
+    font-weight: var(--typography-label-large-weight);
+    line-height: var(--typography-label-large-line-height);
+    letter-spacing: var(--typography-label-large-letter-spacing);
+  }
+
+  .text-label-large-prominent {
+    font-family: var(--typography-label-large-family);
+    font-size: var(--typography-label-large-size);
+    font-weight: var(--typography-label-large-weight-prominent);
+    line-height: var(--typography-label-large-line-height);
+    letter-spacing: var(--typography-label-large-letter-spacing);
+  }
+
+  .text-label-medium {
+    font-family: var(--typography-label-medium-family);
+    font-size: var(--typography-label-medium-size);
+    font-weight: var(--typography-label-medium-weight);
+    line-height: var(--typography-label-medium-line-height);
+    letter-spacing: var(--typography-label-medium-letter-spacing);
+  }
+
+  .text-label-medium-prominent {
+    font-family: var(--typography-label-medium-family);
+    font-size: var(--typography-label-medium-size);
+    font-weight: var(--typography-label-medium-weight-prominent);
+    line-height: var(--typography-label-medium-line-height);
+    letter-spacing: var(--typography-label-medium-letter-spacing);
+  }
+
+  .text-label-small {
+    font-family: var(--typography-label-small-family);
+    font-size: var(--typography-label-small-size);
+    font-weight: var(--typography-label-small-weight);
+    line-height: var(--typography-label-small-line-height);
+    letter-spacing: var(--typography-label-small-letter-spacing);
+  }
+
+  .text-label-small-prominent {
+    font-family: var(--typography-label-small-family);
+    font-size: var(--typography-label-small-size);
+    font-weight: var(--typography-label-small-weight-prominent);
+    line-height: var(--typography-label-small-line-height);
+    letter-spacing: var(--typography-label-small-letter-spacing);
+  }
+
+  /* ==========================================
+     BODY STYLES (Work Sans)
+     Paragraph text, body copy
+     ========================================== */
+
+  .text-body-large {
+    font-family: var(--typography-body-large-family);
+    font-size: var(--typography-body-large-size);
+    font-weight: var(--typography-body-large-weight);
+    line-height: var(--typography-body-large-line-height);
+    letter-spacing: var(--typography-body-large-letter-spacing);
+  }
+
+  .text-body-large-prominent {
+    font-family: var(--typography-body-large-family);
+    font-size: var(--typography-body-large-size);
+    font-weight: var(--typography-body-large-weight-prominent);
+    line-height: var(--typography-body-large-line-height);
+    letter-spacing: var(--typography-body-large-letter-spacing);
+  }
+
+  .text-body-large-italic {
+    font-family: var(--typography-body-large-family);
+    font-size: var(--typography-body-large-size);
+    font-weight: var(--typography-body-large-weight);
+    font-style: italic;
+    line-height: var(--typography-body-large-line-height);
+    letter-spacing: var(--typography-body-large-letter-spacing);
+  }
+
+  .text-body-large-italic-prominent {
+    font-family: var(--typography-body-large-family);
+    font-size: var(--typography-body-large-size);
+    font-weight: var(--typography-body-large-weight-prominent);
+    font-style: italic;
+    line-height: var(--typography-body-large-line-height);
+    letter-spacing: var(--typography-body-large-letter-spacing);
+  }
+
+  .text-body-medium {
+    font-family: var(--typography-body-medium-family);
+    font-size: var(--typography-body-medium-size);
+    font-weight: var(--typography-body-medium-weight);
+    line-height: var(--typography-body-medium-line-height);
+    letter-spacing: var(--typography-body-medium-letter-spacing);
+  }
+
+  .text-body-medium-prominent {
+    font-family: var(--typography-body-medium-family);
+    font-size: var(--typography-body-medium-size);
+    font-weight: var(--typography-body-medium-weight-prominent);
+    line-height: var(--typography-body-medium-line-height);
+    letter-spacing: var(--typography-body-medium-letter-spacing);
+  }
+
+  .text-body-medium-italic {
+    font-family: var(--typography-body-medium-family);
+    font-size: var(--typography-body-medium-size);
+    font-weight: var(--typography-body-medium-weight);
+    font-style: italic;
+    line-height: var(--typography-body-medium-line-height);
+    letter-spacing: var(--typography-body-medium-letter-spacing);
+  }
+
+  .text-body-medium-italic-prominent {
+    font-family: var(--typography-body-medium-family);
+    font-size: var(--typography-body-medium-size);
+    font-weight: var(--typography-body-medium-weight-prominent);
+    font-style: italic;
+    line-height: var(--typography-body-medium-line-height);
+    letter-spacing: var(--typography-body-medium-letter-spacing);
+  }
+
+  .text-body-small {
+    font-family: var(--typography-body-small-family);
+    font-size: var(--typography-body-small-size);
+    font-weight: var(--typography-body-small-weight);
+    line-height: var(--typography-body-small-line-height);
+    letter-spacing: var(--typography-body-small-letter-spacing);
+  }
+
+  .text-body-small-prominent {
+    font-family: var(--typography-body-small-family);
+    font-size: var(--typography-body-small-size);
+    font-weight: var(--typography-body-small-weight-prominent);
+    line-height: var(--typography-body-small-line-height);
+    letter-spacing: var(--typography-body-small-letter-spacing);
+  }
+
+  /* ==========================================
+     SEMANTIC HEADING UTILITIES
+     Responsive heading classes for semantic HTML elements
+
+     Usage:
+     - Use .heading-h1 through .heading-h6 for actual <h1>-<h6> elements
+     - These classes automatically adapt across breakpoints via semantic tokens
+     - For non-heading text that needs display/headline styling, use .text-* classes above
+
+     Example:
+     <h1 class="heading-h1">Page Title</h1>  ← Use this for headings
+     <div class="text-display-large">Hero text</div>  ← Use this for one-off styling
+     ========================================== */
+
+  .heading-h1 {
+    font-family: var(--heading-h1-family);
+    font-size: var(--heading-h1-size);
+    font-weight: var(--heading-h1-weight);
+    line-height: var(--heading-h1-line-height);
+    letter-spacing: var(--heading-h1-letter-spacing);
+  }
+
+  .heading-h2 {
+    font-family: var(--heading-h2-family);
+    font-size: var(--heading-h2-size);
+    font-weight: var(--heading-h2-weight);
+    line-height: var(--heading-h2-line-height);
+    letter-spacing: var(--heading-h2-letter-spacing);
+  }
+
+  .heading-h3 {
+    font-family: var(--heading-h3-family);
+    font-size: var(--heading-h3-size);
+    font-weight: var(--heading-h3-weight);
+    line-height: var(--heading-h3-line-height);
+    letter-spacing: var(--heading-h3-letter-spacing);
+  }
+
+  .heading-h4 {
+    font-family: var(--heading-h4-family);
+    font-size: var(--heading-h4-size);
+    font-weight: var(--heading-h4-weight);
+    line-height: var(--heading-h4-line-height);
+    letter-spacing: var(--heading-h4-letter-spacing);
+  }
+
+  .heading-h5 {
+    font-family: var(--heading-h5-family);
+    font-size: var(--heading-h5-size);
+    font-weight: var(--heading-h5-weight);
+    line-height: var(--heading-h5-line-height);
+    letter-spacing: var(--heading-h5-letter-spacing);
+  }
+
+.heading-h6 {
+  font-family: var(--heading-h6-family);
+  font-size: var(--heading-h6-size);
+  font-weight: var(--heading-h6-weight);
+  line-height: var(--heading-h6-line-height);
+  letter-spacing: var(--heading-h6-letter-spacing);
+}
+
+}

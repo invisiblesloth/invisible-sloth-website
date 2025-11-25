@@ -1,0 +1,166 @@
+/* ==========================================
+   SEMANTIC HEADING TOKENS
+   Responsive typography tokens for heading elements (h1-h6)
+
+   These semantic tokens reference primitive tokens from typescale.css
+   and provide breakpoint-aware values that match Figma design specs.
+
+   Figma Mapping:
+   - Heading/H1/Compact → --heading-h1-* @ 0-631px
+   - Heading/H1/Medium → --heading-h1-* @ 632-1014px
+   - Heading/H1/Extended → --heading-h1-* @ 1015-1175px
+   - Heading/H1/Large → --heading-h1-* @ 1176px+
+
+   Usage:
+   - Use in components: font: var(--heading-h1-font);
+   - Or via utilities: .heading-h1 (defined in typography.css)
+   ========================================== */
+
+@theme {
+  /* ==========================================
+     H1 - PRIMARY HEADING
+     Display Medium (compact) → Display Large (medium) → Display Extra Large (extended+)
+     ========================================== */
+  --heading-h1-family: var(--typography-display-medium-family);
+  --heading-h1-weight: var(--typography-display-medium-weight);
+  --heading-h1-size: var(--typography-display-medium-size);
+  --heading-h1-line-height: var(--typography-display-medium-line-height);
+  --heading-h1-letter-spacing: var(--typography-display-medium-letter-spacing);
+
+  /* ==========================================
+     H2 - SECONDARY HEADING
+     Display Small (compact) → Display Medium → Display Large (extended+)
+     ========================================== */
+  --heading-h2-family: var(--typography-display-small-family);
+  --heading-h2-weight: var(--typography-display-small-weight);
+  --heading-h2-size: var(--typography-display-small-size);
+  --heading-h2-line-height: var(--typography-display-small-line-height);
+  --heading-h2-letter-spacing: var(--typography-display-small-letter-spacing);
+
+  /* ==========================================
+     H3 - TERTIARY HEADING
+     Display Extra Small (compact) → Display Small → Display Medium (extended+)
+     ========================================== */
+  --heading-h3-family: var(--typography-display-extra-small-family);
+  --heading-h3-weight: var(--typography-display-extra-small-weight);
+  --heading-h3-size: var(--typography-display-extra-small-size);
+  --heading-h3-line-height: var(--typography-display-extra-small-line-height);
+  --heading-h3-letter-spacing: var(--typography-display-extra-small-letter-spacing);
+
+  /* ==========================================
+     H4 - SECTION HEADING
+     Headline Small (compact) → Headline Medium → Headline Large (extended+)
+     ========================================== */
+  --heading-h4-family: var(--typography-headline-small-family);
+  --heading-h4-weight: var(--typography-headline-small-weight);
+  --heading-h4-size: var(--typography-headline-small-size);
+  --heading-h4-line-height: var(--typography-headline-small-line-height);
+  --heading-h4-letter-spacing: var(--typography-headline-small-letter-spacing);
+
+  /* ==========================================
+     H5 - SUBSECTION HEADING
+     Title Medium (compact, semibold) → Title Large (medium+)
+     ========================================== */
+  --heading-h5-family: var(--typography-title-medium-family);
+  --heading-h5-weight: var(--font-weight-semibold);
+  --heading-h5-size: var(--typography-title-medium-size);
+  --heading-h5-line-height: var(--typography-title-medium-line-height);
+  --heading-h5-letter-spacing: var(--typography-title-medium-letter-spacing);
+
+  /* ==========================================
+     H6 - MINOR HEADING
+     Title Small (compact) → Title Medium
+     ========================================== */
+  --heading-h6-family: var(--typography-title-small-family);
+  --heading-h6-weight: var(--typography-title-small-weight);
+  --heading-h6-size: var(--typography-title-small-size);
+  --heading-h6-line-height: var(--typography-title-small-line-height);
+  --heading-h6-letter-spacing: var(--typography-title-small-letter-spacing);
+}
+
+/* ==========================================
+   MEDIUM BREAKPOINT (632-1014px)
+   Tablet layouts - increase some heading sizes
+   ========================================== */
+@media (min-width: 632px) {
+  :root {
+    /* H1: Display Medium → Display Large */
+    --heading-h1-family: var(--typography-display-large-family);
+    --heading-h1-weight: var(--typography-display-large-weight);
+    --heading-h1-size: var(--typography-display-large-size);
+    --heading-h1-line-height: var(--typography-display-large-line-height);
+    --heading-h1-letter-spacing: var(--typography-display-large-letter-spacing);
+
+    /* H2: Display Small → Display Medium */
+    --heading-h2-family: var(--typography-display-medium-family);
+    --heading-h2-weight: var(--typography-display-medium-weight);
+    --heading-h2-size: var(--typography-display-medium-size);
+    --heading-h2-line-height: var(--typography-display-medium-line-height);
+    --heading-h2-letter-spacing: var(--typography-display-medium-letter-spacing);
+
+    /* H3: Display Extra Small → Display Small */
+    --heading-h3-family: var(--typography-display-small-family);
+    --heading-h3-weight: var(--typography-display-small-weight);
+    --heading-h3-size: var(--typography-display-small-size);
+    --heading-h3-line-height: var(--typography-display-small-line-height);
+    --heading-h3-letter-spacing: var(--typography-display-small-letter-spacing);
+
+    /* H4: Headline Small → Headline Medium */
+    --heading-h4-family: var(--typography-headline-medium-family);
+    --heading-h4-weight: var(--typography-headline-medium-weight);
+    --heading-h4-size: var(--typography-headline-medium-size);
+    --heading-h4-line-height: var(--typography-headline-medium-line-height);
+    --heading-h4-letter-spacing: var(--typography-headline-medium-letter-spacing);
+
+    /* H5: Title Medium → Title Large */
+    --heading-h5-family: var(--typography-title-large-family);
+    --heading-h5-weight: var(--font-weight-medium);
+    --heading-h5-size: var(--typography-title-large-size);
+    --heading-h5-line-height: var(--typography-title-large-line-height);
+    --heading-h5-letter-spacing: var(--typography-title-large-letter-spacing);
+
+    /* H6: Title Small → Title Medium */
+    --heading-h6-family: var(--typography-title-medium-family);
+    --heading-h6-weight: var(--typography-title-medium-weight);
+    --heading-h6-size: var(--typography-title-medium-size);
+    --heading-h6-line-height: var(--typography-title-medium-line-height);
+    --heading-h6-letter-spacing: var(--typography-title-medium-letter-spacing);
+  }
+}
+
+/* ==========================================
+   EXTENDED BREAKPOINT (1015px+)
+   Large tablets and desktop - maximum sizes
+   H5 and H6 remain at medium breakpoint sizes
+   ========================================== */
+@media (min-width: 1015px) {
+  :root {
+    /* H1: Display Large → Display Extra Large */
+    --heading-h1-family: var(--typography-display-extra-large-family);
+    --heading-h1-weight: var(--typography-display-extra-large-weight);
+    --heading-h1-size: var(--typography-display-extra-large-size);
+    --heading-h1-line-height: var(--typography-display-extra-large-line-height);
+    --heading-h1-letter-spacing: var(--typography-display-extra-large-letter-spacing);
+
+    /* H2: Display Medium → Display Large */
+    --heading-h2-family: var(--typography-display-large-family);
+    --heading-h2-weight: var(--typography-display-large-weight);
+    --heading-h2-size: var(--typography-display-large-size);
+    --heading-h2-line-height: var(--typography-display-large-line-height);
+    --heading-h2-letter-spacing: var(--typography-display-large-letter-spacing);
+
+    /* H3: Display Small → Display Medium */
+    --heading-h3-family: var(--typography-display-medium-family);
+    --heading-h3-weight: var(--typography-display-medium-weight);
+    --heading-h3-size: var(--typography-display-medium-size);
+    --heading-h3-line-height: var(--typography-display-medium-line-height);
+    --heading-h3-letter-spacing: var(--typography-display-medium-letter-spacing);
+
+    /* H4: Headline Medium → Headline Large */
+    --heading-h4-family: var(--typography-headline-large-family);
+    --heading-h4-weight: var(--typography-headline-large-weight);
+    --heading-h4-size: var(--typography-headline-large-size);
+    --heading-h4-line-height: var(--typography-headline-large-line-height);
+    --heading-h4-letter-spacing: var(--typography-headline-large-letter-spacing);
+  }
+}

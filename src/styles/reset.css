@@ -1,0 +1,16 @@
+/* ==========================================
+   RESET & NORMALIZATION
+   Enhancements to Tailwind's preflight
+   ========================================== */
+
+/* Font smoothing for better text rendering on macOS/WebKit */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure font smoothing is inherited by all elements */
+* {
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+}

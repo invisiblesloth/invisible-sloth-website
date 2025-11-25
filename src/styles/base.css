@@ -1,0 +1,47 @@
+/* ==========================================
+   GLOBAL ELEMENT STYLES
+   Sensible defaults for semantic HTML elements
+   ========================================== */
+   
+body {
+  font-family: var(--font-family-sans);
+  font-weight: var(--font-weight-regular);
+  font-size: 16px;
+  line-height: 30px;
+  letter-spacing: -0.8px; /* Body medium letter-spacing */
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+}
+
+/* Text emphasis */
+b,
+strong {
+  font-weight: var(--font-weight-semibold);
+}
+
+i,
+em {
+  font-style: italic;
+}
+
+/* Highlighted text */
+mark {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+/* Deleted/struck text */
+s,
+del {
+  border-radius: var(--radius-2xs);
+  background-color: var(--color-error-container);
+  color: var(--color-on-error-container);
+  text-decoration: line-through 2px solid var(--color-error);
+}
+
+/* Horizontal rule */
+hr {
+  border: 0;
+  border-block-start: 1px solid var(--color-outline-variant);
+  margin: 0;
+}

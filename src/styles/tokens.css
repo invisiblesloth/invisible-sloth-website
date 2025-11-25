@@ -1,0 +1,31 @@
+/* ==========================================
+   DESIGN TOKENS (AGGREGATOR)
+   Imports modular token files for better organization
+
+   This file serves as a convenient aggregator for all design tokens.
+   Individual token categories are defined in separate files:
+
+   - tokens/typeface.css    → Font families, weights, and styles
+   - tokens/typescale.css   → Typography scale (display, headline, title, label, body)
+   - tokens/heading.css     → Semantic heading tokens (h1-h6 with responsive behavior)
+   - tokens/spacing.css     → Spacing scale and border radius
+   - tokens/responsive.css  → Responsive layout tokens (gutters, margins, padding)
+   - tokens/size.css        → Size tokens (rail widths, container constraints)
+   - tokens/colors.css      → Color primitives (gray, green, blue, red)
+   - tokens/semantic.css    → Semantic color tokens and state layers
+   - tokens/animation.css   → Animation timing, easing, and delay values
+
+   Each file contains its own @theme block that contributes to
+   Tailwind CSS v4's configuration, enabling utility classes like
+   bg-primary, text-on-surface, rounded-medium, etc.
+   ========================================== */
+
+@import "./tokens/typeface.css";
+@import "./tokens/typescale.css";
+@import "./tokens/heading.css";
+@import "./tokens/spacing.css";
+@import "./tokens/responsive.css";
+@import "./tokens/size.css";
+@import "./tokens/colors.css";
+@import "./tokens/semantic.css";
+@import "./tokens/animation.css";

@@ -1,0 +1,52 @@
+---
+/**
+ * Container
+ *
+ * Main page container component that provides responsive padding and max-width.
+ * Uses the rail-based layout system from layout.css.
+ *
+ * @param padded - Add responsive horizontal padding (default: true)
+ * @param size - Rail width (sm|md|lg, default lg)
+ * @param class - Additional CSS classes to apply
+ *
+ * @example
+ * <Container>
+ *   <h1>Page Content</h1>
+ * </Container>
+ *
+ * @example
+ * <Container padded={false}>
+ *   <section>No padding</section>
+ * </Container>
+ *
+ * @example
+ * <Container size="md">
+ *   <section>Medium rail</section>
+ * </Container>
+ */
+
+interface Props {
+  padded?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const {
+  padded = true,
+  size = 'lg',
+  class: className = '',
+}: Props = Astro.props;
+
+const railSizeClass = `rail--${size}`;
+
+const containerClasses = [
+  'rail',
+  railSizeClass,
+  padded && 'rail--padded',
+  className,
+].filter((cls): cls is string => Boolean(cls));
+---
+
+<div class:list={containerClasses}>
+  <slot />
+</div>

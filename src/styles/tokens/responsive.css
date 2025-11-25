@@ -1,0 +1,96 @@
+/* ==========================================
+   RESPONSIVE SPACING TOKENS
+   Breakpoint-aware layout spacing with axis-specific naming
+
+   These tokens align with Figma layout guides (column/gutter system).
+   Breakpoints match viewport sizes defined in .storybook/preview.ts:
+   - Base (0-631px): Compact mobile layouts (430px viewport)
+   - Medium (632-1014px): Tablet layouts (744px viewport)
+   - Extended (1015-1175px): Large tablets (1024px viewport)
+   - Large (1176px+): Desktop layouts (1512px viewport)
+
+   Token Categories:
+   - --space-gutter-*: Gap spacing for grids, stacks, and clusters
+   - --space-section-block-*: Block-axis (vertical) spacing for sections
+   - --space-rail-inline-*: Inline-axis (horizontal) padding for rails
+
+   Size Modifiers: base (no suffix), sm, lg, xl
+
+   Usage:
+   - Apply via layout utility classes in layout.css
+   - Or reference directly: padding-block: var(--space-section-block);
+   ========================================== */
+
+/* Base (compact) values (0-631px) */
+:root {
+  --space-gutter: var(--space-400);
+  --space-gutter-tight: var(--space-200);
+  --space-gutter-loose: var(--space-800);
+
+  --space-section-block: var(--space-600);
+  --space-section-block-sm: var(--space-300);
+  --space-section-block-lg: var(--space-800);
+  --space-section-block-xl: var(--space-1200);
+
+  --space-rail-inline: var(--space-400);
+  --space-rail-inline-sm: var(--space-200);
+  --space-rail-inline-lg: var(--space-600);
+  --space-rail-inline-xl: var(--space-800);
+}
+
+/* Medium (632-1014px) */
+@media (min-width: 632px) and (max-width: 1014px) {
+  :root {
+    --space-gutter: var(--space-400);
+    --space-gutter-tight: var(--space-200);
+    --space-gutter-loose: var(--space-800);
+
+    --space-section-block: var(--space-800);
+    --space-section-block-sm: var(--space-400);
+    --space-section-block-lg: var(--space-1200);
+    --space-section-block-xl: var(--space-1600);
+
+    --space-rail-inline: var(--space-800);
+    --space-rail-inline-sm: var(--space-400);
+    --space-rail-inline-lg: var(--space-1200);
+    --space-rail-inline-xl: var(--space-1600);
+  }
+}
+
+/* Extended (1015-1175px) */
+@media (min-width: 1015px) and (max-width: 1175px) {
+  :root {
+    --space-gutter: var(--space-600);
+    --space-gutter-tight: var(--space-300);
+    --space-gutter-loose: var(--space-1200);
+
+    --space-section-block: var(--space-800);
+    --space-section-block-sm: var(--space-400);
+    --space-section-block-lg: var(--space-1200);
+    --space-section-block-xl: var(--space-1600);
+
+    --space-rail-inline: var(--space-1200);
+    --space-rail-inline-sm: var(--space-600);
+    --space-rail-inline-lg: var(--space-1600);
+    --space-rail-inline-xl: var(--space-2400);
+  }
+}
+
+/* Large (1176px and above) */
+@media (min-width: 1176px) {
+  :root {
+    --space-gutter: var(--space-600);
+    --space-gutter-tight: var(--space-300);
+    --space-gutter-loose: var(--space-1200);
+
+    --space-section-block: var(--space-800);
+    --space-section-block-sm: var(--space-400);
+    --space-section-block-lg: var(--space-1200);
+    --space-section-block-xl: var(--space-1600);
+
+    --space-rail-inline: var(--space-600);
+    --space-rail-inline-sm: var(--space-300);
+    --space-rail-inline-lg: var(--space-800);
+    --space-rail-inline-xl: var(--space-1200);
+  }
+}

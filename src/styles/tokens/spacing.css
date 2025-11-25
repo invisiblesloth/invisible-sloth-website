@@ -1,0 +1,37 @@
+/* ==========================================
+   SPACING & LAYOUT TOKENS
+   Spacing scale, negative spacing, and border radius
+   ========================================== */
+
+@theme {
+  /* ==========================================
+     SPACING
+     ========================================== */
+
+  --space-50: 2px;
+  --space-100: 4px;
+  --space-200: 8px;
+  --space-300: 12px;
+  --space-400: 16px;
+  --space-600: 24px;
+  --space-800: 32px;
+  --space-1200: 48px;
+  --space-1600: 64px;
+  --space-2400: 96px;
+  --space-4000: 160px;
+  --space-4800: 192px;
+  --space-6400: 256px;
+  --space-8000: 320px;
+
+  /* ==========================================
+     BORDER RADIUS (CORNERS)
+     ========================================== */
+
+  --radius-2xs: 2px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+}

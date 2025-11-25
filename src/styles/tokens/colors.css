@@ -1,0 +1,120 @@
+/* ==========================================
+   COLOR PRIMITIVES
+   Core color palette organized by hue family
+   These are the foundation colors used by semantic tokens
+   ========================================== */
+
+@theme {
+  /* ==========================================
+     GREEN FAMILY
+     ========================================== */
+
+  --color-green-000: #000000;
+  --color-green-010: #0b2005;
+  --color-green-020: #17380c;
+  --color-green-025: #1d4610;
+  --color-green-027: #234910;
+  --color-green-030: #245214;
+  --color-green-040: #316c1d;
+  --color-green-050: #478731;
+  --color-green-060: #60a247;
+  --color-green-070: #7ebd65;
+  --color-green-080: #9dd784;
+  --color-green-085: #aae590;
+  --color-green-090: #bcf3a3;
+  --color-green-095: #d4ffbd;
+  --color-green-099: #f8ffef;
+  --color-green-100: #ffffff;
+
+  /* ==========================================
+     GRAY FAMILY
+     ========================================== */
+
+  --color-gray-000: #000000;
+  --color-gray-001: #030404;
+  --color-gray-002: #060808;
+  --color-gray-003: #0a0c0c;
+  --color-gray-004: #0c0f0f;
+  --color-gray-005: #0f1212;
+  --color-gray-006: #111414;
+  --color-gray-007: #131616;
+  --color-gray-008: #151818;
+  --color-gray-009: #171a1a;
+  --color-gray-010: #191c1c;
+  --color-gray-012: #1a2121;
+  --color-gray-017: #252c2c;
+  --color-gray-020: #293232;
+  --color-gray-022: #2d3636;
+  --color-gray-023: #2f3737;
+  --color-gray-024: #323b3b;
+  --color-gray-030: #3f4848;
+  --color-gray-035: #4b5454;
+  --color-gray-040: #576160;
+  --color-gray-047: #677270;
+  --color-gray-050: #6f7978;
+  --color-gray-053: #778180;
+  --color-gray-060: #889291;
+  --color-gray-070: #a3aeac;
+  --color-gray-080: #bec9c6;
+  --color-gray-085: #cfd6d3;
+  --color-gray-090: #dee4e1;
+  --color-gray-091: #e1e7e4;
+  --color-gray-092: #e4eae7;
+  --color-gray-093: #e6ece8;
+  --color-gray-094: #e9efeb;
+  --color-gray-095: #edf2ee;
+  --color-gray-096: #f0f5f0;
+  --color-gray-097: #f3f8f3;
+  --color-gray-098: #f8faf6;
+  --color-gray-099: #fbfdf9;
+  --color-gray-100: #ffffff;
+
+  /* ==========================================
+     BLUE FAMILY
+     ========================================== */
+
+  --color-blue-000: #000000;
+  --color-blue-010: #001e2b;
+  --color-blue-020: #003548;
+  --color-blue-025: #004157;
+  --color-blue-030: #004d66;
+  --color-blue-035: #005977;
+  --color-blue-040: #006687;
+  --color-blue-050: #0080a9;
+  --color-blue-060: #1b9cca;
+  --color-blue-070: #47b7e6;
+  --color-blue-080: #72d2ff;
+  --color-blue-085: #9cddff;
+  --color-blue-090: #c1e8ff;
+  --color-blue-095: #e2f3ff;
+  --color-blue-099: #fbfcff;
+  --color-blue-100: #ffffff;
+
+  /* ==========================================
+     RED FAMILY
+     ========================================== */
+
+  --color-red-000: #000000;
+  --color-red-010: #410001;
+  --color-red-020: #690002;
+  --color-red-025: #790e0a;
+  --color-red-030: #8b1a14;
+  --color-red-035: #9b261e;
+  --color-red-040: #ac3328;
+  --color-red-050: #ce4b3e;
+  --color-red-060: #f06454;
+  --color-red-070: #ff8a7b;
+  --color-red-080: #ffb4aa;
+  --color-red-085: #ffc7c0;
+  --color-red-090: #ffdad5;
+  --color-red-095: #ffedea;
+  --color-red-099: #fffbff;
+  --color-red-100: #ffffff;
+
+  /* ==========================================
+     BASE COLORS
+     ========================================== */
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+}

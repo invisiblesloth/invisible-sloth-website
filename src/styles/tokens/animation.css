@@ -1,0 +1,53 @@
+/* ================================
+   Animation Tokens
+   ================================
+
+   Animation timing, easing, and delay values for motion design.
+   Based on Material Design motion principles.
+
+   Resources:
+   - Material Design Motion: https://m3.material.io/styles/motion
+   - Cubic Bezier Visualizer: https://cubic-bezier.com
+*/
+
+@theme {
+  /* Animation Durations
+     ================== */
+  --animation-duration-extra-fast: 150ms;
+  --animation-duration-fast: 240ms;
+  --animation-duration-normal: 420ms;
+  --animation-duration-slow: 600ms;
+
+  /* Animation Easing Functions
+     ==========================
+     Material Design standard easing curves */
+
+  /* Standard easing - most common, balanced acceleration/deceleration */
+  --animation-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Emphasized easing - for attention-grabbing elements */
+  --animation-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Deceleration easing - elements entering the screen */
+  --animation-easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
+
+  /* Acceleration easing - elements exiting the screen */
+  --animation-easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Animation Delays
+     ================
+     For staggered/cascading animations */
+  --animation-delay-base: 0ms;
+  --animation-delay-1: 80ms;
+  --animation-delay-2: 160ms;
+  --animation-delay-3: 240ms;
+  --animation-delay-4: 320ms;
+  --animation-delay-5: 400ms;
+
+  /* Animation Offsets
+     =================
+     Distance values for translate animations */
+  --animation-offset-sm: var(--space-200);
+  --animation-offset-md: var(--space-400);
+  --animation-offset-lg: var(--space-800);
+}

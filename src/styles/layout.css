@@ -1,0 +1,280 @@
+/* ==========================================
+   LAYOUT SYSTEM
+   3-width rail system with semantic sections
+   Uses size tokens from src/styles/tokens/size.css
+   ========================================== */
+
+@layer components {
+  /* ==========================================
+     PAGE STRUCTURE
+     ========================================== */
+
+  .page {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .site-main {
+    flex: 1 0 auto;
+  }
+
+  /* ==========================================
+     SECTION - The visual band
+     Semantic <section> elements with vertical spacing
+     ========================================== */
+
+  .section {
+    padding-block: var(--space-section-block);
+  }
+
+  /* Full-bleed section - escapes rail constraints */
+  .section--full-bleed {
+    position: relative;
+    inset-inline: 50%;
+    margin-inline: -50vw;
+    inline-size: 100vw;
+  }
+
+  /* ==========================================
+     RAILS - Centering and width constraints
+     3 rail widths: full-bleed (viewport), large (1128px), medium (888px)
+     Optional responsive padding via rail--padded
+     ========================================== */
+
+  .rail {
+    margin-inline: auto;
+  }
+
+  .rail--lg {
+    max-inline-size: var(--size-rail-lg); /* 70.5rem / 1128px */
+  }
+
+  .rail--md {
+    max-inline-size: var(--size-rail-md); /* 55.5rem / 888px */
+  }
+
+  .rail--sm {
+    max-inline-size: var(--size-rail-sm); /* 52.5rem / 840px */
+  }
+
+  .rail--padded {
+    padding-inline: var(--space-rail-inline); /* Responsive inline padding */
+  }
+
+  /* ==========================================
+     CONTENT MEASURE LIMITERS
+     For optimal reading line length
+     Centers content at max-width, fills space below max-width
+     ========================================== */
+
+  .measure--content {
+    inline-size: 100%;
+    max-inline-size: var(--size-rail-sm); /* 52.5rem / 840px */
+    margin-inline: auto;
+  }
+
+  .measure--narrow {
+    inline-size: 100%;
+    max-inline-size: 80ch;
+    margin-inline: auto;
+  }
+
+  /* ==========================================
+     FLOW UTILITY
+     Automatic vertical spacing between children
+     ========================================== */
+
+  .flow > * + * {
+    margin-block-start: var(--space-section-block);
+  }
+
+  /* ==========================================
+     GRID SYSTEMS
+     ========================================== */
+
+  /* 8-column responsive grid */
+  .grid--cols-8 {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    column-gap: var(--space-gutter); /* Responsive: 16px mobile → 24px desktop */
+  }
+
+  /* Auto-fit responsive grid */
+  .grid--auto {
+    display: grid;
+    gap: var(--space-gutter);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+
+  /* Fixed column count grids */
+  .grid--cols-2 {
+    display: grid;
+    gap: var(--space-gutter);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid--cols-3 {
+    display: grid;
+    gap: var(--space-gutter);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .grid--cols-4 {
+    display: grid;
+    gap: var(--space-gutter);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  /* ==========================================
+     STACK LAYOUT
+     Vertical stacking with responsive gap
+     ========================================== */
+
+  .stack {
+    display: flex;
+    width: 100%;
+    margin-inline: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-gutter);
+    flex-shrink: 0;
+  }
+
+  .stack--tight {
+    display: flex;
+    width: 100%;
+    margin-inline: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-gutter-tight); /* Responsive: 8px mobile → 12px desktop */
+    flex-shrink: 0;
+  }
+
+  .stack--loose {
+    display: flex;
+    width: 100%;
+    margin-inline: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-gutter-loose); /* Responsive: 32px mobile → 48px desktop */
+    flex-shrink: 0;
+  }
+
+  /* ==========================================
+     CLUSTER LAYOUT
+     Horizontal inline layout with wrapping
+     ========================================== */
+
+  .cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-gutter);
+    align-items: center;
+  }
+
+  .cluster--tight {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-gutter-tight); /* Responsive: 8px mobile → 12px desktop */
+    align-items: center;
+  }
+
+  /* ==========================================
+     FIGURE PATTERNS
+     Responsive image containers
+     ========================================== */
+
+  figure {
+    margin: 0;
+  }
+
+  .figure--rail-sm img {
+    max-inline-size: var(--size-rail-sm); /* 840px */
+    inline-size: 100%;
+    display: block;
+  }
+
+  .figure--rail-md img {
+    max-inline-size: var(--size-rail-md); /* 888px */
+    inline-size: 100%;
+    display: block;
+  }
+
+  .figure--rail-lg img {
+    max-inline-size: var(--size-rail-lg); /* 1128px */
+    inline-size: 100%;
+    display: block;
+  }
+
+  figcaption {
+    margin-block-start: var(--space-200);
+  }
+
+  /* ==========================================
+     SPACING UTILITIES
+     Direct application of spacing tokens
+     ========================================== */
+
+  .spacing-gutter {
+    gap: var(--space-gutter);
+  }
+
+  .spacing-gutter-block {
+    padding-block: var(--space-gutter);
+  }
+
+  .spacing-gutter-inline {
+    padding-inline: var(--space-gutter);
+  }
+
+  .spacing-outer {
+    padding: var(--space-rail-inline);
+  }
+
+  .spacing-outer-inline {
+    padding-inline: var(--space-rail-inline);
+  }
+
+  .spacing-outer-block {
+    padding-block: var(--space-section-block);
+  }
+}
+
+/* ==========================================
+   RESPONSIVE ADJUSTMENTS
+   Grid column adjustments and rail constraints
+   Note: Spacing uses responsive tokens, no overrides needed
+   ========================================== */
+
+/* Below Large breakpoint (< 1176px) */
+@media (max-width: 1175px) {
+  .rail--lg,
+  .rail--md,
+  .rail--sm {
+    max-inline-size: 100%;
+  }
+
+  /* Only apply responsive padding when explicitly requested via rail--padded */
+  .rail--padded {
+    padding-inline: var(--space-rail-inline);
+  }
+
+  .grid--cols-8 {
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4 columns on tablet */
+  }
+}
+
+/* Below Extended breakpoint (< 1015px) */
+@media (max-width: 1014px) {
+  .grid--cols-8 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 columns on small tablet */
+  }
+}
+
+/* Base/compact (< 632px) */
+@media (max-width: 631px) {
+  .grid--cols-8 {
+    grid-template-columns: 1fr; /* Single column on mobile */
+  }
+}

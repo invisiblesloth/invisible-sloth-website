@@ -1,0 +1,323 @@
+/* ==========================================
+   DARK MODE OVERRIDES
+   Semantic color tokens that change in dark theme
+   Automatically applied when system prefers dark color scheme
+   ========================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ==========================================
+       PRIMARY COLORS
+       ========================================== */
+
+    --color-primary-srgb: var(--color-green-080);
+    --color-on-primary-srgb: var(--color-green-020);
+
+    /* P3 variables default to sRGB (overridden in @supports block for capable displays) */
+    --color-primary-p3: var(--color-primary-srgb);
+    --color-on-primary-p3: var(--color-on-primary-srgb);
+
+    --color-primary: var(--color-primary-p3, var(--color-primary-srgb));
+    --color-on-primary: var(--color-on-primary-p3, var(--color-on-primary-srgb));
+
+    /* Primary Container */
+    --color-primary-container-srgb: var(--color-green-025);
+    --color-primary-container-p3: var(--color-primary-container-srgb);
+    --color-primary-container: var(--color-primary-container-p3, var(--color-primary-container-srgb));
+
+    --color-on-primary-container-srgb: var(--color-green-099);
+    --color-on-primary-container-p3: var(--color-on-primary-container-srgb);
+    --color-on-primary-container: var(--color-on-primary-container-p3, var(--color-on-primary-container-srgb));
+
+    /* Inverse Primary */
+    --color-inverse-primary-srgb: var(--color-green-027);
+    --color-inverse-primary-p3: var(--color-inverse-primary-srgb);
+    --color-inverse-primary: var(--color-inverse-primary-p3, var(--color-inverse-primary-srgb));
+
+    --color-on-inverse-primary-srgb: var(--color-green-085);
+    --color-on-inverse-primary-p3: var(--color-on-inverse-primary-srgb);
+    --color-on-inverse-primary: var(--color-on-inverse-primary-p3, var(--color-on-inverse-primary-srgb));
+
+    /* Primary Fixed */
+    --color-primary-fixed-srgb: var(--color-green-090);
+    --color-primary-fixed-p3: var(--color-primary-fixed-srgb);
+    --color-primary-fixed: var(--color-primary-fixed-p3, var(--color-primary-fixed-srgb));
+
+    --color-on-primary-fixed-srgb: var(--color-green-010);
+    --color-on-primary-fixed-p3: var(--color-on-primary-fixed-srgb);
+    --color-on-primary-fixed: var(--color-on-primary-fixed-p3, var(--color-on-primary-fixed-srgb));
+
+    --color-primary-fixed-dim-srgb: var(--color-green-085);
+    --color-primary-fixed-dim-p3: var(--color-primary-fixed-dim-srgb);
+    --color-primary-fixed-dim: var(--color-primary-fixed-dim-p3, var(--color-primary-fixed-dim-srgb));
+
+    --color-on-primary-fixed-variant-srgb: var(--color-green-025);
+    --color-on-primary-fixed-variant-p3: var(--color-on-primary-fixed-variant-srgb);
+    --color-on-primary-fixed-variant: var(--color-on-primary-fixed-variant-p3, var(--color-on-primary-fixed-variant-srgb));
+
+    /* ==========================================
+       SECONDARY COLORS
+       ========================================== */
+
+    --color-secondary: var(--color-gray-080);
+    --color-on-secondary: var(--color-gray-020);
+    --color-secondary-container: var(--color-gray-030);
+    --color-on-secondary-container: var(--color-gray-095);
+    --color-inverse-secondary: var(--color-gray-024);
+    --color-on-inverse-secondary: var(--color-gray-085);
+
+    /* ==========================================
+       TERTIARY COLORS
+       ========================================== */
+
+    --color-tertiary: var(--color-blue-080);
+    --color-on-tertiary: var(--color-blue-020);
+    --color-tertiary-container: var(--color-blue-030);
+    --color-on-tertiary-container: var(--color-blue-095);
+    --color-inverse-tertiary: var(--color-blue-025);
+    --color-on-inverse-tertiary: var(--color-blue-085);
+
+    /* ==========================================
+       ERROR COLORS
+       ========================================== */
+
+    --color-error: var(--color-red-080);
+    --color-on-error: var(--color-red-020);
+    --color-error-container: var(--color-red-030);
+    --color-on-error-container: var(--color-red-080);
+    --color-inverse-error: var(--color-red-025);
+    --color-on-inverse-error: var(--color-red-085);
+
+    /* ==========================================
+       BACKGROUND COLORS
+       ========================================== */
+
+    --color-background: var(--color-gray-008);
+    --color-background-dim: var(--color-gray-000);
+    --color-on-background: var(--color-gray-095);
+    --color-on-background-dim: var(--color-gray-070);
+
+    /* ==========================================
+       SURFACE COLORS
+       ========================================== */
+
+    --color-surface: var(--color-gray-008);
+    --color-surface-dim: var(--color-black);
+    --color-surface-bright: var(--color-gray-017);
+    --color-on-surface: var(--color-gray-095);
+    --color-on-surface-dim: var(--color-gray-080);
+    --color-surface-variant: #052d00;
+    --color-surface-variant-bright: #214024;
+    --color-on-surface-variant: #bcd1af;
+    --color-inverse-surface: var(--color-gray-090);
+    --color-on-surface-inverse: var(--color-gray-020);
+    --color-surface-container-lowest: var(--color-gray-004);
+    --color-surface-container-low: var(--color-gray-012);
+    --color-surface-container: var(--color-gray-017);
+    --color-surface-container-high: var(--color-gray-020);
+    --color-surface-container-highest: var(--color-gray-023);
+
+    /* ==========================================
+       OUTLINE COLORS
+       ========================================== */
+
+    --color-outline: var(--color-gray-053);
+    --color-outline-variant: var(--color-gray-024);
+
+    /* ==========================================
+       UI COLORS
+       ========================================== */
+
+    --color-focus: #2580ff;
+    --color-on-focus: var(--color-black);
+
+    /* Button shadow tokens (dark mode overrides) */
+    --color-button-side-primary-srgb: #090;
+    --color-button-side-primary-p3: var(--color-button-side-primary-srgb);
+    --color-button-side-primary: var(--color-button-side-primary-p3, var(--color-button-side-primary-srgb));
+
+    --color-button-side-inverse-primary-srgb: #21EE21;
+    --color-button-side-inverse-primary-p3: var(--color-button-side-inverse-primary-srgb);
+    --color-button-side-inverse-primary: var(--color-button-side-inverse-primary-p3, var(--color-button-side-inverse-primary-srgb));
+
+    --color-accent-primary-srgb: #1EFF21;
+    --color-accent-primary-p3: var(--color-accent-primary-srgb);
+    --color-accent-primary: var(--color-accent-primary-p3, var(--color-accent-primary-srgb));
+
+    --color-accent-secondary-srgb: #FF1FFF;
+    --color-accent-secondary-p3: var(--color-accent-secondary-srgb);
+    --color-accent-secondary: var(--color-accent-secondary-p3, var(--color-accent-secondary-srgb));
+
+    --color-accent-tertiary-srgb: #1EFFFF;
+    --color-accent-tertiary-p3: var(--color-accent-tertiary-srgb);
+    --color-accent-tertiary: var(--color-accent-tertiary-p3, var(--color-accent-tertiary-srgb));
+
+    --color-button-side-secondary: var(--color-accent-secondary);
+    --color-button-side-inverse-secondary: #DB3BE6;
+    --color-button-side-tertiary: #3A7FB6;
+    --color-button-side-inverse-tertiary: #71EBEC;
+
+    /* ==========================================
+       STATE LAYERS - PRIMARY
+       ========================================== */
+
+    --color-state-primary-08: rgba(145, 217, 117, 0.08);
+    --color-state-primary-12: rgba(145, 217, 117, 0.12);
+    --color-state-primary-16: rgba(145, 217, 117, 0.16);
+
+    /* ==========================================
+       STATE LAYERS - ON-PRIMARY
+       ========================================== */
+
+    --color-state-on-primary-08: rgba(10, 57, 0, 0.08);
+    --color-state-on-primary-12: rgba(10, 57, 0, 0.12);
+    --color-state-on-primary-16: rgba(10, 57, 0, 0.16);
+
+    /* ==========================================
+       STATE LAYERS - SECONDARY
+       ========================================== */
+
+    --color-state-secondary-08: rgba(190, 201, 198, 0.08);
+    --color-state-secondary-12: rgba(190, 201, 198, 0.12);
+    --color-state-secondary-16: rgba(190, 201, 198, 0.16);
+
+    /* ==========================================
+       STATE LAYERS - ON-SECONDARY
+       ========================================== */
+
+    --color-state-on-secondary-08: rgba(41, 50, 50, 0.08);
+    --color-state-on-secondary-12: rgba(41, 50, 50, 0.12);
+    --color-state-on-secondary-16: rgba(41, 50, 50, 0.16);
+
+    /* ==========================================
+       STATE LAYERS - TERTIARY
+       ========================================== */
+    
+    --color-state-tertiary-08: rgba(114, 210, 255, 0.08);
+    --color-state-tertiary-12: rgba(114, 210, 255, 0.12);
+    --color-state-tertiary-16: rgba(114, 210, 255, 0.16);
+    
+    /* ==========================================
+       STATE LAYERS - ON-TERTIARY
+       ========================================== */
+    
+    --color-state-on-tertiary-08: rgba(0, 53, 72, 0.08);
+    --color-state-on-tertiary-12: rgba(0, 53, 72, 0.12);
+    --color-state-on-tertiary-16: rgba(0, 53, 72, 0.16);
+    
+    /* ==========================================
+       STATE LAYERS - TERTIARY CONTAINER
+       ========================================== */
+    
+    --color-state-tertiary-container-08: rgba(24, 64, 85, 0.08);
+    --color-state-tertiary-container-12: rgba(24, 64, 85, 0.12);
+    --color-state-tertiary-container-16: rgba(24, 64, 85, 0.16);
+    
+    /* ==========================================
+       STATE LAYERS - ON-TERTIARY CONTAINER
+       ========================================== */
+    
+    --color-state-on-tertiary-container-08: rgba(229, 242, 254, 0.08);
+    --color-state-on-tertiary-container-12: rgba(229, 242, 254, 0.12);
+    --color-state-on-tertiary-container-16: rgba(229, 242, 254, 0.16);
+
+    /* ==========================================
+       STATE LAYERS - SURFACE
+       ========================================== */
+
+    --color-state-surface-08: rgba(21, 24, 24, 0.08);
+    --color-state-surface-12: rgba(21, 24, 24, 0.12);
+    --color-state-surface-16: rgba(21, 24, 24, 0.16);
+    
+    /* ==========================================
+       STATE LAYERS - SURFACE DIM
+       ========================================== */
+    
+    --color-state-surface-dim-08: rgba(0, 0, 0, 0.08);
+    --color-state-surface-dim-12: rgba(0, 0, 0, 0.12);
+    --color-state-surface-dim-16: rgba(0, 0, 0, 0.16);
+    
+    /* ==========================================
+       STATE LAYERS - SURFACE BRIGHT
+       ========================================== */
+    
+    --color-state-surface-bright-08: rgba(38, 44, 44, 0.08);
+    --color-state-surface-bright-12: rgba(38, 44, 44, 0.12);
+    --color-state-surface-bright-16: rgba(38, 44, 44, 0.16);
+
+    /* ==========================================
+       STATE LAYERS - ON-SURFACE
+       ========================================== */
+    
+    --color-state-on-surface-08: rgba(237, 242, 238, 0.08);
+    --color-state-on-surface-12: rgba(237, 242, 238, 0.12);
+    --color-state-on-surface-16: rgba(237, 242, 238, 0.16);
+    
+    /* ==========================================
+       STATE LAYERS - ON-SURFACE DIM
+       ========================================== */
+
+    --color-state-on-surface-dim-08: rgba(192, 201, 198, 0.08);
+    --color-state-on-surface-dim-12: rgba(192, 201, 198, 0.12);
+    --color-state-on-surface-dim-16: rgba(192, 201, 198, 0.16);
+
+
+    /* ==========================================
+       LINK UNDERLINE - ON-PRIMARY
+       ========================================== */
+
+    --color-link-underline-on-primary: rgba(10, 57, 0, 0.61);
+
+    /* ==========================================
+       LINK UNDERLINE - ON-SECONDARY
+       ========================================== */
+
+    --color-link-underline-on-secondary: rgba(41, 50, 50, 0.61);
+
+    /* ==========================================
+       LINK UNDERLINE - ON-TERTIARY
+       ========================================== */
+
+    --color-link-underline-on-tertiary: rgba(0, 53, 72, 0.61);
+
+    /* ==========================================
+       LINK UNDERLINE - ON-TERTIARY CONTAINER
+       ========================================== */
+
+    --color-link-underline-on-tertiary-container: rgba(229, 242, 254, 0.47);
+
+    /* ==========================================
+       LINK UNDERLINE - ON-SURFACE
+       ========================================== */
+
+    --color-link-underline-on-surface: rgba(237, 242, 238, 0.41);
+
+    /* ==========================================
+       LINK UNDERLINE - ON-SURFACE DIM
+       ========================================== */
+
+    --color-link-underline-on-surface-dim: rgba(192, 201, 198, 0.52);
+  }
+}
+
+@supports (color(display-p3 1 1 1)) {
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-primary-p3: color(display-p3 0.631 0.843 0.502);
+      --color-on-primary-p3: color(display-p3 0.098 0.220 0.039);
+      --color-inverse-primary-p3: color(display-p3 0.1373 0.2863 0.0627);
+      --color-on-inverse-primary-p3: color(display-p3 0.6667 0.898 0.5647);
+      --color-primary-container-p3: color(display-p3 0.1137 0.2745 0.0627);
+      --color-on-primary-container-p3: color(display-p3 0.9725 1 0.9373);
+      --color-primary-fixed-p3: color(display-p3 0.7373 0.9529 0.6392);
+      --color-on-primary-fixed-p3: color(display-p3 0.0431 0.1255 0.0196);
+      --color-primary-fixed-dim-p3: color(display-p3 0.6667 0.898 0.5647);
+      --color-on-primary-fixed-variant-p3: color(display-p3 0.1137 0.2745 0.0627);
+      --color-button-side-primary-p3: color(display-p3 0.2627 0.5922 0.1647);
+      --color-button-side-inverse-primary-p3: color(display-p3 0.4431 0.9216 0.3059);
+      --color-accent-primary-p3: color(display-p3 0.4706 0.9843 0.3255);
+      --color-accent-secondary-p3: color(display-p3 0.9176 0.2392 0.9686);
+      --color-accent-tertiary-p3: color(display-p3 0.4706 0.9843 0.9922);
+    }
+  }
+}

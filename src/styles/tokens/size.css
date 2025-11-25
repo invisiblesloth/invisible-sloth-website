@@ -1,0 +1,17 @@
+/* ==========================================
+   Size Tokens
+   Rail widths and container constraints
+   ========================================== */
+
+:root {
+  /* Rail widths (size constraints) */
+  --size-rail-lg: 70.5rem;  /* 1128px - Main content rail */
+  --size-rail-md: 55.5rem;  /* 888px - Medium content rail */
+  --size-rail-sm: 52.5rem;  /* 840px - Narrow content rail */
+
+  /* Semantic aliases for responsive spacing tokens */
+  /* Note: --space-rail-inline and --space-section-block are defined in responsive.css */
+
+  /* Layout utility spacing */
+  /* Note: .grid, .stack, .cluster, .flow utilities use responsive tokens directly (no aliases needed) */
+}

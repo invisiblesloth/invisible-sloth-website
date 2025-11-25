@@ -1,0 +1,63 @@
+/* ==========================================
+   GLOBAL STYLES
+   Main stylesheet that imports all style modules
+
+   Import order:
+   1. Tailwind CSS base
+   2. Reset & normalization
+   3. Design tokens (primitives + default semantic tokens)
+   4. Dark mode (@media prefers-color-scheme)
+   5. Theme switching (data-theme attribute)
+   6. Base element styles
+   7. Typography utilities
+   8. Visual effects (elevation, glow)
+   9. Animation utilities (page entrances, transitions)
+   10. Layout utilities (page containers, sections, grid, stack)
+   11. Storybook integration
+   ========================================== */
+
+/* Tailwind CSS base */
+@import "tailwindcss";
+
+/* Reset & normalization (enhancements to Tailwind preflight) */
+@import "./reset.css";
+
+/* Design system tokens (colors, typography, spacing, etc.) */
+@import "./tokens.css";
+
+/* Dark mode color overrides (automatic via @media prefers-color-scheme) */
+@import "./dark-mode.css";
+
+/* Theme switching (manual via data-theme attribute) */
+@import "./theme.css";
+
+/* Global element styles (body, b, strong, mark, etc.) */
+@import "./base.css";
+
+/* Typography utility classes */
+@import "./typography.css";
+
+/* Inline link utilities */
+@import "./links.css";
+
+/* Visual effects (elevation, glow) */
+@import "./effects.css";
+
+/* Animation utilities (page entrances, transitions) */
+@import "./animations.css";
+
+/* Layout utilities (page containers, sections, grid, stack) */
+@import "./layout.css";
+
+/* ==========================================
+   STORYBOOK PREVIEW BACKGROUNDS
+   Sync canvas background with theme
+   ========================================== */
+
+html[data-theme='light'] #storybook-root {
+  background: var(--color-gray-098) !important; /* Light mode background: #f8faf6 */
+}
+
+html[data-theme='dark'] #storybook-root {
+  background: var(--color-gray-008) !important; /* Dark mode background: #151818 */
+}
