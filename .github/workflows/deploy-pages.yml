@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: npm
           cache-dependency-path: package-lock.json
 
       - name: Setup Pages
@@ -35,8 +35,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build Astro site and Storybook
+        run: |
+          npm run build
+          npm run build-storybook
+          mkdir -p dist/storybook
+          cp -R storybook-static/* dist/storybook/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
