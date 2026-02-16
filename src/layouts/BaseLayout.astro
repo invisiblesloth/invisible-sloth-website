@@ -81,5 +81,19 @@ const socialCardUrl = new URL("/social-card.png", Astro.site).toString();
   </head>
   <body class="page">
     <slot />
+
+    <script>
+      import { initLogoHoverTilt } from "../scripts/logoHoverTilt";
+
+      const isDev = import.meta.env.DEV;
+
+      try {
+        initLogoHoverTilt(document);
+      } catch (error) {
+        if (isDev) {
+          console.warn("Logo hover tilt initialization failed.", error);
+        }
+      }
+    </script>
   </body>
 </html>

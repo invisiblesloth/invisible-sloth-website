@@ -52,11 +52,11 @@
     <!-- Logo Section -->
     <div class="site-footer__logo-section">
       {#if isLink}
-        <a class="site-footer__logo-wrapper" href={homeHref} aria-label={ariaLabel}>
+        <a class="site-footer__logo-wrapper" href={homeHref} aria-label={ariaLabel} data-logo-hover-tilt>
           <LogoStandard alt={logoAlt} />
         </a>
       {:else}
-        <div class="site-footer__logo-wrapper">
+        <div class="site-footer__logo-wrapper" data-logo-hover-tilt>
           <LogoStandard alt={logoAlt} />
         </div>
       {/if}
@@ -113,6 +113,8 @@
   }
 
   .site-footer__logo-wrapper {
+    --logo-hover-rotate: 0deg;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -130,12 +132,12 @@
 
   @media (hover: hover) {
     .site-footer__logo-wrapper:hover {
-      transform: scale(1.04);
+      transform: scale(1.04) rotate(var(--logo-hover-rotate));
     }
   }
 
   .site-footer__logo-wrapper:active {
-    transform: scale(1.04);
+    transform: scale(1.04) rotate(var(--logo-hover-rotate));
   }
 
   .site-footer__logo-wrapper:focus-visible {

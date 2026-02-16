@@ -1,5 +1,8 @@
 import type { Preview } from '@storybook/svelte-vite';
 import '../src/styles/global.css';
+import { initLogoHoverTilt } from '../src/scripts/logoHoverTilt';
+
+const isDev = import.meta.env.DEV;
 
 const preview: Preview = {
   parameters: {
@@ -67,7 +70,24 @@ const preview: Preview = {
         const theme = (context.globals.theme as 'light' | 'dark') || 'light';
         document.documentElement.setAttribute('data-theme', theme);
       }
-      return Story();
+
+      const rendered = Story();
+
+      if (typeof document !== 'undefined') {
+        queueMicrotask(() => {
+          requestAnimationFrame(() => {
+            try {
+              initLogoHoverTilt(document);
+            } catch (error) {
+              if (isDev) {
+                console.warn('Logo hover tilt initialization failed in Storybook.', error);
+              }
+            }
+          });
+        });
+      }
+
+      return rendered;
     },
   ],
 };

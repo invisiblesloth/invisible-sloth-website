@@ -35,11 +35,11 @@
 <header class={`site-header ${className}`}>
   <div class="site-header__inner">
     {#if isLink}
-      <a class="site-header__logo-wrapper" href={homeHref} aria-label={ariaLabel}>
+      <a class="site-header__logo-wrapper" href={homeHref} aria-label={ariaLabel} data-logo-hover-tilt>
         <LogoTechnical alt={logoAlt} />
       </a>
     {:else}
-      <div class="site-header__logo-wrapper">
+      <div class="site-header__logo-wrapper" data-logo-hover-tilt>
         <LogoTechnical alt={logoAlt} />
       </div>
     {/if}
@@ -71,6 +71,8 @@
   }
 
   .site-header__logo-wrapper {
+    --logo-hover-rotate: 0deg;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -88,12 +90,12 @@
 
   @media (hover: hover) {
     .site-header__logo-wrapper:hover {
-      transform: scale(1.04);
+      transform: scale(1.04) rotate(var(--logo-hover-rotate));
     }
   }
 
   .site-header__logo-wrapper:active {
-    transform: scale(1.04);
+    transform: scale(1.04) rotate(var(--logo-hover-rotate));
   }
 
   .site-header__logo-wrapper:focus-visible {
