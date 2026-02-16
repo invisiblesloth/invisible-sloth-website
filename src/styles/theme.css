@@ -466,7 +466,7 @@ html[data-theme="dark"] {
     --color-primary-p3: color(display-p3 0.153 0.318 0.071);
     --color-on-primary-p3: color(display-p3 1 1 1);
     --color-inverse-primary-p3: color(display-p3 0.6667 0.898 0.5647);
-    --color-on-inverse-primary-p3: color(display-p3 0.1373 0.2863 0.0627);
+    --color-on-inverse-primary-p3: color(display-p3 0.1255 0.2863 0.0706);
     --color-primary-container-p3: color(display-p3 0.8314 1 0.7412);
     --color-on-primary-container-p3: color(display-p3 0.0902 0.2196 0.0471);
     --color-primary-fixed-p3: color(display-p3 0.7373 0.9529 0.6392);
@@ -483,7 +483,7 @@ html[data-theme="dark"] {
   html[data-theme="dark"] {
     --color-primary-p3: color(display-p3 0.631 0.843 0.502);
     --color-on-primary-p3: color(display-p3 0.098 0.220 0.039);
-    --color-inverse-primary-p3: color(display-p3 0.1373 0.2863 0.0627);
+    --color-inverse-primary-p3: color(display-p3 0.1255 0.2863 0.0706);
     --color-on-inverse-primary-p3: color(display-p3 0.6667 0.898 0.5647);
     --color-primary-container-p3: color(display-p3 0.1137 0.2745 0.0627);
     --color-on-primary-container-p3: color(display-p3 0.9725 1 0.9373);

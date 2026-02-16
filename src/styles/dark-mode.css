@@ -305,7 +305,7 @@
     :root {
       --color-primary-p3: color(display-p3 0.631 0.843 0.502);
       --color-on-primary-p3: color(display-p3 0.098 0.220 0.039);
-      --color-inverse-primary-p3: color(display-p3 0.1373 0.2863 0.0627);
+      --color-inverse-primary-p3: color(display-p3 0.1255 0.2863 0.0706);
       --color-on-inverse-primary-p3: color(display-p3 0.6667 0.898 0.5647);
       --color-primary-container-p3: color(display-p3 0.1137 0.2745 0.0627);
       --color-on-primary-container-p3: color(display-p3 0.9725 1 0.9373);
