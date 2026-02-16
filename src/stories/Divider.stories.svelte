@@ -27,12 +27,6 @@
 </script>
 
 <style>
-  /* svelte-ignore no_scopable_elements */
-  /* svelte-ignore css_unused_selector */
-  .storybook-divider-demo {
-    display: contents;
-  }
-
   /* Story-only demo styles */
   :global(.divider--vertical) {
     height: 160px;

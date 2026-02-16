@@ -4,10 +4,10 @@ The official website for Invisible Sloth, showcasing our projects across games, 
 
 ## Tech Stack
 
-- **[Astro 5.15.8](https://astro.build)** - Static site generation with island architecture
-- **[Svelte 5.41.3](https://svelte.dev)** - Interactive UI components with runes syntax
+- **[Astro 5.17.2](https://astro.build)** - Static site generation with island architecture
+- **[Svelte 5.51.2](https://svelte.dev)** - Interactive UI components with runes syntax
 - **[Tailwind CSS v4](https://tailwindcss.com)** - Utility-first styling with CSS-native configuration
-- **[Storybook 10.0.2](https://storybook.js.org)** - Component development and documentation
+- **[Storybook 10.2.8](https://storybook.js.org)** - Component development and documentation
 
 ## Project Structure
 

@@ -41,8 +41,8 @@
     class?: string;
   } = $props();
 
-  const hasContent = !!children;
-  const isLink = Boolean(homeHref);
+  const hasContent = $derived(Boolean(children));
+  const isLink = $derived(Boolean(homeHref));
 </script>
 
 <footer class={`site-footer ${className}`}>
@@ -69,6 +69,12 @@
     
     <!-- Contact Us Section -->
     <ContactUs />
+
+    {#if hasContent && children}
+      <div class="site-footer__slot-content">
+        {@render children()}
+      </div>
+    {/if}
 
     <!-- Copyright Section -->
     <div class="site-footer__copyright">
@@ -161,6 +167,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+  }
+
+  .site-footer__slot-content {
     width: 100%;
   }
 

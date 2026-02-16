@@ -10,7 +10,7 @@ import { defineCollection, z } from 'astro:content';
 // Badge schema - validates platform and status badges
 const badgeSchema = z.object({
   label: z.string(),
-  variant: z.string()
+  variant: z.enum(['default', 'boardgame', 'playdate', 'apple', 'error', 'web'])
 });
 
 // Button schema - validates optional button configuration for project cards

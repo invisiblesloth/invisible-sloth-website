@@ -29,7 +29,7 @@
     class?: string;
   } = $props();
 
-  const isLink = Boolean(homeHref);
+  const isLink = $derived(Boolean(homeHref));
 </script>
 
 <header class={`site-header ${className}`}>

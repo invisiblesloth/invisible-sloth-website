@@ -12,28 +12,48 @@ import svelte from '@astrojs/svelte';
 const shouldSkipSvelteVirtualCss = (id) =>
   id.includes('.svelte') && id.includes('&type=style') && id.includes('&lang.css');
 
-const tailwindPlugins = tailwindcss().map((plugin) => {
-  if (!plugin.transform) return plugin;
+/**
+ * Tailwind's Vite plugin transform hook can be either a function or a
+ * hook-object with a handler in newer Vite versions.
+ *
+ * @param {import('vite').Plugin['transform']} transform
+ * @returns {import('vite').Plugin['transform']}
+ */
+const wrapTransformHook = (transform) => {
+  if (!transform) return transform;
 
-  const originalTransform = plugin.transform;
-
-  return {
-    ...plugin,
-    /**
-     * @param {string} code
-     * @param {string} id
-     * @param {any[]} args
-     */
-    async transform(code, id, ...args) {
+  if (typeof transform === 'function') {
+    return async function wrappedTransform(code, id, ...args) {
       if (shouldSkipSvelteVirtualCss(id)) {
         return code;
       }
 
-      // @ts-ignore - Vite plugin transform hook typing complexity
-      return originalTransform.call(this, code, id, ...args);
-    },
-  };
-});
+      return transform.call(this, code, id, ...args);
+    };
+  }
+
+  if (typeof transform === 'object' && typeof transform.handler === 'function') {
+    const originalHandler = transform.handler;
+
+    return {
+      ...transform,
+      async handler(code, id, ...args) {
+        if (shouldSkipSvelteVirtualCss(id)) {
+          return code;
+        }
+
+        return originalHandler.call(this, code, id, ...args);
+      },
+    };
+  }
+
+  return transform;
+};
+
+const tailwindPlugins = tailwindcss().map((plugin) => ({
+  ...plugin,
+  transform: wrapTransformHook(plugin.transform),
+}));
 
 // https://astro.build/config
 export default defineConfig({
