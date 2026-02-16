@@ -38,19 +38,19 @@ const projectsData = await Promise.all(
 ---
 
 <BaseLayout title="Invisible Sloth" description="Invisible Sloth projects">
-	<SiteHeader class="page-fade--root page-fade--1" homeHref="/" logoAlt="Invisible Sloth" />
+	<SiteHeader homeHref="/" logoAlt="Invisible Sloth" />
 
 	<main class="site-main">
 		<Section>
 			<Container padded={false} size="md" class="stack">
-				<div class="measure--content text-center page-fade page-fade--2">
+				<div class="measure--content text-center">
 					<Heading level="h1" text="What’s up at Invisible&nbsp;Sloth?" />
 				</div>
 
-				<ProjectList class="page-fade page-fade--3" projects={projectsData} client:load />
+				<ProjectList projects={projectsData} client:load />
 			</Container>
 		</Section>
 	</main>
 
-	<SiteFooter class="page-fade page-fade--4" homeHref="/" logoAlt="Invisible Sloth" ariaLabel="Invisible Sloth home" />
+	<SiteFooter homeHref="/" logoAlt="Invisible Sloth" ariaLabel="Invisible Sloth home" />
 </BaseLayout>

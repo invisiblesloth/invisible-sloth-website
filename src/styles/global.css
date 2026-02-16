@@ -11,9 +11,8 @@
    6. Base element styles
    7. Typography utilities
    8. Visual effects (elevation, glow)
-   9. Animation utilities (page entrances, transitions)
-   10. Layout utilities (page containers, sections, grid, stack)
-   11. Storybook integration
+   9. Layout utilities (page containers, sections, grid, stack)
+   10. Storybook integration
    ========================================== */
 
 /* Tailwind CSS base */
@@ -42,9 +41,6 @@
 
 /* Visual effects (elevation, glow) */
 @import "./effects.css";
-
-/* Animation utilities (page entrances, transitions) */
-@import "./animations.css";
 
 /* Layout utilities (page containers, sections, grid, stack) */
 @import "./layout.css";
