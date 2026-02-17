@@ -2,10 +2,9 @@
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import TypographyPreview from './TypographyPreview.svelte';
 
-  // No additional module state needed
-
   const { Story } = defineMeta({
-    title: 'Foundations/Typography'
+    title: 'Foundations/Typography',
+    tags: ['autodocs'],
   });
 </script>
 

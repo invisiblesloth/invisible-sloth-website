@@ -6,9 +6,26 @@
     title: 'Atoms/Button',
     component: Button,
     tags: ['autodocs'],
+    parameters: {
+      controls: {
+        include: [
+          'variant',
+          'type',
+          'label',
+          'disabled',
+          'hasLeadingIcon',
+          'hasTrailingIcon',
+          'href',
+          'target',
+          'rel',
+          'click',
+          'onclick',
+        ],
+      },
+    },
     argTypes: {
-      click: { action: 'clicked' }, // Dispatched event (on:click pattern)
-      onclick: { action: 'onclick called' }, // Callback prop (new pattern)
+      click: { action: 'clicked' },
+      onclick: { action: 'onclick called' },
       variant: {
         control: 'select',
         options: ['filled-primary', 'filled-secondary', 'filled-tertiary'],

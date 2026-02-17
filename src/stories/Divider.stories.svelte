@@ -8,17 +8,17 @@
     tags: ['autodocs'],
     argTypes: {
       orientation: {
-        control: { type: 'select' },
+        control: 'select',
         options: ['horizontal', 'vertical'],
         description: 'Orientation of the divider',
       },
       layout: {
-        control: { type: 'select' },
+        control: 'select',
         options: ['Full-width', 'Middle-inset'],
         description: 'Layout variant: full-width spans the entire container, middle-inset has spacing on sides',
       },
       thickness: {
-        control: { type: 'select' },
+        control: 'select',
         options: ['Default', 'Double'],
         description: 'Thickness variant: default is 1px, double is 2px',
       },
