@@ -6,6 +6,11 @@
     title: 'Organisms/ProjectList',
     component: ProjectList,
     tags: ['autodocs'],
+    parameters: {
+      controls: {
+        exclude: ['projects', 'class'],
+      },
+    },
   });
 
   // Real project data from src/content/projects/

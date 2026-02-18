@@ -8,6 +8,9 @@
     tags: ['autodocs'],
     parameters: {
       layout: 'fullscreen',
+      controls: {
+        include: ['homeHref', 'logoAlt', 'ariaLabel', 'tagline', 'copyrightText'],
+      },
     },
     args: {
       homeHref: '/',
