@@ -5,13 +5,13 @@
    * Behavior:
    * - fit="cover" fills the frame and may crop.
    * - fit="contain" shows the whole image inside the frame.
-   * - frameMode="ratio" enforces a fixed frame ratio.
-   * - heightMode="clamped" applies viewport-driven height with a min/max guardrail.
+   * - frame="ratio" enforces a fixed aspect ratio.
+   * - frame="auto" uses the image's intrinsic dimensions.
+   * - frame="clamped" applies aspect ratio with viewport-driven height clamping.
    */
   type ImageFit = 'cover' | 'contain';
-  type FrameMode = 'ratio' | 'auto';
+  type Frame = 'ratio' | 'auto' | 'clamped';
   type AspectRatio = '3:2' | '2:3' | '1:1' | '16:9';
-  type HeightMode = 'intrinsic' | 'clamped';
   type Radius = 'none' | 'small' | 'medium' | 'large';
   type LoadingMode = 'lazy' | 'eager';
   type DecodingMode = 'auto' | 'sync' | 'async';
@@ -41,9 +41,8 @@
     alt = '',
     decorative = false,
     fit = 'cover',
-    frameMode = 'ratio',
+    frame = 'ratio',
     ratio = '3:2',
-    heightMode = 'intrinsic',
     minHeight = '220px',
     preferredHeight = '45svh',
     maxHeight = '560px',
@@ -64,9 +63,8 @@
     alt?: string;
     decorative?: boolean;
     fit?: ImageFit;
-    frameMode?: FrameMode;
+    frame?: Frame;
     ratio?: AspectRatio;
-    heightMode?: HeightMode;
     minHeight?: string;
     preferredHeight?: string;
     maxHeight?: string;
@@ -126,8 +124,7 @@
     [
       'image',
       `image--${fit}`,
-      `image--${frameMode}`,
-      `image--${heightMode}`,
+      frame === 'clamped' ? 'image--ratio image--clamped' : `image--${frame}`,
       `image--radius-${radius}`,
       className,
     ]
@@ -144,7 +141,7 @@
       `--image-max-height: ${maxHeight}`,
     ];
 
-    if (frameMode === 'ratio') {
+    if (frame === 'ratio' || frame === 'clamped') {
       styles.push(`--image-ratio: ${ratioValue}`);
     }
 
@@ -159,20 +156,13 @@
     }
   });
 
-  $effect(() => {
-    src;
-    srcset;
-    sizes;
+  const sourceKey = $derived(
+    `${src}|${srcset}|${sizes}|${fallbackSrc}|${fallbackSrcset}|${fallbackSizes}`
+  );
 
+  $effect(() => {
+    sourceKey;
     primaryImageFailed = false;
-    fallbackImageFailed = false;
-  });
-
-  $effect(() => {
-    fallbackSrc;
-    fallbackSrcset;
-    fallbackSizes;
-
     fallbackImageFailed = false;
   });
 
@@ -186,19 +176,21 @@
   };
 </script>
 
-<div class={imageClasses} style={imageStyle}>
+<div class={imageClasses} style={imageStyle} aria-hidden={decorative ? 'true' : undefined}>
   {#if canRenderImage}
-    <img
-      class="image__media"
-      src={activeSrc}
-      srcset={activeSrcset}
-      sizes={activeSizes}
-      alt={resolvedAlt}
-      {loading}
-      {decoding}
-      fetchpriority={fetchPriority}
-      onerror={handleImageError}
-    />
+    {#key `${activeSrc}|${activeSrcset ?? ''}`}
+      <img
+        class="image__media"
+        src={activeSrc}
+        srcset={activeSrcset}
+        sizes={activeSizes}
+        alt={resolvedAlt}
+        {loading}
+        {decoding}
+        fetchpriority={fetchPriority}
+        onerror={handleImageError}
+      />
+    {/key}
   {:else}
     <div class="image__placeholder" aria-hidden="true"></div>
   {/if}
@@ -206,7 +198,10 @@
 
 <style>
   .image {
+    --image-radius: 0;
+
     inline-size: 100%;
+    overflow: hidden;
   }
 
   .image--ratio {
@@ -226,6 +221,7 @@
     display: block;
     inline-size: 100%;
     block-size: 100%;
+    border-radius: var(--image-radius);
   }
 
   .image__media {
@@ -246,7 +242,7 @@
     max-block-size: 100%;
   }
 
-  .image--auto:not(.image--clamped) .image__media {
+  .image--auto .image__media {
     block-size: auto;
   }
 
@@ -256,39 +252,15 @@
       linear-gradient(145deg, var(--color-green-060), var(--color-green-080));
   }
 
-  .image--radius-none {
-    border-radius: 0;
-  }
-
-  .image--radius-none .image__media,
-  .image--radius-none .image__placeholder {
-    border-radius: 0;
-  }
-
   .image--radius-small {
-    border-radius: 0;
-  }
-
-  .image--radius-small .image__media,
-  .image--radius-small .image__placeholder {
-    border-radius: var(--radius-sm);
+    --image-radius: var(--radius-sm);
   }
 
   .image--radius-medium {
-    border-radius: 0;
-  }
-
-  .image--radius-medium .image__media,
-  .image--radius-medium .image__placeholder {
-    border-radius: var(--radius-md);
+    --image-radius: var(--radius-md);
   }
 
   .image--radius-large {
-    border-radius: 0;
-  }
-
-  .image--radius-large .image__media,
-  .image--radius-large .image__placeholder {
-    border-radius: var(--radius-lg);
+    --image-radius: var(--radius-lg);
   }
 </style>

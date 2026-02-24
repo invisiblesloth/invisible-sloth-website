@@ -8,21 +8,9 @@
     tags: ['autodocs'],
     parameters: {
       controls: {
-        include: [
-          'src',
+        exclude: [
           'srcset',
           'sizes',
-          'alt',
-          'decorative',
-          'fit',
-          'frameMode',
-          'ratio',
-          'heightMode',
-          'minHeight',
-          'preferredHeight',
-          'maxHeight',
-          'objectPosition',
-          'radius',
           'loading',
           'decoding',
           'fetchPriority',
@@ -30,6 +18,7 @@
           'fallbackSrcset',
           'fallbackSizes',
           'fallbackAlt',
+          'class',
         ],
       },
     },
@@ -42,9 +31,8 @@
       alt: 'Aerial view of Tokyo Tower painted in red and white, surrounded by modern skyscrapers in Tokyo, Japan under a clear blue sky.',
       decorative: false,
       fit: 'cover',
-      frameMode: 'ratio',
+      frame: 'ratio',
       ratio: '3:2',
-      heightMode: 'intrinsic',
       minHeight: '220px',
       preferredHeight: '45svh',
       maxHeight: '560px',
@@ -79,27 +67,22 @@
       },
       decorative: {
         control: 'boolean',
-        description: 'When true, image renders with empty alt text.',
+        description: 'When true, image renders with empty alt and aria-hidden on container.',
       },
       fit: {
         control: 'select',
         options: ['cover', 'contain'],
         description: 'Object fit behavior inside the frame.',
       },
-      frameMode: {
+      frame: {
         control: 'select',
-        options: ['ratio', 'auto'],
-        description: 'Use a fixed frame ratio or intrinsic image height.',
+        options: ['ratio', 'auto', 'clamped'],
+        description: 'Frame sizing mode: fixed ratio, intrinsic height, or viewport-clamped.',
       },
       ratio: {
         control: 'select',
         options: ['3:2', '2:3', '1:1', '16:9'],
-        description: 'Frame ratio when frameMode is ratio.',
-      },
-      heightMode: {
-        control: 'select',
-        options: ['intrinsic', 'clamped'],
-        description: 'Apply viewport-driven clamped height or not.',
+        description: 'Aspect ratio applied when frame is ratio or clamped.',
       },
       minHeight: {
         control: 'text',
@@ -179,21 +162,27 @@
 <Story
   name="Auto Height"
   args={{
-    frameMode: 'auto',
+    frame: 'auto',
     fit: 'contain',
-    heightMode: 'intrinsic',
   }}
 />
 
 <Story
   name="Clamped Height"
   args={{
-    frameMode: 'ratio',
+    frame: 'clamped',
     ratio: '16:9',
-    heightMode: 'clamped',
     minHeight: '220px',
     preferredHeight: '45svh',
     maxHeight: '560px',
+  }}
+/>
+
+<Story
+  name="Decorative"
+  args={{
+    decorative: true,
+    alt: '',
   }}
 />
 
