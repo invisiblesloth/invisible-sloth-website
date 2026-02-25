@@ -11,9 +11,6 @@
         include: ['captionText', 'creditText'],
       },
       docs: {
-        story: {
-          inline: false,
-        },
         description: {
           component:
             'Figure caption and credit text for image/illustration figures. When both caption and credit are empty, the component renders no DOM output.',
@@ -43,14 +40,14 @@
 
 <Story
   name="Basic Caption and Credit"
-  asChild
+  args={{
+    captionText: 'A scenic view of the mountains at sunrise.',
+    creditText: 'Photo by Travis Touchdown / Unsplash',
+  }}
 >
-  {#snippet children()}
+  {#snippet template(args)}
     <figure class="figure-caption-story">
-      <FigureCaption
-        captionText="A scenic view of the mountains at sunrise."
-        creditText="Photo by Travis Touchdown / Unsplash"
-      />
+      <FigureCaption {...args} />
     </figure>
   {/snippet}
 </Story>
@@ -58,6 +55,7 @@
 <Story
   name="Credit Only"
   asChild
+  parameters={{ controls: { disable: true } }}
 >
   {#snippet children()}
     <figure class="figure-caption-story">
@@ -71,6 +69,7 @@
 <Story
   name="Multiple Linked Credits"
   asChild
+  parameters={{ controls: { disable: true } }}
 >
   {#snippet children()}
     {#snippet credit()}
@@ -90,6 +89,7 @@
 <Story
   name="Rich Caption and Linked Credit"
   asChild
+  parameters={{ controls: { disable: true } }}
 >
   {#snippet children()}
     {#snippet caption()}
@@ -111,6 +111,7 @@
 <Story
   name="Illustration Credit"
   asChild
+  parameters={{ controls: { disable: true } }}
 >
   {#snippet children()}
     {#snippet credit()}
@@ -126,6 +127,7 @@
 <Story
   name="Snippet Overrides Text"
   asChild
+  parameters={{ controls: { disable: true } }}
 >
   {#snippet children()}
     {#snippet caption()}

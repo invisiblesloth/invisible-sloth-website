@@ -80,4 +80,8 @@
     margin: 0;
     width: 100%;
   }
+
+  .figure-caption :global(a) {
+    color: var(--color-on-surface);
+  }
 </style>
