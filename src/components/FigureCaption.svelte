@@ -70,7 +70,7 @@
     flex-direction: column;
     align-items: center;
     gap: var(--space-50);
-    width: 100%;
+    inline-size: 100%;
     text-align: center;
     color: var(--color-on-surface-dim);
   }
@@ -78,7 +78,7 @@
   .figure-caption__caption,
   .figure-caption__credit {
     margin: 0;
-    width: 100%;
+    inline-size: 100%;
   }
 
   .figure-caption :global(a) {
