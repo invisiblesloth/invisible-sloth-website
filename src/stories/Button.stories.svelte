@@ -54,7 +54,8 @@
       },
       disabled: {
         control: 'boolean',
-        description: 'Whether the button is disabled',
+        description:
+          'Whether the button is disabled. In link mode, disabled links are non-interactive and rendered with aria-disabled semantics.',
         table: {
           type: { summary: 'boolean' },
           defaultValue: { summary: 'false' },
@@ -86,18 +87,19 @@
       },
       target: {
         control: 'text',
-        description: 'Link target (default: "_blank" when href is present)',
+        description: 'Optional link target (same-tab default). Values resolving to "_blank" are normalized.',
         table: {
           type: { summary: 'string' },
-          defaultValue: { summary: '_blank' },
+          defaultValue: { summary: 'undefined' },
         },
       },
       rel: {
         control: 'text',
-        description: 'Link rel attribute (default: "noopener noreferrer" when href is present)',
+        description:
+          'Optional link rel. For "_blank" targets, missing security tokens are appended and deduped.',
         table: {
           type: { summary: 'string' },
-          defaultValue: { summary: 'noopener noreferrer' },
+          defaultValue: { summary: 'undefined' },
         },
       },
     },
@@ -113,3 +115,52 @@
 <Story name="Filled Secondary" args={{ label: 'Secondary Button', variant: 'filled-secondary' }} />
 
 <Story name="Filled Tertiary" args={{ label: 'Tertiary Button', variant: 'filled-tertiary' }} />
+
+<Story
+  name="Link Same Tab (Default)"
+  args={{
+    label: 'Internal Link',
+    variant: 'filled-secondary',
+    href: '/projects/roxy',
+  }}
+/>
+
+<Story
+  name="Disabled Link (Strict)"
+  args={{
+    label: 'Disabled Link',
+    variant: 'filled-secondary',
+    href: 'https://github.com/invisiblesloth/roxy-engine',
+    disabled: true,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story: 'Disabled links do not navigate and do not emit click or onclick actions.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="_blank Security (No rel)"
+  args={{
+    label: 'External Link',
+    variant: 'filled-secondary',
+    href: 'https://github.com/invisiblesloth/roxy-engine',
+    target: '_blank',
+    hasTrailingIcon: true,
+  }}
+/>
+
+<Story
+  name="_blank Security (Dedupe + Case)"
+  args={{
+    label: 'External Link (Normalized rel)',
+    variant: 'filled-secondary',
+    href: 'https://github.com/invisiblesloth/roxy-engine',
+    target: ' _BLANK ',
+    rel: 'NoFoLlOw NOOPENER',
+    hasTrailingIcon: true,
+  }}
+/>

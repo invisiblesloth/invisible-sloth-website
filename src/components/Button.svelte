@@ -12,13 +12,15 @@
    * @prop {boolean} hasLeadingIcon - Show leading icon (Close icon)
    * @prop {boolean} hasTrailingIcon - Show trailing icon (ExternalLink icon)
    * @prop {boolean} disabled - Whether the button is disabled
-   * @prop {string} href - Optional URL to render as anchor instead of button
-   * @prop {string} target - Link target (default: '_blank' when href is present)
-   * @prop {string} rel - Link rel attribute (default: 'noopener noreferrer' when href is present)
+   * @prop {string} href - Optional non-empty URL to render as anchor instead of button
+   * @prop {string} target - Optional link target (same-tab by default when href is present)
+   * @prop {string} rel - Optional link rel (security tokens auto-appended when target resolves to '_blank')
+   * Disabled links render as non-interactive anchors without href, with role="link" and aria-disabled semantics
    * @prop {Function} onclick - Click event handler (receives native MouseEvent)
    * @event click - Dispatched when button is clicked (for backward compatibility with on:click)
    */
   const dispatch = createEventDispatcher<{ click: MouseEvent }>();
+  const BUTTON_WARNING_CACHE_KEY = '__invisible_sloth_button_warning_cache__';
 
   let {
     variant = 'filled-primary',
@@ -45,10 +47,104 @@
   } = $props();
 
   let pressed = $state(false);
+  
+  function getWarningCache(): Set<string> {
+    const scopedGlobal = globalThis as typeof globalThis & {
+      [BUTTON_WARNING_CACHE_KEY]?: Set<string>;
+    };
+  
+    if (!scopedGlobal[BUTTON_WARNING_CACHE_KEY]) {
+      scopedGlobal[BUTTON_WARNING_CACHE_KEY] = new Set<string>();
+    }
+  
+    return scopedGlobal[BUTTON_WARNING_CACHE_KEY];
+  }
+  
+  const warnedKeys = getWarningCache();
 
-  // Default target and rel for links
-  const linkTarget = $derived<string | undefined>(target ?? '_blank');
-  const linkRel = $derived<string | undefined>(rel ?? 'noopener noreferrer');
+  function warnOnce(key: string, message: string): void {
+    if (!import.meta.env.DEV || typeof window === 'undefined' || warnedKeys.has(key)) {
+      return;
+    }
+
+    warnedKeys.add(key);
+    console.warn(message);
+  }
+
+  function normalizeHref(value?: string): string | undefined {
+    if (typeof value !== 'string') {
+      return undefined;
+    }
+
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }
+
+  function normalizeTarget(value?: string): string | undefined {
+    if (typeof value !== 'string') {
+      return undefined;
+    }
+
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return undefined;
+    }
+
+    return trimmed.toLowerCase() === '_blank' ? '_blank' : trimmed;
+  }
+
+  function normalizeBlankTargetRel(targetValue?: string, relValue?: string): string | undefined {
+    if (targetValue !== '_blank') {
+      return relValue;
+    }
+
+    const rawTokens = (relValue ?? '')
+      .split(/\s+/)
+      .map((token) => token.trim())
+      .filter(Boolean);
+
+    const dedupedTokens: string[] = [];
+    const tokenSet = new Set<string>();
+
+    for (const token of rawTokens) {
+      const normalized = token.toLowerCase();
+      if (tokenSet.has(normalized)) continue;
+      tokenSet.add(normalized);
+      dedupedTokens.push(token);
+    }
+
+    if (!tokenSet.has('noopener')) {
+      dedupedTokens.push('noopener');
+      tokenSet.add('noopener');
+    }
+
+    if (!tokenSet.has('noreferrer')) {
+      dedupedTokens.push('noreferrer');
+      tokenSet.add('noreferrer');
+    }
+
+    return dedupedTokens.join(' ');
+  }
+
+  const normalizedHref = $derived(normalizeHref(href));
+  const hasHrefProp = $derived(href !== undefined && href !== null);
+  const isLinkMode = $derived(Boolean(normalizedHref));
+  const isDisabledLink = $derived(Boolean(normalizedHref && disabled));
+  const linkHref = $derived<string | undefined>(isDisabledLink ? undefined : normalizedHref);
+  const normalizedTarget = $derived<string | undefined>(normalizeTarget(target));
+  const linkTarget = $derived<string | undefined>(isDisabledLink ? undefined : normalizedTarget);
+  const linkRel = $derived<string | undefined>(
+    isDisabledLink ? undefined : normalizeBlankTargetRel(linkTarget, rel)
+  );
+
+  $effect(() => {
+    if (hasHrefProp && !normalizedHref) {
+      warnOnce(
+        'button:invalid-href',
+        '[Button] `href` must be a non-empty string. Rendering as <button> fallback.'
+      );
+    }
+  });
 
   // Normalized modifier class for BEM variants
   const normalizeVariant = (value?: string, fallback: string = 'filled-primary') => {
@@ -70,7 +166,7 @@
 
   // Delayed navigation for anchor variant to allow pressed animation to play
   function handleAnchorClick(event: MouseEvent) {
-    if (disabled) {
+    if (isDisabledLink) {
       event.preventDefault();
       return;
     }
@@ -89,7 +185,7 @@
   }
 
   function handleTouchStart() {
-    if (disabled) return;
+    if (disabled || isDisabledLink) return;
     pressed = true;
   }
 
@@ -98,12 +194,16 @@
   }
 </script>
 
-{#if href}
+{#if isLinkMode}
   <!-- Anchor variant for navigation (Svelte 5 uses event attributes like onclick/ontouch*) -->
   <a
     class="button {variantModifier}"
     class:is-pressed={pressed}
-    {href}
+    class:is-disabled={isDisabledLink}
+    href={linkHref}
+    role={isDisabledLink ? 'link' : undefined}
+    aria-disabled={isDisabledLink ? 'true' : undefined}
+    tabindex={isDisabledLink ? -1 : undefined}
     target={linkTarget}
     rel={linkRel}
     ontouchstart={handleTouchStart}
@@ -142,6 +242,7 @@
   <button
     class="button {variantModifier}"
     class:is-pressed={pressed}
+    class:is-disabled={disabled}
     {type}
     {disabled}
     ontouchstart={handleTouchStart}
@@ -209,7 +310,8 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .button:disabled {
+  .button:disabled,
+  .button.is-disabled {
     cursor: not-allowed;
   }
 
@@ -324,24 +426,24 @@
   /* POINTER DEVICES (mouse/trackpad) */
   @media (hover: hover) and (pointer: fine) {
     /* Hover - lift to reveal shadow */
-    .button:where(:hover):not(:disabled) .button__surface {
+    .button:where(:hover):not(:disabled):not(.is-disabled) .button__surface {
       transform: translate(-1.8px, -4px);
     }
 
     /* Hover state layer using tokenized on-* color with embedded alpha */
-    .button:where(:hover):not(:disabled) .button__state-layer {
+    .button:where(:hover):not(:disabled):not(.is-disabled) .button__state-layer {
       background-color: var(--button-state-hover);
       opacity: 1;
     }
 
     /* Pressed - return to origin */
-    .button:active:not(:disabled) .button__surface {
+    .button:active:not(:disabled):not(.is-disabled) .button__surface {
       transform: translate(0, 0);
       transition-duration: 50ms;
     }
 
     /* Active/pressed state layer (tokenized alpha) */
-    .button:active:not(:disabled) .button__state-layer {
+    .button:active:not(:disabled):not(.is-disabled) .button__state-layer {
       background-color: var(--button-state-pressed);
       opacity: 1;
       transition-duration: 50ms;
@@ -351,18 +453,18 @@
   /* TOUCH DEVICES (touch screens) */
   @media (hover: none) and (pointer: coarse) {
     /* Default state - raised (like hover on pointer devices) */
-    .button:not(:disabled):not(:active):not(:focus-visible) .button__surface {
+    .button:not(:disabled):not(.is-disabled):not(:active):not(:focus-visible) .button__surface {
       transform: translate(-1.4px, -3px);
     }
 
     /* Touch/pressed - depress to origin */
-    .button:active:not(:disabled) .button__surface {
+    .button:active:not(:disabled):not(.is-disabled) .button__surface {
       transform: translate(0, 0);
       transition-duration: 50ms;
     }
 
     /* Active/pressed state layer */
-    .button:active:not(:disabled) .button__state-layer {
+    .button:active:not(:disabled):not(.is-disabled) .button__state-layer {
       background-color: var(--button-state-pressed);
       opacity: 1;
       transition-duration: 50ms;
@@ -370,15 +472,15 @@
   }
 
   /* FOCUS (applies to all input types) */
-  .button:focus-visible {
+  .button:focus-visible:not(.is-disabled) {
     outline: var(--focus-outline-width) solid var(--color-focus);
   }
 
-  .button:focus-visible .button__surface {
+  .button:focus-visible:not(.is-disabled) .button__surface {
     transform: translate(0, 0);
   }
 
-  .button:focus-visible .button__surface::before {
+  .button:focus-visible:not(.is-disabled) .button__surface::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -388,26 +490,30 @@
   }
 
   /* Focus state layer 12–16% */
-  .button:focus-visible:not(:disabled) .button__state-layer {
+  .button:focus-visible:not(:disabled):not(.is-disabled) .button__state-layer {
     background-color: var(--button-state-focus);
     opacity: 1;
   }
 
   /* Disabled - muted appearance, no shadow */
-  .button:disabled .button__surface {
+  .button:disabled .button__surface,
+  .button.is-disabled .button__surface {
     background: var(--color-state-on-surface-08);
     color: var(--color-on-surface);
   }
 
-  .button:disabled .button__side {
+  .button:disabled .button__side,
+  .button.is-disabled .button__side {
     background: none;
   }
 
-  .button:disabled .button__label {
+  .button:disabled .button__label,
+  .button.is-disabled .button__label {
     opacity: var(--state-disabled);
   }
 
-  .button:disabled .button__icon {
+  .button:disabled .button__icon,
+  .button.is-disabled .button__icon {
     opacity: var(--state-disabled);
   }
 
@@ -452,8 +558,8 @@
     }
 
     /* Neutralize default and interactive transforms, including touch default lift */
-    .button:not(:disabled) .button__surface,
-    .button:where(:hover, :active, :focus-visible):not(:disabled) .button__surface {
+    .button:not(:disabled):not(.is-disabled) .button__surface,
+    .button:where(:hover, :active, :focus-visible):not(:disabled):not(.is-disabled) .button__surface {
       transform: none;
     }
 
@@ -464,7 +570,7 @@
 
     /* On touch devices, keep the surface pressed-in by default */
     @media (hover: none) and (pointer: coarse) {
-      .button:not(:disabled) .button__surface {
+      .button:not(:disabled):not(.is-disabled) .button__surface {
         transform: none !important;
       }
     }
