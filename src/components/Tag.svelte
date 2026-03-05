@@ -258,6 +258,7 @@
     border-radius: inherit;
     background-color: var(--color-state-on-surface-08);
     opacity: 0;
+    z-index: 0;
     transition: opacity var(--tag-transition), background-color var(--tag-transition);
     pointer-events: none;
   }
@@ -304,6 +305,7 @@
 
   .tag:focus-visible .tag__surface {
     transform: translate3d(0, 0, 0);
+    border-color: transparent;
     box-shadow: none;
   }
 
@@ -317,6 +319,7 @@
     inset: 0;
     border: var(--focus-ring-width) solid var(--color-on-focus);
     border-radius: inherit;
+    z-index: 2;
     pointer-events: none;
   }
 
