@@ -495,6 +495,12 @@
     opacity: 1;
   }
 
+  .button:focus-visible:active:not(:disabled):not(.is-disabled) .button__state-layer {
+    background-color: var(--button-state-pressed);
+    opacity: 1;
+    transition-duration: 50ms;
+  }
+
   /* Disabled - muted appearance, no shadow */
   .button:disabled .button__surface,
   .button.is-disabled .button__surface {
