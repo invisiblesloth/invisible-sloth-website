@@ -16,6 +16,7 @@
   type LoadingMode = 'lazy' | 'eager';
   type DecodingMode = 'auto' | 'sync' | 'async';
   type FetchPriority = 'auto' | 'high' | 'low';
+  type ImageDimension = number | string;
 
   const RATIO_MAP: Record<AspectRatio, string> = {
     '3:2': '3 / 2',
@@ -25,6 +26,8 @@
   };
 
   const DEFAULT_FALLBACK_SRC = '/assets/image-fallback-default-1024.webp';
+  const DEFAULT_FALLBACK_WIDTH = 1024;
+  const DEFAULT_FALLBACK_HEIGHT = 683;
   const DEFAULT_FALLBACK_SRCSET = [
     '/assets/image-fallback-default-640.webp 640w',
     '/assets/image-fallback-default-1024.webp 1024w',
@@ -33,6 +36,19 @@
   ].join(', ');
   const DEFAULT_FALLBACK_SIZES =
     '(min-width: 1176px) 1512px, (min-width: 1015px) 1024px, (min-width: 632px) 744px, 100vw';
+
+  const normalizeDimension = (value?: ImageDimension): string | undefined => {
+    if (typeof value === 'number') {
+      return Number.isInteger(value) && value > 0 ? String(value) : undefined;
+    }
+
+    if (typeof value !== 'string') {
+      return undefined;
+    }
+
+    const trimmed = value.trim();
+    return /^[1-9]\d*$/.test(trimmed) ? trimmed : undefined;
+  };
 
   let {
     src = '',
@@ -51,10 +67,14 @@
     loading = 'lazy',
     decoding = 'async',
     fetchPriority = 'auto',
+    width = undefined,
+    height = undefined,
     fallbackSrc = DEFAULT_FALLBACK_SRC,
     fallbackSrcset = DEFAULT_FALLBACK_SRCSET,
     fallbackSizes = DEFAULT_FALLBACK_SIZES,
     fallbackAlt = 'Fallback image showing Sloth-Luc, the Invisible Sloth logo character.',
+    fallbackWidth = DEFAULT_FALLBACK_WIDTH,
+    fallbackHeight = DEFAULT_FALLBACK_HEIGHT,
     class: className = '',
   }: {
     src?: string;
@@ -73,29 +93,34 @@
     loading?: LoadingMode;
     decoding?: DecodingMode;
     fetchPriority?: FetchPriority;
+    width?: ImageDimension;
+    height?: ImageDimension;
     fallbackSrc?: string;
     fallbackSrcset?: string;
     fallbackSizes?: string;
     fallbackAlt?: string;
+    fallbackWidth?: ImageDimension;
+    fallbackHeight?: ImageDimension;
     class?: string;
   } = $props();
 
-  let primaryImageFailed = $state(false);
-  let fallbackImageFailed = $state(false);
-
-  const hasSource = $derived(src.trim().length > 0);
-  const shouldUseFallback = $derived(!hasSource || primaryImageFailed);
-  const canRenderImage = $derived(!fallbackImageFailed);
-  const activeSrc = $derived(shouldUseFallback ? fallbackSrc : src);
+  const normalizedSrc = $derived(src.trim());
+  const normalizedFallbackSrc = $derived(fallbackSrc.trim());
+  const hasSource = $derived(normalizedSrc.length > 0);
+  const activeIsFallback = $derived(!hasSource);
+  const canRenderImage = $derived(
+    activeIsFallback ? normalizedFallbackSrc.length > 0 : normalizedSrc.length > 0
+  );
+  const activeSrc = $derived(activeIsFallback ? normalizedFallbackSrc : normalizedSrc);
   const activeSrcset = $derived.by(() => {
-    if (shouldUseFallback) {
+    if (activeIsFallback) {
       return fallbackSrcset.trim().length > 0 ? fallbackSrcset : undefined;
     }
 
     return srcset.trim().length > 0 ? srcset : undefined;
   });
   const activeSizes = $derived.by(() => {
-    if (shouldUseFallback) {
+    if (activeIsFallback) {
       return fallbackSizes.trim().length > 0 ? fallbackSizes : undefined;
     }
 
@@ -106,7 +131,7 @@
       return '';
     }
 
-    if (shouldUseFallback) {
+    if (activeIsFallback) {
       if (alt.trim().length > 0) {
         return alt;
       }
@@ -119,6 +144,41 @@
     return alt;
   });
   const ratioValue = $derived(RATIO_MAP[ratio]);
+  const imageMode = $derived(activeIsFallback ? 'declarative-fallback' : 'primary');
+  const normalizedWidth = $derived(normalizeDimension(width));
+  const normalizedHeight = $derived(normalizeDimension(height));
+  const normalizedFallbackWidth = $derived(normalizeDimension(fallbackWidth));
+  const normalizedFallbackHeight = $derived(normalizeDimension(fallbackHeight));
+  const activeWidth = $derived(activeIsFallback ? normalizedFallbackWidth : normalizedWidth);
+  const activeHeight = $derived(activeIsFallback ? normalizedFallbackHeight : normalizedHeight);
+  const fallbackDataSrc = $derived.by(() => {
+    if (activeIsFallback || normalizedFallbackSrc.length === 0) {
+      return undefined;
+    }
+
+    return normalizedFallbackSrc;
+  });
+  const fallbackDataSrcset = $derived.by(() => {
+    if (activeIsFallback) {
+      return undefined;
+    }
+
+    return fallbackSrcset.trim().length > 0 ? fallbackSrcset : undefined;
+  });
+  const fallbackDataSizes = $derived.by(() => {
+    if (activeIsFallback) {
+      return undefined;
+    }
+
+    return fallbackSizes.trim().length > 0 ? fallbackSizes : undefined;
+  });
+  const fallbackDataAlt = $derived.by(() => {
+    if (activeIsFallback || decorative || alt.trim().length > 0) {
+      return undefined;
+    }
+
+    return fallbackAlt.trim().length > 0 ? fallbackAlt : undefined;
+  });
 
   const imageClasses = $derived(
     [
@@ -156,41 +216,31 @@
     }
   });
 
-  const sourceKey = $derived(
-    `${src}|${srcset}|${sizes}|${fallbackSrc}|${fallbackSrcset}|${fallbackSizes}`
-  );
-
-  $effect(() => {
-    sourceKey;
-    primaryImageFailed = false;
-    fallbackImageFailed = false;
-  });
-
-  const handleImageError = () => {
-    if (shouldUseFallback) {
-      fallbackImageFailed = true;
-      return;
-    }
-
-    primaryImageFailed = true;
-  };
 </script>
 
 <div class={imageClasses} style={imageStyle} aria-hidden={decorative ? 'true' : undefined}>
   {#if canRenderImage}
-    {#key `${activeSrc}|${activeSrcset ?? ''}`}
-      <img
-        class="image__media"
-        src={activeSrc}
-        srcset={activeSrcset}
-        sizes={activeSizes}
-        alt={resolvedAlt}
-        {loading}
-        {decoding}
-        fetchpriority={fetchPriority}
-        onerror={handleImageError}
-      />
-    {/key}
+    <img
+      class="image__media"
+      data-image-loading="fade"
+      data-load-state="pending"
+      data-image-mode={imageMode}
+      data-fallback-src={fallbackDataSrc}
+      data-fallback-srcset={fallbackDataSrcset}
+      data-fallback-sizes={fallbackDataSizes}
+      data-fallback-alt={fallbackDataAlt}
+      data-fallback-width={activeIsFallback ? undefined : normalizedFallbackWidth}
+      data-fallback-height={activeIsFallback ? undefined : normalizedFallbackHeight}
+      src={activeSrc}
+      srcset={activeSrcset}
+      sizes={activeSizes}
+      alt={resolvedAlt}
+      width={activeWidth}
+      height={activeHeight}
+      {loading}
+      {decoding}
+      fetchpriority={fetchPriority}
+    />
   {:else}
     <div class="image__placeholder" aria-hidden="true"></div>
   {/if}
@@ -225,8 +275,30 @@
   }
 
   .image__media {
+    opacity: 1;
     object-fit: var(--image-fit);
     object-position: var(--image-object-position);
+  }
+
+  :global(html[data-js='true']) .image__media[data-load-state='pending']:not([data-load-complete='true']) {
+    opacity: 0;
+    color: transparent;
+  }
+
+  :global(.image__media[data-load-state='loaded']),
+  :global(.image__media[data-load-complete='true']) {
+    animation: image-media-fade-in var(--animation-duration-fast)
+      var(--animation-easing-decelerate) both;
+  }
+
+  @keyframes image-media-fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
   }
 
   .image--contain {
@@ -262,5 +334,13 @@
 
   .image--radius-large {
     --image-radius: var(--radius-lg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.image__media[data-load-state='loaded']),
+    :global(.image__media[data-load-complete='true']) {
+      opacity: 1;
+      animation: none;
+    }
   }
 </style>

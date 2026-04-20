@@ -21,6 +21,8 @@
     frame: 'ratio',
     ratio: '3:2',
     radius: 'small',
+    width: 4080,
+    height: 3072,
   };
 
   const { Story } = defineMeta({

@@ -1,8 +1,21 @@
 import type { Preview } from '@storybook/svelte-vite';
 import '../src/styles/global.css';
+import { initImageLoadingEnhancer } from '../src/scripts/imageLoadingEnhancer';
 import { initLogoHoverTilt } from '../src/scripts/logoHoverTilt';
 
 const isDev = import.meta.env.DEV;
+
+if (typeof document !== 'undefined') {
+  document.documentElement.dataset.js = 'true';
+
+  try {
+    initImageLoadingEnhancer(document);
+  } catch (error) {
+    if (isDev) {
+      console.warn('Image loading enhancer initialization failed in Storybook.', error);
+    }
+  }
+}
 
 const preview: Preview = {
   parameters: {
@@ -76,6 +89,14 @@ const preview: Preview = {
       if (typeof document !== 'undefined') {
         queueMicrotask(() => {
           requestAnimationFrame(() => {
+            try {
+              initImageLoadingEnhancer(document);
+            } catch (error) {
+              if (isDev) {
+                console.warn('Image loading enhancer initialization failed in Storybook.', error);
+              }
+            }
+
             try {
               initLogoHoverTilt(document);
             } catch (error) {
