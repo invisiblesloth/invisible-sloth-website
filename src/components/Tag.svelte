@@ -80,7 +80,32 @@
     ...restProps
   }: Props = $props();
 
-  const isLink = $derived(Boolean(href));
+  function normalizeHref(value?: string): string | undefined {
+    if (typeof value !== 'string') {
+      return undefined;
+    }
+
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }
+
+  function normalizeTarget(value?: string): string | undefined {
+    if (typeof value !== 'string') {
+      return undefined;
+    }
+
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return undefined;
+    }
+
+    return trimmed.toLowerCase() === '_blank' ? '_blank' : trimmed;
+  }
+
+  const normalizedHref = $derived(normalizeHref(href));
+  const hasHrefProp = $derived(href !== undefined && href !== null);
+  const normalizedTarget = $derived<string | undefined>(normalizeTarget(target));
+  const isLink = $derived(Boolean(normalizedHref));
   const mode = $derived<TagMode>(isLink ? 'link' : 'button');
 
   const tagClasses = $derived(['tag', className].filter(Boolean).join(' '));
@@ -122,24 +147,32 @@
       return relValue;
     }
 
-    const tokens = (relValue ?? '')
+    const rawTokens = (relValue ?? '')
       .split(/\s+/)
       .map((token) => token.trim())
       .filter(Boolean);
 
-    const tokenSet = new Set(tokens.map((token) => token.toLowerCase()));
+    const dedupedTokens: string[] = [];
+    const tokenSet = new Set<string>();
+
+    for (const token of rawTokens) {
+      const normalized = token.toLowerCase();
+      if (tokenSet.has(normalized)) continue;
+      tokenSet.add(normalized);
+      dedupedTokens.push(token);
+    }
 
     if (!tokenSet.has('noopener')) {
-      tokens.push('noopener');
+      dedupedTokens.push('noopener');
       tokenSet.add('noopener');
     }
 
     if (!tokenSet.has('noreferrer')) {
-      tokens.push('noreferrer');
+      dedupedTokens.push('noreferrer');
       tokenSet.add('noreferrer');
     }
 
-    return tokens.join(' ');
+    return dedupedTokens.join(' ');
   }
 
   function warnOnce(key: string, message: string): void {
@@ -153,9 +186,16 @@
 
   const anchorAttributes = $derived(filterForwardedAttributes('link', restProps));
   const buttonAttributes = $derived(filterForwardedAttributes('button', restProps));
-  const secureRel = $derived(normalizeBlankTargetRel(target, rel));
+  const secureRel = $derived(normalizeBlankTargetRel(normalizedTarget, rel));
 
   $effect(() => {
+    if (hasHrefProp && !normalizedHref) {
+      warnOnce(
+        'tag:invalid-href',
+        '[Tag] `href` must resolve to a non-empty string after trimming. Rendering as <button> fallback.'
+      );
+    }
+
     if (Object.prototype.hasOwnProperty.call(restProps, 'disabled')) {
       warnOnce(
         `tag:invalid-disabled:${mode}`,
@@ -176,11 +216,11 @@
   }
 </script>
 
-{#if isLink && href}
+{#if isLink}
   <a
     class={tagClasses}
-    href={href}
-    target={target}
+    href={normalizedHref}
+    target={normalizedTarget}
     rel={secureRel}
     onclick={handleClick}
     {...anchorAttributes}

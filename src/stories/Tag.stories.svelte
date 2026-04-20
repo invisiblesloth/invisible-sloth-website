@@ -21,15 +21,18 @@
       },
       href: {
         control: 'text',
-        description: 'Optional URL; when present the tag renders as a link',
+        description:
+          'Optional URL; when it resolves to a non-empty string after trimming, the tag renders as a link',
       },
       target: {
         control: 'text',
-        description: 'Optional link target; no default is applied',
+        description:
+          'Optional link target; values resolving to "_blank" are normalized before rel hardening',
       },
       rel: {
         control: 'text',
-        description: 'Optional link rel; if target is _blank, missing security tokens are appended',
+        description:
+          'Optional link rel; for "_blank" targets, tokens are preserved, deduped, and security tokens are appended as needed',
       },
       type: {
         control: 'select',
@@ -52,6 +55,32 @@
     label: 'Visit Invisible Sloth',
     href: 'https://invisiblesloth.com/',
     target: '_blank',
+  }}
+/>
+
+<Story
+  name="_blank Security (Dedupe + Case)"
+  args={{
+    label: 'External Tag',
+    href: 'https://invisiblesloth.com/',
+    target: ' _BLANK ',
+    rel: 'NoFoLlOw NOOPENER noopener',
+  }}
+/>
+
+<Story
+  name="Invalid Href Fallback"
+  args={{
+    label: 'Whitespace Href Fallback',
+    href: '   ',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Whitespace-only `href` values fall back to button mode and emit a deduplicated dev-only warning.',
+      },
+    },
   }}
 />
 
