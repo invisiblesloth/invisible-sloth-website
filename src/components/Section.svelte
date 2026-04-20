@@ -17,11 +17,11 @@
     class?: string;
   } = $props();
 
-  const sectionClasses = [
+  const sectionClasses = $derived([
     'section',
     bleed && 'section--full-bleed',
     className
-  ].filter(Boolean).join(' ');
+  ].filter(Boolean).join(' '));
 </script>
 
 <svelte:element this={as} class={sectionClasses}>
