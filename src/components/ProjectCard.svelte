@@ -13,6 +13,7 @@
    * @prop {string} title - Project name/title
    * @prop {string} subhead - Project subheading
    * @prop {string} description - Project description text
+   * @prop {TrustedLocalHtml} trustedDescriptionHtml - Locally trusted HTML description
    * @prop {string} ctaLabel - Call-to-action button text (default: 'Learn More')
    * @prop {string} ctaHref - Optional CTA link
    * @prop {string} ctaTarget - Optional CTA link target
@@ -25,6 +26,7 @@
   import Button from './Button.svelte';
   import BadgeGroup from './BadgeGroup.svelte';
   import Badge from './Badge.svelte';
+  import type { TrustedLocalHtml } from '../types/trustedLocalHtml';
 
   type BadgeVariant = 'default' | 'boardgame' | 'playdate' | 'apple' | 'error' | 'web';
   type BadgeInput = {
@@ -61,7 +63,7 @@
     title = 'Project Name',
     subhead,
     description,
-    descriptionHtml,
+    trustedDescriptionHtml,
     badges = [],
     button,
     ctaLabel = 'Learn More',
@@ -75,7 +77,7 @@
     title?: string;
     subhead?: string;
     description?: string;
-    descriptionHtml?: string;
+    trustedDescriptionHtml?: TrustedLocalHtml;
     badges?: BadgeInput[];
     button?: ButtonConfig;
     ctaLabel?: string;
@@ -127,9 +129,9 @@
     {#if subhead}
       <p class="project-card__subhead text-headline-small">{subhead}</p>
     {/if}
-    {#if descriptionHtml}
+    {#if trustedDescriptionHtml}
       <div class="project-card__description text-body-medium">
-        {@html descriptionHtml}
+        {@html trustedDescriptionHtml}
       </div>
     {:else if description}
       <p class="project-card__description text-body-medium">{description}</p>

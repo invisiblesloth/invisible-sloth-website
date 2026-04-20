@@ -9,6 +9,7 @@
    */
   import ProjectCard from './ProjectCard.svelte';
   import Divider from './Divider.svelte';
+  import type { TrustedLocalHtml } from '../types/trustedLocalHtml';
 
   type BadgeVariant = 'default' | 'boardgame' | 'playdate' | 'apple' | 'error' | 'web';
   type BadgeInput = {
@@ -20,7 +21,7 @@
     title?: string;
     subhead?: string;
     description?: string;
-    descriptionHtml?: string;
+    trustedDescriptionHtml?: TrustedLocalHtml;
     ctaLabel?: string;
     ctaHref?: string;
     ctaTarget?: string;
@@ -55,7 +56,7 @@
         title={project.title}
         subhead={project.subhead}
         description={project.description}
-        descriptionHtml={project.descriptionHtml}
+        trustedDescriptionHtml={project.trustedDescriptionHtml}
         button={project.button}
         showButton={project.showButton}
         ctaLabel={project.ctaLabel}

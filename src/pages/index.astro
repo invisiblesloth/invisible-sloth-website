@@ -8,6 +8,7 @@ import Section from "../components/Section.svelte";
 import Heading from "../components/Heading.svelte";
 import ProjectList from "../components/ProjectList.svelte";
 import SiteFooter from "../components/SiteFooter.svelte";
+import { trustLocalAstroContentHtml } from "../types/trustedLocalHtml";
 
 // Fetch and sort projects from Content Collections
 type ProjectEntry = CollectionEntry<'projects'>;
@@ -22,13 +23,15 @@ const projectsData = await Promise.all(
     .filter((project: ProjectEntry) => project.data.title !== 'This Website')
     .map(async (project: ProjectEntry) => {
       const { Content } = await project.render();
-      const descriptionHtml = await astroContainer.renderToString(Content);
+      const renderedDescriptionHtml = await astroContainer.renderToString(Content);
+      // Trust is based on repo-authored content, not Astro rendering as sanitization.
+      const trustedDescriptionHtml = trustLocalAstroContentHtml(renderedDescriptionHtml);
 
       return {
         title: project.data.title,
         subhead: project.data.subhead,
         description: project.data.description,
-        descriptionHtml,
+        trustedDescriptionHtml,
         badges: project.data.badges,
         button: project.data.button,
         showButton: project.data.showButton
