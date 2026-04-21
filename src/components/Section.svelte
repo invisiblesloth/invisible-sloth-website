@@ -6,14 +6,19 @@
    * @prop {string} as - HTML element to render (default: 'section')
    * @prop {boolean} bleed - Make section full-bleed (default: false)
    * @prop {string} class - Additional CSS classes
+   * @prop {Snippet} children - Parent content snippet
    */
+  import type { Snippet } from 'svelte';
+
   let {
     as = 'section',
     bleed = false,
+    children,
     class: className = '',
   }: {
     as?: 'section' | 'div' | 'article' | 'main' | 'aside';
     bleed?: boolean;
+    children?: Snippet;
     class?: string;
   } = $props();
 
@@ -25,7 +30,7 @@
 </script>
 
 <svelte:element this={as} class={sectionClasses}>
-  <slot />
+  {@render children?.()}
 </svelte:element>
 
 <style>
