@@ -22,7 +22,7 @@
   const variantModifier = $derived(`badge--${normalizeVariant(variant, 'default')}`);
 </script>
 
-<span class="badge {variantModifier}" role="status">
+<span class="badge {variantModifier}">
   <span class="badge__label text-label-small-prominent">{label}</span>
 </span>
 
