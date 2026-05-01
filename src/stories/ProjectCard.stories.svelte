@@ -1,6 +1,25 @@
-<script module>
+<script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import ProjectCard from '../components/ProjectCard.svelte';
+  import type { ProjectBadge, ProjectButton, ProjectDescription } from '../types/project';
+
+  const defaultDescription: ProjectDescription = {
+    kind: 'text',
+    text: 'In the heart of the digital jungle, there lived an invisible sloth named Sloth-Luc.',
+  };
+
+  const defaultButton: ProjectButton = {
+    label: 'Call to Action',
+    href: '/projects/example',
+    hasTrailingIcon: true,
+  };
+
+  const defaultBadges: ProjectBadge[] = [
+    { variant: 'default', label: 'Badge 1' },
+    { variant: 'default', label: 'Badge 2' },
+    { variant: 'default', label: 'Badge 3' },
+    { variant: 'default', label: 'Badge 4' },
+  ];
 
   const { Story } = defineMeta({
     title: 'Organisms/ProjectCard',
@@ -9,16 +28,9 @@
     args: {
       title: 'Project Name',
       subhead: 'Project Subhead',
-      description: 'In the heart of the digital jungle, there lived an invisible sloth named Sloth-Luc.',
-      ctaLabel: 'Call to Action',
-      showButton: true,
-      ctaHasTrailingIcon: true,
-      badges: [
-        { variant: 'default', label: 'Badge 1' },
-        { variant: 'default', label: 'Badge 2' },
-        { variant: 'default', label: 'Badge 3' },
-        { variant: 'default', label: 'Badge 4' },
-      ],
+      description: defaultDescription,
+      button: defaultButton,
+      badges: defaultBadges,
     },
     argTypes: {
       title: {
@@ -30,24 +42,16 @@
         description: 'Project subheading',
       },
       description: {
-        control: 'text',
-        description: 'Project description text',
-      },
-      ctaLabel: {
-        control: 'text',
-        description: 'Call-to-action button text',
+        control: 'object',
+        description: 'Project description display content',
       },
       badges: {
         control: 'object',
         description: 'Array of badge objects with variant and label',
       },
-      showButton: {
-        control: 'boolean',
-        description: 'Toggle visibility of the CTA button',
-      },
-      ctaHasTrailingIcon: {
-        control: 'boolean',
-        description: 'Display the trailing icon on the CTA button',
+      button: {
+        control: 'object',
+        description: 'Optional project CTA button',
       },
     },
   });

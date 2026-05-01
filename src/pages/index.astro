@@ -1,6 +1,4 @@
 ---
-import { getCollection, render, type CollectionEntry } from 'astro:content';
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "../components/SiteHeader.svelte";
 import Container from "../components/Container.astro";
@@ -8,36 +6,9 @@ import Section from "../components/Section.svelte";
 import Heading from "../components/Heading.svelte";
 import ProjectList from "../components/ProjectList.svelte";
 import SiteFooter from "../components/SiteFooter.svelte";
-import { trustLocalAstroContentHtml } from "../types/trustedLocalHtml";
+import { getHomepageProjectViewModels } from "../lib/projectContent";
 
-// Fetch and sort projects from Content Collections
-type ProjectEntry = CollectionEntry<'projects'>;
-
-const projects = await getCollection('projects');
-const sortedProjects = projects.sort((a: ProjectEntry, b: ProjectEntry) => a.data.order - b.data.order);
-const astroContainer = await AstroContainer.create();
-
-// Map project data to format expected by ProjectList
-const projectsData = await Promise.all(
-  sortedProjects
-    .filter((project: ProjectEntry) => project.data.title !== 'This Website')
-    .map(async (project: ProjectEntry) => {
-      const { Content } = await render(project);
-      const renderedDescriptionHtml = await astroContainer.renderToString(Content);
-      // Trust is based on repo-authored content, not Astro rendering as sanitization.
-      const trustedDescriptionHtml = trustLocalAstroContentHtml(renderedDescriptionHtml);
-
-      return {
-        title: project.data.title,
-        subhead: project.data.subhead,
-        description: project.data.description,
-        trustedDescriptionHtml,
-        badges: project.data.badges,
-        button: project.data.button,
-        showButton: project.data.showButton
-      };
-    })
-);
+const projectsData = await getHomepageProjectViewModels();
 ---
 
 <BaseLayout title="Invisible Sloth" description="Invisible Sloth projects">

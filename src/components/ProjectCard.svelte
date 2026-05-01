@@ -12,29 +12,21 @@
    *
    * @prop {string} title - Project name/title
    * @prop {string} subhead - Project subheading
-   * @prop {string} description - Project description text
-   * @prop {TrustedLocalHtml} trustedDescriptionHtml - Locally trusted HTML description
-   * @prop {string} ctaLabel - Call-to-action button text (default: 'Learn More')
-   * @prop {string} ctaHref - Optional CTA link
-   * @prop {string} ctaTarget - Optional CTA link target
-   * @prop {string} ctaRel - Optional CTA link rel
-   * @prop {boolean} ctaHasTrailingIcon - Whether the CTA button shows the trailing icon
-   * @prop {Function} onCtaClick - CTA button click handler
-   * @prop {boolean} showButton - Toggle CTA visibility (default: true)
+   * @prop {ProjectDescription} description - Project description display content
+   * @prop {ProjectButton} button - Optional link CTA
    * @prop {Array} badges - Array of badge objects with variant and label
    */
   import Button from './Button.svelte';
   import BadgeGroup from './BadgeGroup.svelte';
   import Badge from './Badge.svelte';
-  import type { TrustedLocalHtml } from '../types/trustedLocalHtml';
+  import type {
+    ProjectBadge,
+    ProjectBadgeVariant,
+    ProjectButton,
+    ProjectDescription,
+  } from '../types/project';
 
-  type BadgeVariant = 'default' | 'boardgame' | 'playdate' | 'apple' | 'error' | 'web';
-  type BadgeInput = {
-    variant?: BadgeVariant;
-    label?: string;
-  };
-
-  const BADGE_PRESET_LABELS: Record<BadgeVariant, string> = {
+  const BADGE_PRESET_LABELS: Record<ProjectBadgeVariant, string> = {
     default: 'Badge',
     boardgame: 'Boardgame',
     playdate: 'Playdate',
@@ -43,76 +35,29 @@
     web: 'Web',
   };
 
-  const normalizeBadge = (badge: BadgeInput) => {
+  const normalizeBadge = (badge: ProjectBadge) => {
     const variant = badge.variant ?? 'default';
     const label = badge.label ?? BADGE_PRESET_LABELS[variant] ?? BADGE_PRESET_LABELS.default;
 
     return { variant, label };
   };
 
-  type ButtonConfig = {
-    label: string;
-    href?: string;
-    target?: string;
-    rel?: string;
-    hasTrailingIcon?: boolean;
-    onClick?: (event: MouseEvent) => void;
-  };
-
   let {
     title = 'Project Name',
     subhead,
     description,
-    trustedDescriptionHtml,
     badges = [],
     button,
-    ctaLabel = 'Learn More',
-    ctaHref,
-    ctaTarget,
-    ctaRel,
-    ctaHasTrailingIcon = false,
-    onCtaClick,
-    showButton = true,
   }: {
     title?: string;
     subhead?: string;
-    description?: string;
-    trustedDescriptionHtml?: TrustedLocalHtml;
-    badges?: BadgeInput[];
-    button?: ButtonConfig;
-    ctaLabel?: string;
-    ctaHref?: string;
-    ctaTarget?: string;
-    ctaRel?: string;
-    ctaHasTrailingIcon?: boolean;
-    onCtaClick?: (event: MouseEvent) => void;
-    showButton?: boolean;
+    description?: ProjectDescription;
+    badges?: ProjectBadge[];
+    button?: ProjectButton;
   } = $props();
 
   const badgeList = $derived(badges.map(normalizeBadge));
   const hasBadges = $derived(badgeList.length > 0);
-  const ctaButton: ButtonConfig | undefined = $derived.by(() => {
-    if (button) {
-      return {
-        ...button,
-        onClick: button.onClick ?? onCtaClick,
-      };
-    }
-
-    if (!ctaLabel) {
-      return undefined;
-    }
-
-    return {
-      label: ctaLabel,
-      href: ctaHref,
-      target: ctaTarget,
-      rel: ctaRel,
-      hasTrailingIcon: ctaHasTrailingIcon,
-      onClick: onCtaClick,
-    };
-  });
-  const shouldRenderButton = $derived(Boolean(showButton && ctaButton));
 </script>
 
 <div class="project-card">
@@ -129,24 +74,23 @@
     {#if subhead}
       <p class="project-card__subhead text-headline-small">{subhead}</p>
     {/if}
-    {#if trustedDescriptionHtml}
+    {#if description?.kind === 'html'}
       <div class="project-card__description text-body-medium">
-        {@html trustedDescriptionHtml}
+        {@html description.html}
       </div>
-    {:else if description}
-      <p class="project-card__description text-body-medium">{description}</p>
+    {:else if description?.kind === 'text'}
+      <p class="project-card__description text-body-medium">{description.text}</p>
     {/if}
   </div>
 
-  {#if shouldRenderButton && ctaButton}
+  {#if button}
     <Button
       variant="filled-secondary"
-      label={ctaButton.label}
-      href={ctaButton.href}
-      target={ctaButton.target}
-      rel={ctaButton.rel}
-      hasTrailingIcon={ctaButton.hasTrailingIcon}
-      onclick={ctaButton.onClick}
+      label={button.label}
+      href={button.href}
+      target={button.target}
+      rel={button.rel}
+      hasTrailingIcon={button.hasTrailingIcon}
     />
   {/if}
 </div>

@@ -9,62 +9,25 @@
    */
   import ProjectCard from './ProjectCard.svelte';
   import Divider from './Divider.svelte';
-  import type { TrustedLocalHtml } from '../types/trustedLocalHtml';
-
-  type BadgeVariant = 'default' | 'boardgame' | 'playdate' | 'apple' | 'error' | 'web';
-  type BadgeInput = {
-    variant?: BadgeVariant;
-    label?: string;
-  };
-
-  type Project = {
-    title?: string;
-    subhead?: string;
-    description?: string;
-    trustedDescriptionHtml?: TrustedLocalHtml;
-    ctaLabel?: string;
-    ctaHref?: string;
-    ctaTarget?: string;
-    ctaRel?: string;
-    ctaHasTrailingIcon?: boolean;
-    onCtaClick?: (event: MouseEvent) => void;
-    badges?: BadgeInput[];
-    showButton?: boolean;
-    button?: {
-      label: string;
-      href?: string;
-      target?: string;
-      rel?: string;
-      hasTrailingIcon?: boolean;
-      onClick?: (event: MouseEvent) => void;
-    };
-  };
+  import type { ProjectViewModel } from '../types/project';
 
   let {
     projects = [],
     class: className = '',
   }: {
-    projects?: Project[];
+    projects?: ProjectViewModel[];
     class?: string;
   } = $props();
 </script>
 
 <div class={`project-list ${className}`}>
   <div class="project-list__surface elevation-2">
-    {#each projects as project, index (index)}
+    {#each projects as project, index (project.id)}
       <ProjectCard
         title={project.title}
         subhead={project.subhead}
         description={project.description}
-        trustedDescriptionHtml={project.trustedDescriptionHtml}
         button={project.button}
-        showButton={project.showButton}
-        ctaLabel={project.ctaLabel}
-        ctaHref={project.ctaHref}
-        ctaTarget={project.ctaTarget}
-        ctaRel={project.ctaRel}
-        ctaHasTrailingIcon={project.ctaHasTrailingIcon}
-        onCtaClick={project.onCtaClick}
         badges={project.badges}
       />
       {#if index < projects.length - 1}
