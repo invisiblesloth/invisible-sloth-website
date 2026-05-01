@@ -1,5 +1,5 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "../components/SiteHeader.svelte";
@@ -22,7 +22,7 @@ const projectsData = await Promise.all(
   sortedProjects
     .filter((project: ProjectEntry) => project.data.title !== 'This Website')
     .map(async (project: ProjectEntry) => {
-      const { Content } = await project.render();
+      const { Content } = await render(project);
       const renderedDescriptionHtml = await astroContainer.renderToString(Content);
       // Trust is based on repo-authored content, not Astro rendering as sanitization.
       const trustedDescriptionHtml = trustLocalAstroContentHtml(renderedDescriptionHtml);

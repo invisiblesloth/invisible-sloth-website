@@ -12,7 +12,10 @@ const config: StorybookConfig = {
   ],
   "framework": {
     "name": "@storybook/svelte-vite",
-    "options": {}
+    "options": {
+      // Avoid Storybook docgen parsing Svelte CSF stories as plain Svelte components.
+      docgen: false
+    }
   },
   async viteFinal(config) {
     const { svelte } = await import('@sveltejs/vite-plugin-svelte');
@@ -20,16 +23,15 @@ const config: StorybookConfig = {
 
     config.plugins = config.plugins || [];
 
-    // Add Svelte plugin - required for Astro projects
-    config.plugins.push(
-      svelte({
-        // Don't use svelte.config.js which has runes: true
-        // This allows addon-svelte-csf's legacy components to work
-        configFile: false,
-        // Let Svelte auto-detect runes per file based on syntax
-        compilerOptions: {}
-      })
-    );
+    const sveltePlugins = svelte({
+      // Use local Storybook preprocessing so addon-svelte-csf can compile its stories.
+      configFile: false,
+      // Let Svelte auto-detect runes per file based on syntax
+      compilerOptions: {}
+    });
+
+    // Svelte must run before addon-svelte-csf's post-compile transform.
+    config.plugins.unshift(...(Array.isArray(sveltePlugins) ? sveltePlugins : [sveltePlugins]));
 
     // Add Tailwind CSS plugin
     config.plugins.push(tailwindcss());

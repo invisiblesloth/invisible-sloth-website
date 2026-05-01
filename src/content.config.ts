@@ -1,4 +1,6 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
 
 /**
  * Content Collections configuration for the Invisible Sloth website
@@ -23,7 +25,7 @@ const buttonSchema = z.object({
 
 // Projects collection - portfolio projects displayed on homepage
 const projects = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
     subhead: z.string().optional(),
