@@ -5,13 +5,14 @@ import Container from "../components/Container.astro";
 import Heading from "../components/Heading.svelte";
 import HomepageProjectList from "../components/HomepageProjectList.astro";
 import SiteFooter from "../components/SiteFooter.svelte";
+import ContactUs from "../components/ContactUs.svelte";
 import { getHomepageProjectEntries } from "../lib/projectContent";
 
 const projects = await getHomepageProjectEntries();
 ---
 
 <BaseLayout title="Invisible Sloth" description="Invisible Sloth projects">
-	<SiteHeader homeHref="/" logoAlt="Invisible Sloth" />
+	<SiteHeader homeHref="/" />
 
 	<main class="site-main">
 		<section class="section">
@@ -25,5 +26,7 @@ const projects = await getHomepageProjectEntries();
 		</section>
 	</main>
 
-	<SiteFooter homeHref="/" logoAlt="Invisible Sloth" ariaLabel="Invisible Sloth home" />
+	<SiteFooter homeHref="/" ariaLabel="Invisible Sloth home">
+		<ContactUs />
+	</SiteFooter>
 </BaseLayout>

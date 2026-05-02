@@ -12,14 +12,15 @@
    * - Large (1176px+): Content constrained to 51rem max-width
    *
    * @prop {string} homeHref - URL for logo link (default: '/') - set to empty string to disable link
-   * @prop {string} logoAlt - Alt text for logo image (default: 'Invisible Sloth')
+   * @prop {string} logoAlt - Alt text for the standalone logo when homeHref is empty
    * @prop {string} ariaLabel - Aria label for logo link, describes both brand and action (default: 'Invisible Sloth home')
    */
-  import LogoTechnical from './LogoTechnical.svelte';
+  import LogoLink from './LogoLink.svelte';
+  import { DEFAULT_LOGO_ALT } from '../lib/logo';
 
   let {
     homeHref = '/',
-    logoAlt = 'Invisible Sloth',
+    logoAlt = DEFAULT_LOGO_ALT,
     ariaLabel = 'Invisible Sloth home',
     class: className = '',
   }: {
@@ -28,21 +29,17 @@
     ariaLabel?: string;
     class?: string;
   } = $props();
-
-  const isLink = $derived(Boolean(homeHref));
 </script>
 
 <header class={`site-header ${className}`}>
   <div class="site-header__inner">
-    {#if isLink}
-      <a class="site-header__logo-wrapper" href={homeHref} aria-label={ariaLabel} data-logo-hover-tilt>
-        <LogoTechnical alt={logoAlt} />
-      </a>
-    {:else}
-      <div class="site-header__logo-wrapper" data-logo-hover-tilt>
-        <LogoTechnical alt={logoAlt} />
-      </div>
-    {/if}
+    <LogoLink
+      href={homeHref}
+      variant="technical"
+      size="var(--header-logo-size)"
+      {ariaLabel}
+      {logoAlt}
+    />
   </div>
 </header>
 
@@ -68,45 +65,6 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-400);
-  }
-
-  .site-header__logo-wrapper {
-    --logo-hover-rotate: 0deg;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    width: var(--header-logo-size);
-    height: var(--header-logo-size);
-    border-radius: var(--radius-sm);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .site-header__logo-wrapper {
-      transition: transform 160ms ease;
-    }
-  }
-
-  @media (hover: hover) {
-    .site-header__logo-wrapper:hover {
-      transform: scale(1.04) rotate(var(--logo-hover-rotate));
-    }
-  }
-
-  .site-header__logo-wrapper:active {
-    transform: scale(1.04) rotate(var(--logo-hover-rotate));
-  }
-
-  .site-header__logo-wrapper:focus-visible {
-    outline: var(--focus-outline-width) solid var(--color-focus);
-    outline-offset: 4px;
-  }
-
-  /* Override Logo component's default size */
-  .site-header__logo-wrapper :global(.logo-technical) {
-    width: 100%;
-    height: 100%;
   }
 
   @media (min-width: 1015px) {

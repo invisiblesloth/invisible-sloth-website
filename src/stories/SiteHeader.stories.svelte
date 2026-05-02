@@ -24,7 +24,8 @@
       },
       logoAlt: {
         control: 'text',
-        description: 'Alt text for the logo image (describes what it is).',
+        description:
+          'Alt text for the standalone logo when homeHref is empty. Linked logos use ariaLabel on the link.',
       },
       ariaLabel: {
         control: 'text',

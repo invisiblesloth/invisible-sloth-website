@@ -12,20 +12,20 @@
    * - Large (1176px+): Content constrained to max-width
    *
    * @prop {string} homeHref - URL for logo link (default: '/') - set to empty string to disable link
-   * @prop {string} logoAlt - Alt text for logo image (default: 'Invisible Sloth')
+   * @prop {string} logoAlt - Alt text for the standalone logo when homeHref is empty
    * @prop {string} ariaLabel - Aria label for logo link (default: 'Invisible Sloth home')
    * @prop {string} tagline - Tagline text (default: "We may be slow, but we're not slowing down!")
    * @prop {string} copyrightText - Copyright text (default: 'Invisible Sloth, LLC © 2024-2025')
-   * @slot default - Optional content above copyright - appears below tagline
+   * @slot default - Optional page-owned content between tagline and copyright
    */
   import type { Snippet } from 'svelte';
   import Divider from './Divider.svelte';
-  import LogoStandard from './LogoStandard.svelte';
-  import ContactUs from './ContactUs.svelte';
+  import LogoLink from './LogoLink.svelte';
+  import { DEFAULT_LOGO_ALT } from '../lib/logo';
 
   let {
     homeHref = '/',
-    logoAlt = 'Invisible Sloth',
+    logoAlt = DEFAULT_LOGO_ALT,
     ariaLabel = 'Invisible Sloth home',
     tagline = "We may be slow, but we're not slowing down!",
     copyrightText = '© Invisible Sloth, LLC',
@@ -42,7 +42,6 @@
   } = $props();
 
   const hasContent = $derived(Boolean(children));
-  const isLink = $derived(Boolean(homeHref));
 </script>
 
 <footer class={`site-footer ${className}`}>
@@ -51,15 +50,13 @@
   <div class="site-footer__inner">
     <!-- Logo Section -->
     <div class="site-footer__logo-section">
-      {#if isLink}
-        <a class="site-footer__logo-wrapper" href={homeHref} aria-label={ariaLabel} data-logo-hover-tilt>
-          <LogoStandard alt={logoAlt} />
-        </a>
-      {:else}
-        <div class="site-footer__logo-wrapper" data-logo-hover-tilt>
-          <LogoStandard alt={logoAlt} />
-        </div>
-      {/if}
+      <LogoLink
+        href={homeHref}
+        variant="standard"
+        size="var(--footer-logo-size)"
+        {ariaLabel}
+        {logoAlt}
+      />
     </div>
 
     <!-- Tagline Section -->
@@ -67,9 +64,6 @@
       <p class="site-footer__tagline-text text-headline-small">{tagline}</p>
     </div>
     
-    <!-- Contact Us Section -->
-    <ContactUs />
-
     {#if hasContent && children}
       <div class="site-footer__slot-content">
         {@render children()}
@@ -110,45 +104,6 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-  }
-
-  .site-footer__logo-wrapper {
-    --logo-hover-rotate: 0deg;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    width: var(--footer-logo-size);
-    height: var(--footer-logo-size);
-    border-radius: var(--radius-sm);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .site-footer__logo-wrapper {
-      transition: transform 160ms ease;
-    }
-  }
-
-  @media (hover: hover) {
-    .site-footer__logo-wrapper:hover {
-      transform: scale(1.04) rotate(var(--logo-hover-rotate));
-    }
-  }
-
-  .site-footer__logo-wrapper:active {
-    transform: scale(1.04) rotate(var(--logo-hover-rotate));
-  }
-
-  .site-footer__logo-wrapper:focus-visible {
-    outline: var(--focus-outline-width) solid var(--color-focus);
-    outline-offset: 4px;
-  }
-
-  /* Override Logo component's default size */
-  .site-footer__logo-wrapper :global(.logo-standard) {
-    width: 100%;
-    height: 100%;
   }
 
   .site-footer__tagline {

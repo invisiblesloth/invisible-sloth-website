@@ -1,7 +1,9 @@
 <script module>
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import LogoTechnical from '../components/LogoTechnical.svelte';
-  import LogoStandard from '../components/LogoStandard.svelte';
+  import Logo from '../components/Logo.svelte';
+  import LogoLink from '../components/LogoLink.svelte';
+
+  const defaultLogoAlt = 'Invisible Sloth logo featuring Sloth-Luc, the ghost sloth';
 
   const { Story } = defineMeta({
     title: 'Brand/Logo',
@@ -10,7 +12,7 @@
       docs: {
         description: {
           component:
-            'Invisible Sloth logo components with system and manual theme support. Two variants available: Technical (simplified for headers at 96px) and Standard (full design for footers at 160px). Both use CSS-based theme routing with no JavaScript required. Use the theme toolbar to compare system, light, and dark modes.',
+            'Invisible Sloth logo primitives with system and manual theme support. `Logo` renders the brand mark, while `LogoLink` owns linked or structural wrapper behavior, sizing, focus treatment, and decorative tilt.',
         },
       },
     },
@@ -22,13 +24,12 @@
   parameters={{
     docs: {
       description: {
-        story:
-          'Simplified technical logo designed for headers. Features a cleaner, more compact design optimized for navigation bars and small spaces. Displayed at 96px.',
+        story: 'Simplified technical mark used by the site header.',
       },
     },
   }}
 >
-  <LogoTechnical size="96px" alt="Invisible Sloth" />
+  <Logo variant="technical" size="96px" alt={defaultLogoAlt} />
 </Story>
 
 <Story
@@ -36,13 +37,46 @@
   parameters={{
     docs: {
       description: {
-        story:
-          'Full standard logo designed for footers and brand showcases. Features the complete sloth illustration with more detail. Displayed at 160px.',
+        story: 'Full standard mark used by the site footer and larger brand surfaces.',
       },
     },
   }}
 >
-  <LogoStandard size="160px" alt="Invisible Sloth" />
+  <Logo variant="standard" size="160px" alt={defaultLogoAlt} />
+</Story>
+
+<Story
+  name="Linked LogoLink"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Linked wrappers use the anchor accessible name and render the nested logo as decorative.',
+      },
+    },
+  }}
+>
+  <LogoLink
+    href="/"
+    variant="technical"
+    size="96px"
+    ariaLabel="Invisible Sloth home"
+    logoAlt={defaultLogoAlt}
+  />
+</Story>
+
+<Story
+  name="Unlinked LogoLink"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Unlinked wrappers remain structural. The nested logo carries the accessible image name.',
+      },
+    },
+  }}
+>
+  <LogoLink variant="standard" size="160px" logoAlt={defaultLogoAlt} />
 </Story>
 
 <Story name="Size Comparison">
@@ -51,19 +85,19 @@
       <h3 style="margin: 0 0 1rem 0; font-size: 1.25rem; font-weight: 600;">Technical Logo</h3>
       <div style="display: flex; gap: 2rem; align-items: flex-end;">
         <div style="text-align: center;">
-          <LogoTechnical size="sm" alt="Invisible Sloth" />
+          <Logo variant="technical" size="sm" alt={defaultLogoAlt} />
           <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666;">sm (48px)</p>
         </div>
         <div style="text-align: center;">
-          <LogoTechnical size="md" alt="Invisible Sloth" />
+          <Logo variant="technical" size="md" alt={defaultLogoAlt} />
           <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666;">md (96px)</p>
         </div>
         <div style="text-align: center;">
-          <LogoTechnical size="lg" alt="Invisible Sloth" />
+          <Logo variant="technical" size="lg" alt={defaultLogoAlt} />
           <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666;">lg (160px)</p>
         </div>
         <div style="text-align: center;">
-          <LogoTechnical size="xl" alt="Invisible Sloth" />
+          <Logo variant="technical" size="xl" alt={defaultLogoAlt} />
           <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666;">xl (192px)</p>
         </div>
       </div>
@@ -73,19 +107,19 @@
       <h3 style="margin: 0 0 1rem 0; font-size: 1.25rem; font-weight: 600;">Standard Logo</h3>
       <div style="display: flex; gap: 2rem; align-items: flex-end;">
         <div style="text-align: center;">
-          <LogoStandard size="sm" alt="Invisible Sloth" />
+          <Logo variant="standard" size="sm" alt={defaultLogoAlt} />
           <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666;">sm (48px)</p>
         </div>
         <div style="text-align: center;">
-          <LogoStandard size="md" alt="Invisible Sloth" />
+          <Logo variant="standard" size="md" alt={defaultLogoAlt} />
           <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666;">md (96px)</p>
         </div>
         <div style="text-align: center;">
-          <LogoStandard size="lg" alt="Invisible Sloth" />
+          <Logo variant="standard" size="lg" alt={defaultLogoAlt} />
           <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666;">lg (160px)</p>
         </div>
         <div style="text-align: center;">
-          <LogoStandard size="xl" alt="Invisible Sloth" />
+          <Logo variant="standard" size="xl" alt={defaultLogoAlt} />
           <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666;">xl (192px)</p>
         </div>
       </div>
