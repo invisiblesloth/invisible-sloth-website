@@ -2,28 +2,27 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SiteHeader from "../components/SiteHeader.svelte";
 import Container from "../components/Container.astro";
-import Section from "../components/Section.svelte";
 import Heading from "../components/Heading.svelte";
-import ProjectList from "../components/ProjectList.svelte";
+import HomepageProjectList from "../components/HomepageProjectList.astro";
 import SiteFooter from "../components/SiteFooter.svelte";
-import { getHomepageProjectViewModels } from "../lib/projectContent";
+import { getHomepageProjectEntries } from "../lib/projectContent";
 
-const projectsData = await getHomepageProjectViewModels();
+const projects = await getHomepageProjectEntries();
 ---
 
 <BaseLayout title="Invisible Sloth" description="Invisible Sloth projects">
 	<SiteHeader homeHref="/" logoAlt="Invisible Sloth" />
 
 	<main class="site-main">
-		<Section>
+		<section class="section">
 			<Container padded={false} size="md" class="stack">
 				<div class="measure--content text-center">
 					<Heading level="h1" text="What’s up at Invisible&nbsp;Sloth?" />
 				</div>
 
-				<ProjectList projects={projectsData} client:load />
+				<HomepageProjectList projects={projects} />
 			</Container>
-		</Section>
+		</section>
 	</main>
 
 	<SiteFooter homeHref="/" logoAlt="Invisible Sloth" ariaLabel="Invisible Sloth home" />

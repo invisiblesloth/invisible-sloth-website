@@ -1,0 +1,62 @@
+---
+import { render } from 'astro:content';
+import ProjectList from './ProjectList.svelte';
+import ProjectCard from './ProjectCard.svelte';
+import Divider from './Divider.svelte';
+import type { HomepageProjectEntry } from '../lib/projectContent';
+
+type Props = {
+  projects: HomepageProjectEntry[];
+};
+
+const { projects } = Astro.props;
+
+if (projects.length === 0) {
+  throw new Error('[HomepageProjectList] Expected at least one homepage project.');
+}
+
+const renderedProjects = await Promise.all(
+  projects.map(async (project) => {
+    const { Content } = await render(project);
+    const hasMarkdownBody = (project.body?.trim().length ?? 0) > 0;
+    const description = project.data.description?.trim();
+
+    return {
+      project,
+      Content,
+      description: hasMarkdownBody ? undefined : description,
+      hasMarkdownBody,
+    };
+  }),
+);
+---
+
+<ProjectList>
+  {
+    renderedProjects.map(({ project, Content, description, hasMarkdownBody }, index) => (
+      <>
+        {
+          hasMarkdownBody ? (
+            <ProjectCard
+              title={project.data.title}
+              subhead={project.data.subhead}
+              button={project.data.button}
+              badges={project.data.badges}
+            >
+              <Content />
+            </ProjectCard>
+          ) : (
+            <ProjectCard
+              title={project.data.title}
+              subhead={project.data.subhead}
+              description={description}
+              button={project.data.button}
+              badges={project.data.badges}
+            />
+          )
+        }
+        {index < renderedProjects.length - 1 && <Divider thickness="Double" ariaHidden />}
+      </>
+    ))
+  }
+</ProjectList>

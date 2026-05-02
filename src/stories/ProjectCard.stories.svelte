@@ -1,12 +1,10 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import ProjectCard from '../components/ProjectCard.svelte';
-  import type { ProjectBadge, ProjectButton, ProjectDescription } from '../types/project';
+  import type { ProjectBadge, ProjectButton } from '../types/project';
 
-  const defaultDescription: ProjectDescription = {
-    kind: 'text',
-    text: 'In the heart of the digital jungle, there lived an invisible sloth named Sloth-Luc.',
-  };
+  const fallbackDescription =
+    'In the heart of the digital jungle, there lived an invisible sloth named Sloth-Luc.';
 
   const defaultButton: ProjectButton = {
     label: 'Call to Action',
@@ -25,10 +23,15 @@
     title: 'Organisms/ProjectCard',
     component: ProjectCard,
     tags: ['autodocs'],
+    parameters: {
+      controls: {
+        include: ['title', 'subhead', 'description', 'badges', 'button'],
+      },
+    },
     args: {
       title: 'Project Name',
       subhead: 'Project Subhead',
-      description: defaultDescription,
+      description: fallbackDescription,
       button: defaultButton,
       badges: defaultBadges,
     },
@@ -42,8 +45,8 @@
         description: 'Project subheading',
       },
       description: {
-        control: 'object',
-        description: 'Project description display content',
+        control: 'text',
+        description: 'Plain text fallback when no rich description slot is provided',
       },
       badges: {
         control: 'object',
@@ -57,4 +60,19 @@
   });
 </script>
 
-<Story name="Default" />
+<Story name="Default">
+  {#snippet template(args)}
+    <ProjectCard {...args}>
+      <p>
+        Slotted Markdown-style content wins over the plain description fallback and can include
+        <strong>semantic emphasis</strong> inside the project-card description wrapper.
+      </p>
+    </ProjectCard>
+  {/snippet}
+</Story>
+
+<Story name="Plain Description Fallback">
+  {#snippet template(args)}
+    <ProjectCard {...args} />
+  {/snippet}
+</Story>

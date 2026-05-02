@@ -2,7 +2,7 @@
   /**
    * ProjectCard component for displaying project information
    *
-   * Featured project card with badges, name, subhead, description, and CTA button.
+   * Featured project card with badges, name, subhead, slotted description, and CTA button.
    * Card width and typography respond to viewport size for optimal readability.
    *
    * Responsive behavior:
@@ -12,19 +12,16 @@
    *
    * @prop {string} title - Project name/title
    * @prop {string} subhead - Project subheading
-   * @prop {ProjectDescription} description - Project description display content
+   * @prop {string} description - Plain text fallback when no rich description slot is provided
    * @prop {ProjectButton} button - Optional link CTA
    * @prop {Array} badges - Array of badge objects with variant and label
+   * @prop {Snippet} children - Rich description content, usually rendered from Astro Markdown
    */
+  import type { Snippet } from 'svelte';
   import Button from './Button.svelte';
   import BadgeGroup from './BadgeGroup.svelte';
   import Badge from './Badge.svelte';
-  import type {
-    ProjectBadge,
-    ProjectBadgeVariant,
-    ProjectButton,
-    ProjectDescription,
-  } from '../types/project';
+  import type { ProjectBadge, ProjectBadgeVariant, ProjectButton } from '../types/project';
 
   const BADGE_PRESET_LABELS: Record<ProjectBadgeVariant, string> = {
     default: 'Badge',
@@ -48,16 +45,19 @@
     description,
     badges = [],
     button,
+    children,
   }: {
     title?: string;
     subhead?: string;
-    description?: ProjectDescription;
+    description?: string;
     badges?: ProjectBadge[];
     button?: ProjectButton;
+    children?: Snippet;
   } = $props();
 
   const badgeList = $derived(badges.map(normalizeBadge));
   const hasBadges = $derived(badgeList.length > 0);
+  const fallbackDescription = $derived(description?.trim());
 </script>
 
 <div class="project-card">
@@ -74,12 +74,12 @@
     {#if subhead}
       <p class="project-card__subhead text-headline-small">{subhead}</p>
     {/if}
-    {#if description?.kind === 'html'}
+    {#if children}
       <div class="project-card__description text-body-medium">
-        {@html description.html}
+        {@render children()}
       </div>
-    {:else if description?.kind === 'text'}
-      <p class="project-card__description text-body-medium">{description.text}</p>
+    {:else if fallbackDescription}
+      <p class="project-card__description text-body-medium">{fallbackDescription}</p>
     {/if}
   </div>
 
@@ -146,8 +146,14 @@
   }
 
   .project-card__description {
+    display: grid;
+    gap: var(--space-gutter-tight);
     margin: 0;
     width: 100%;
+  }
+
+  .project-card__description :global(:where(p, ul, ol, blockquote)) {
+    margin-block: 0;
   }
 
   /* Extended breakpoint (1015px+): body-large */

@@ -1,39 +1,26 @@
 <script lang="ts">
   /**
-   * ProjectList component for displaying multiple project cards in a single-column stack.
+   * ProjectList visual shell for displaying project cards in a single-column stack.
    *
    * Layout deliberately stays as one column across breakpoints to focus attention on each project,
    * while responsive spacing and container padding adapt for larger viewports.
    *
-   * @prop {Array} projects - Array of project objects to display
+   * @prop {Snippet} children - Composed project cards and separators
    */
-  import ProjectCard from './ProjectCard.svelte';
-  import Divider from './Divider.svelte';
-  import type { ProjectViewModel } from '../types/project';
+  import type { Snippet } from 'svelte';
 
   let {
-    projects = [],
+    children,
     class: className = '',
   }: {
-    projects?: ProjectViewModel[];
+    children?: Snippet;
     class?: string;
   } = $props();
 </script>
 
 <div class={`project-list ${className}`}>
   <div class="project-list__surface elevation-2">
-    {#each projects as project, index (project.id)}
-      <ProjectCard
-        title={project.title}
-        subhead={project.subhead}
-        description={project.description}
-        button={project.button}
-        badges={project.badges}
-      />
-      {#if index < projects.length - 1}
-        <Divider thickness="Double" ariaHidden />
-      {/if}
-    {/each}
+    {@render children?.()}
   </div>
 </div>
 
