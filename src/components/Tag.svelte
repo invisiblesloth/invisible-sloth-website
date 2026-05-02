@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { warnOnce } from '../lib/devWarnings';
+  import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
+
   type TagMode = 'link' | 'button';
 
   type Props = {
@@ -11,22 +14,6 @@
     class?: string;
     [key: string]: unknown;
   };
-
-  const TAG_WARNING_CACHE_KEY = '__invisible_sloth_tag_warning_cache__';
-
-  function getWarningCache(): Set<string> {
-    const scopedGlobal = globalThis as typeof globalThis & {
-      [TAG_WARNING_CACHE_KEY]?: Set<string>;
-    };
-
-    if (!scopedGlobal[TAG_WARNING_CACHE_KEY]) {
-      scopedGlobal[TAG_WARNING_CACHE_KEY] = new Set<string>();
-    }
-
-    return scopedGlobal[TAG_WARNING_CACHE_KEY];
-  }
-
-  const warnedKeys = getWarningCache();
 
   const GLOBAL_ATTRIBUTES = new Set([
     'id',
@@ -80,28 +67,6 @@
     ...restProps
   }: Props = $props();
 
-  function normalizeHref(value?: string): string | undefined {
-    if (typeof value !== 'string') {
-      return undefined;
-    }
-
-    const trimmed = value.trim();
-    return trimmed.length > 0 ? trimmed : undefined;
-  }
-
-  function normalizeTarget(value?: string): string | undefined {
-    if (typeof value !== 'string') {
-      return undefined;
-    }
-
-    const trimmed = value.trim();
-    if (!trimmed) {
-      return undefined;
-    }
-
-    return trimmed.toLowerCase() === '_blank' ? '_blank' : trimmed;
-  }
-
   const normalizedHref = $derived(normalizeHref(href));
   const hasHrefProp = $derived(href !== undefined && href !== null);
   const normalizedTarget = $derived<string | undefined>(normalizeTarget(target));
@@ -142,51 +107,9 @@
     return filtered;
   }
 
-  function normalizeBlankTargetRel(targetValue?: string, relValue?: string): string | undefined {
-    if (targetValue !== '_blank') {
-      return relValue;
-    }
-
-    const rawTokens = (relValue ?? '')
-      .split(/\s+/)
-      .map((token) => token.trim())
-      .filter(Boolean);
-
-    const dedupedTokens: string[] = [];
-    const tokenSet = new Set<string>();
-
-    for (const token of rawTokens) {
-      const normalized = token.toLowerCase();
-      if (tokenSet.has(normalized)) continue;
-      tokenSet.add(normalized);
-      dedupedTokens.push(token);
-    }
-
-    if (!tokenSet.has('noopener')) {
-      dedupedTokens.push('noopener');
-      tokenSet.add('noopener');
-    }
-
-    if (!tokenSet.has('noreferrer')) {
-      dedupedTokens.push('noreferrer');
-      tokenSet.add('noreferrer');
-    }
-
-    return dedupedTokens.join(' ');
-  }
-
-  function warnOnce(key: string, message: string): void {
-    if (!import.meta.env.DEV || typeof window === 'undefined' || warnedKeys.has(key)) {
-      return;
-    }
-
-    warnedKeys.add(key);
-    console.warn(message);
-  }
-
   const anchorAttributes = $derived(filterForwardedAttributes('link', restProps));
   const buttonAttributes = $derived(filterForwardedAttributes('button', restProps));
-  const secureRel = $derived(normalizeBlankTargetRel(normalizedTarget, rel));
+  const secureRel = $derived(normalizeRelForTarget(normalizedTarget, rel));
 
   $effect(() => {
     if (hasHrefProp && !normalizedHref) {

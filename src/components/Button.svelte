@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import Close from '../icons/Close.svelte';
   import ExternalLink from '../icons/ExternalLink.svelte';
+  import { warnOnce } from '../lib/devWarnings';
+  import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
 
   /**
    * Button component with lift-and-reveal hover effect
@@ -17,10 +18,8 @@
    * @prop {string} rel - Optional link rel (security tokens auto-appended when target resolves to '_blank')
    * Disabled links render as non-interactive anchors without href, with role="link" and aria-disabled semantics
    * @prop {Function} onclick - Click event handler (receives native MouseEvent)
-   * @event click - Dispatched when button is clicked (for backward compatibility with on:click)
+   * Migration note: `on:click` was removed; use `onclick`.
    */
-  const dispatch = createEventDispatcher<{ click: MouseEvent }>();
-  const BUTTON_WARNING_CACHE_KEY = '__invisible_sloth_button_warning_cache__';
 
   let {
     variant = 'filled-primary',
@@ -47,84 +46,6 @@
   } = $props();
 
   let pressed = $state(false);
-  
-  function getWarningCache(): Set<string> {
-    const scopedGlobal = globalThis as typeof globalThis & {
-      [BUTTON_WARNING_CACHE_KEY]?: Set<string>;
-    };
-  
-    if (!scopedGlobal[BUTTON_WARNING_CACHE_KEY]) {
-      scopedGlobal[BUTTON_WARNING_CACHE_KEY] = new Set<string>();
-    }
-  
-    return scopedGlobal[BUTTON_WARNING_CACHE_KEY];
-  }
-  
-  const warnedKeys = getWarningCache();
-
-  function warnOnce(key: string, message: string): void {
-    if (!import.meta.env.DEV || typeof window === 'undefined' || warnedKeys.has(key)) {
-      return;
-    }
-
-    warnedKeys.add(key);
-    console.warn(message);
-  }
-
-  function normalizeHref(value?: string): string | undefined {
-    if (typeof value !== 'string') {
-      return undefined;
-    }
-
-    const trimmed = value.trim();
-    return trimmed.length > 0 ? trimmed : undefined;
-  }
-
-  function normalizeTarget(value?: string): string | undefined {
-    if (typeof value !== 'string') {
-      return undefined;
-    }
-
-    const trimmed = value.trim();
-    if (!trimmed) {
-      return undefined;
-    }
-
-    return trimmed.toLowerCase() === '_blank' ? '_blank' : trimmed;
-  }
-
-  function normalizeBlankTargetRel(targetValue?: string, relValue?: string): string | undefined {
-    if (targetValue !== '_blank') {
-      return relValue;
-    }
-
-    const rawTokens = (relValue ?? '')
-      .split(/\s+/)
-      .map((token) => token.trim())
-      .filter(Boolean);
-
-    const dedupedTokens: string[] = [];
-    const tokenSet = new Set<string>();
-
-    for (const token of rawTokens) {
-      const normalized = token.toLowerCase();
-      if (tokenSet.has(normalized)) continue;
-      tokenSet.add(normalized);
-      dedupedTokens.push(token);
-    }
-
-    if (!tokenSet.has('noopener')) {
-      dedupedTokens.push('noopener');
-      tokenSet.add('noopener');
-    }
-
-    if (!tokenSet.has('noreferrer')) {
-      dedupedTokens.push('noreferrer');
-      tokenSet.add('noreferrer');
-    }
-
-    return dedupedTokens.join(' ');
-  }
 
   const normalizedHref = $derived(normalizeHref(href));
   const hasHrefProp = $derived(href !== undefined && href !== null);
@@ -134,7 +55,7 @@
   const normalizedTarget = $derived<string | undefined>(normalizeTarget(target));
   const linkTarget = $derived<string | undefined>(isDisabledLink ? undefined : normalizedTarget);
   const linkRel = $derived<string | undefined>(
-    isDisabledLink ? undefined : normalizeBlankTargetRel(linkTarget, rel)
+    isDisabledLink ? undefined : normalizeRelForTarget(linkTarget, rel)
   );
 
   $effect(() => {
@@ -147,7 +68,7 @@
   });
 
   // Normalized modifier class for BEM variants
-  const normalizeVariant = (value?: string, fallback: string = 'filled-primary') => {
+  const normalizeVariant = (value?: string, fallback: string = 'filled-primary'): string => {
     if (!value) return fallback;
     const sanitized = value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
     return sanitized || fallback;
@@ -155,23 +76,17 @@
 
   const variantModifier = $derived(`button--${normalizeVariant(variant, 'filled-primary')}`);
 
-  // Unified click handler that supports both patterns
-  function handleClick(event: MouseEvent) {
-    // Dispatch event for backward compatibility (on:click pattern)
-    dispatch('click', event);
-
-    // Call onclick prop if provided (new pattern)
+  function handleClick(event: MouseEvent): void {
     onclick?.(event);
   }
 
   // Delayed navigation for anchor variant to allow pressed animation to play
-  function handleAnchorClick(event: MouseEvent) {
+  function handleAnchorClick(event: MouseEvent): void {
     if (isDisabledLink) {
       event.preventDefault();
       return;
     }
 
-    // Preserve existing click handling (dispatch + onclick)
     handleClick(event);
 
     // Allow native navigation to proceed; only linger the pressed state briefly for
@@ -184,12 +99,12 @@
     }
   }
 
-  function handleTouchStart() {
+  function handleTouchStart(): void {
     if (disabled || isDisabledLink) return;
     pressed = true;
   }
 
-  function handleTouchEnd() {
+  function handleTouchEnd(): void {
     pressed = false;
   }
 </script>

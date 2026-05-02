@@ -7,6 +7,11 @@
     component: Button,
     tags: ['autodocs'],
     parameters: {
+      docs: {
+        description: {
+          component: 'Migration note: `on:click` removed, use `onclick`.',
+        },
+      },
       controls: {
         include: [
           'variant',
@@ -18,13 +23,11 @@
           'href',
           'target',
           'rel',
-          'click',
           'onclick',
         ],
       },
     },
     argTypes: {
-      click: { action: 'clicked' },
       onclick: { action: 'onclick called' },
       variant: {
         control: 'select',
@@ -96,7 +99,7 @@
       rel: {
         control: 'text',
         description:
-          'Optional link rel. For "_blank" targets, missing security tokens are appended and deduped.',
+          'Optional link rel. Non-"_blank" targets pass rel through unchanged. For "_blank" targets, missing security tokens are appended and tokens are deduped case-insensitively while preserving first-token casing.',
         table: {
           type: { summary: 'string' },
           defaultValue: { summary: 'undefined' },
@@ -136,7 +139,24 @@
   parameters={{
     docs: {
       description: {
-        story: 'Disabled links do not navigate and do not emit click or onclick actions.',
+        story: 'Disabled links do not navigate and do not invoke `onclick`.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Invalid Href Fallback"
+  args={{
+    label: 'Whitespace Href Fallback',
+    variant: 'filled-secondary',
+    href: '   ',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Whitespace-only `href` values fall back to button mode and emit a deduplicated client-dev-only warning.',
       },
     },
   }}
@@ -160,7 +180,7 @@
     variant: 'filled-secondary',
     href: 'https://github.com/invisiblesloth/roxy-engine',
     target: ' _BLANK ',
-    rel: 'NoFoLlOw NOOPENER',
+    rel: 'NoFoLlOw NOOPENER noopener',
     hasTrailingIcon: true,
   }}
 />

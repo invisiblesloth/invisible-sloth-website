@@ -32,7 +32,7 @@
       rel: {
         control: 'text',
         description:
-          'Optional link rel; for "_blank" targets, tokens are preserved, deduped, and security tokens are appended as needed',
+          'Optional link rel; non-"_blank" targets pass rel through unchanged. For "_blank" targets, tokens are deduped case-insensitively while preserving first-token casing and security tokens are appended as needed',
       },
       type: {
         control: 'select',
@@ -50,9 +50,17 @@
 <Story name="Button" args={{ label: 'Primary Tag' }} />
 
 <Story
-  name="Link"
+  name="Link Same Tab (Default)"
   args={{
     label: 'Visit Invisible Sloth',
+    href: 'https://invisiblesloth.com/',
+  }}
+/>
+
+<Story
+  name="_blank Security (No rel)"
+  args={{
+    label: 'External Tag',
     href: 'https://invisiblesloth.com/',
     target: '_blank',
   }}
