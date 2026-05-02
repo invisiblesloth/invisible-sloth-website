@@ -1,38 +1,33 @@
-const IMAGE_LOADING_SELECTOR = 'img[data-image-loading="fade"]';
+import {
+  IMAGE_DECLARATIVE_MODES,
+  IMAGE_ENHANCEMENT_ATTRIBUTES,
+  IMAGE_ENHANCEMENT_OBSERVED_ATTRIBUTES,
+  IMAGE_ENHANCER_AVAILABILITY,
+  IMAGE_FALLBACK_CONFIG_ATTRIBUTES,
+  IMAGE_FALLBACK_RESOURCE_ATTRIBUTES,
+  IMAGE_LOAD_STATES,
+  IMAGE_LOADING_SELECTOR,
+  IMAGE_PRIMARY_INPUT_ATTRIBUTES,
+  IMAGE_PRIMARY_SOURCE_ATTRIBUTES,
+  type ImageDeclarativeMode,
+  type ImageEnhancerAvailability,
+  type ImagePublicLoadState,
+} from '../lib/imageEnhancementContract';
+
+/**
+ * Browser half of the Image.svelte enhancement contract.
+ *
+ * Image.svelte writes SSR-safe declarative inputs and initial pending state.
+ * This enhancer owns runtime load state, error-driven fallback switching, fade
+ * completion, and private production-present diagnostics.
+ */
 const GLOBAL_STATE_KEY = '__invisible_sloth_image_loading_enhancer__';
 
-const OBSERVED_ATTRIBUTE_NAMES = [
-  'src',
-  'srcset',
-  'sizes',
-  'width',
-  'height',
-  'alt',
-  'data-image-mode',
-  'data-fallback-src',
-  'data-fallback-srcset',
-  'data-fallback-sizes',
-  'data-fallback-alt',
-  'data-fallback-width',
-  'data-fallback-height',
-  'data-image-loading',
-];
-
-const PRIMARY_SOURCE_ATTRIBUTES = new Set(['src', 'srcset', 'sizes', 'data-image-mode']);
-const PRIMARY_INPUT_ATTRIBUTES = new Set(['src', 'srcset', 'sizes', 'width', 'height', 'alt']);
-const FALLBACK_CONFIG_ATTRIBUTES = new Set([
-  'data-fallback-src',
-  'data-fallback-srcset',
-  'data-fallback-sizes',
-  'data-fallback-alt',
-  'data-fallback-width',
-  'data-fallback-height',
-]);
-const FALLBACK_RESOURCE_ATTRIBUTES = new Set([
-  'data-fallback-src',
-  'data-fallback-srcset',
-  'data-fallback-sizes',
-]);
+const OBSERVED_ATTRIBUTE_NAMES = [...IMAGE_ENHANCEMENT_OBSERVED_ATTRIBUTES];
+const PRIMARY_SOURCE_ATTRIBUTES = new Set<string>(IMAGE_PRIMARY_SOURCE_ATTRIBUTES);
+const PRIMARY_INPUT_ATTRIBUTES = new Set<string>(IMAGE_PRIMARY_INPUT_ATTRIBUTES);
+const FALLBACK_CONFIG_ATTRIBUTES = new Set<string>(IMAGE_FALLBACK_CONFIG_ATTRIBUTES);
+const FALLBACK_RESOURCE_ATTRIBUTES = new Set<string>(IMAGE_FALLBACK_RESOURCE_ATTRIBUTES);
 
 type EnhancerCandidate = 'primary' | 'fallback';
 type EnhancerFallbackMode = 'none' | 'declarative' | 'error-driven';
@@ -43,7 +38,7 @@ type EnhancerLoadState =
   | 'fallback-loaded'
   | 'failed';
 
-type PublicLoadState = 'pending' | 'loaded' | 'failed';
+type PublicLoadState = ImagePublicLoadState;
 
 type ImageSnapshot = {
   src?: string;
@@ -193,15 +188,18 @@ const setEnhancerRequiredAttribute = (
   }
 };
 
-const getDeclarativeMode = (image: HTMLImageElement): 'primary' | 'declarative-fallback' =>
-  image.dataset.imageMode === 'declarative-fallback' ? 'declarative-fallback' : 'primary';
+const getDeclarativeMode = (image: HTMLImageElement): ImageDeclarativeMode =>
+  image.getAttribute(IMAGE_ENHANCEMENT_ATTRIBUTES.mode) ===
+  IMAGE_DECLARATIVE_MODES.declarativeFallback
+    ? IMAGE_DECLARATIVE_MODES.declarativeFallback
+    : IMAGE_DECLARATIVE_MODES.primary;
 
 const getPublicLoadState = (state: ImageState): PublicLoadState => {
   if (state.loadState === 'failed') {
-    return 'failed';
+    return IMAGE_LOAD_STATES.failed;
   }
 
-  return state.loadState.endsWith('loaded') ? 'loaded' : 'pending';
+  return state.loadState.endsWith('loaded') ? IMAGE_LOAD_STATES.loaded : IMAGE_LOAD_STATES.pending;
 };
 
 const getResourceToken = (image: HTMLImageElement, state: ImageState): string =>
@@ -223,21 +221,24 @@ const asyncTokenStillMatches = (
 ): boolean => image.isConnected && isEnhancedImage(image) && getAsyncToken(image, state) === token;
 
 const syncDiagnostics = (image: HTMLImageElement, state: ImageState): void => {
-  image.dataset.enhancerCandidate = state.candidate;
-  image.dataset.enhancerFallbackMode = state.fallbackMode;
-  image.dataset.enhancerState = state.loadState;
+  image.setAttribute(IMAGE_ENHANCEMENT_ATTRIBUTES.enhancerCandidate, state.candidate);
+  image.setAttribute(IMAGE_ENHANCEMENT_ATTRIBUTES.enhancerFallbackMode, state.fallbackMode);
+  image.setAttribute(IMAGE_ENHANCEMENT_ATTRIBUTES.enhancerState, state.loadState);
 
   const publicLoadState = getPublicLoadState(state);
-  image.dataset.loadState = publicLoadState;
+  image.setAttribute(IMAGE_ENHANCEMENT_ATTRIBUTES.loadState, publicLoadState);
 
-  if (publicLoadState === 'loaded') {
-    image.dataset.loadComplete = 'true';
-    image.dataset.loadedResourceToken = state.loadedResourceToken ?? getResourceToken(image, state);
+  if (publicLoadState === IMAGE_LOAD_STATES.loaded) {
+    image.setAttribute(IMAGE_ENHANCEMENT_ATTRIBUTES.loadComplete, 'true');
+    image.setAttribute(
+      IMAGE_ENHANCEMENT_ATTRIBUTES.loadedResourceToken,
+      state.loadedResourceToken ?? getResourceToken(image, state)
+    );
     return;
   }
 
-  delete image.dataset.loadComplete;
-  delete image.dataset.loadedResourceToken;
+  image.removeAttribute(IMAGE_ENHANCEMENT_ATTRIBUTES.loadComplete);
+  image.removeAttribute(IMAGE_ENHANCEMENT_ATTRIBUTES.loadedResourceToken);
 };
 
 const setRuntimeState = (
@@ -259,7 +260,7 @@ const setRuntimeState = (
 };
 
 const createInitialState = (image: HTMLImageElement): ImageState => {
-  if (getDeclarativeMode(image) === 'declarative-fallback') {
+  if (getDeclarativeMode(image) === IMAGE_DECLARATIVE_MODES.declarativeFallback) {
     return {
       candidate: 'fallback',
       fallbackMode: 'declarative',
@@ -376,12 +377,18 @@ const getFallbackAlt = (image: HTMLImageElement, state: ImageState): string => {
     return primaryAlt;
   }
 
-  return image.dataset.fallbackAlt ?? primaryAlt;
+  return getOptionalAttribute(image, IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackAlt) ?? primaryAlt;
 };
 
 const applyFallbackAttributes = (image: HTMLImageElement, state: ImageState): boolean => {
-  const { fallbackSrc, fallbackSrcset, fallbackSizes, fallbackWidth, fallbackHeight } =
-    image.dataset;
+  const fallbackSrc = getOptionalAttribute(image, IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackSrc);
+  const fallbackSrcset = getOptionalAttribute(
+    image,
+    IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackSrcset
+  );
+  const fallbackSizes = getOptionalAttribute(image, IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackSizes);
+  const fallbackWidth = getOptionalAttribute(image, IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackWidth);
+  const fallbackHeight = getOptionalAttribute(image, IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackHeight);
 
   if (!fallbackSrc) {
     return false;
@@ -421,7 +428,7 @@ const enterPrimaryFromSnapshot = (
 };
 
 const enterErrorFallback = (image: HTMLImageElement, state: ImageState): boolean => {
-  if (!image.dataset.fallbackSrc) {
+  if (!getOptionalAttribute(image, IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackSrc)) {
     return false;
   }
 
@@ -463,7 +470,7 @@ const syncStateWithDeclarativeInputs = (
   const fallbackConfigChanged = attributeSetHasAny(changedAttributes, FALLBACK_CONFIG_ATTRIBUTES);
   const fallbackResourceChanged = attributeSetHasAny(changedAttributes, FALLBACK_RESOURCE_ATTRIBUTES);
 
-  if (declarativeMode === 'declarative-fallback') {
+  if (declarativeMode === IMAGE_DECLARATIVE_MODES.declarativeFallback) {
     if (
       state.candidate !== 'fallback' ||
       state.fallbackMode !== 'declarative' ||
@@ -578,7 +585,7 @@ const handleImageError = (image: HTMLImageElement, expectedToken?: string): void
   if (
     state.candidate === 'primary' &&
     state.fallbackMode === 'none' &&
-    getDeclarativeMode(image) === 'primary' &&
+    getDeclarativeMode(image) === IMAGE_DECLARATIVE_MODES.primary &&
     enterErrorFallback(image, state)
   ) {
     queueMicrotask(() => processImage(image));
@@ -732,12 +739,17 @@ const observeImages = (state: EnhancerState): void => {
   });
 };
 
+const setEnhancerAvailability = (availability: ImageEnhancerAvailability): void => {
+  document.documentElement.dataset.imageEnhancer = availability;
+};
+
 export const initImageLoadingEnhancer = (root?: ParentNode): void => {
   if (typeof document === 'undefined') {
     return;
   }
 
   document.documentElement.dataset.js = 'true';
+  setEnhancerAvailability(IMAGE_ENHANCER_AVAILABILITY.active);
   const targetRoot = root ?? document;
 
   const state = getEnhancerState();

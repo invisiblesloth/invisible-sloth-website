@@ -244,13 +244,17 @@
     }
 
     debugDiagnostics = [
-      { label: 'Enhancer state', value: image.dataset.enhancerState ?? 'uninitialized' },
-      { label: 'Enhancer candidate', value: image.dataset.enhancerCandidate ?? 'uninitialized' },
+      { label: 'Private enhancer state', value: image.dataset.enhancerState ?? 'uninitialized' },
       {
-        label: 'Enhancer fallback mode',
+        label: 'Private enhancer candidate',
+        value: image.dataset.enhancerCandidate ?? 'uninitialized',
+      },
+      {
+        label: 'Private enhancer fallback mode',
         value: image.dataset.enhancerFallbackMode ?? 'uninitialized',
       },
       { label: 'DOM load state', value: image.dataset.loadState ?? 'missing' },
+      { label: 'Loaded resource token', value: image.dataset.loadedResourceToken ?? 'none' },
       { label: 'Declarative mode', value: image.dataset.imageMode ?? 'missing' },
       { label: 'src', value: image.getAttribute('src') ?? '' },
       { label: 'currentSrc', value: image.currentSrc || 'unresolved' },
@@ -331,6 +335,17 @@
   args={{
     src: '',
     alt: '',
+  }}
+/>
+
+<Story
+  name="No Renderable Source"
+  args={{
+    src: '',
+    alt: '',
+    fallbackSrc: '',
+    fallbackSrcset: '',
+    fallbackSizes: '',
   }}
 />
 

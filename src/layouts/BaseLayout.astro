@@ -32,7 +32,10 @@ const socialCardUrl = new URL("/social-card.png", Astro.site).toString();
     <meta name="theme-color" content="#151818" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#f8faf6" media="(prefers-color-scheme: light)" />
 
-    <script is:inline>document.documentElement.dataset.js = "true";</script>
+    <script is:inline>
+      document.documentElement.dataset.js = "true";
+      document.documentElement.dataset.imageEnhancer = "pending";
+    </script>
 
     <link rel="canonical" href={canonical} />
     <link rel="license" href="/LICENSE" />
@@ -85,26 +88,38 @@ const socialCardUrl = new URL("/social-card.png", Astro.site).toString();
     <slot />
 
     <script>
-      import { initImageLoadingEnhancer } from "../scripts/imageLoadingEnhancer";
-      import { initLogoHoverTilt } from "../scripts/logoHoverTilt";
-
       const isDev = import.meta.env.DEV;
 
-      try {
-        initImageLoadingEnhancer(document);
-      } catch (error) {
-        if (isDev) {
-          console.warn("Image loading enhancer initialization failed.", error);
-        }
-      }
+      const markImageEnhancerUnavailable = () => {
+        document.documentElement.dataset.imageEnhancer = "unavailable";
+      };
 
-      try {
-        initLogoHoverTilt(document);
-      } catch (error) {
-        if (isDev) {
-          console.warn("Logo hover tilt initialization failed.", error);
+      const initImageLoading = async () => {
+        try {
+          const { initImageLoadingEnhancer } = await import("../scripts/imageLoadingEnhancer");
+          initImageLoadingEnhancer(document);
+        } catch (error) {
+          markImageEnhancerUnavailable();
+
+          if (isDev) {
+            console.warn("Image loading enhancer initialization failed.", error);
+          }
         }
-      }
+      };
+
+      const initLogoTilt = async () => {
+        try {
+          const { initLogoHoverTilt } = await import("../scripts/logoHoverTilt");
+          initLogoHoverTilt(document);
+        } catch (error) {
+          if (isDev) {
+            console.warn("Logo hover tilt initialization failed.", error);
+          }
+        }
+      };
+
+      void initImageLoading();
+      void initLogoTilt();
     </script>
   </body>
 </html>

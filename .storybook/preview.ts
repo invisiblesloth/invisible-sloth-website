@@ -1,21 +1,46 @@
 import type { Preview } from '@storybook/svelte-vite';
 import '../src/styles/global.css';
-import { initImageLoadingEnhancer } from '../src/scripts/imageLoadingEnhancer';
+import { IMAGE_ENHANCER_AVAILABILITY } from '../src/lib/imageEnhancementContract';
 import { initLogoHoverTilt } from '../src/scripts/logoHoverTilt';
 
 const isDev = import.meta.env.DEV;
+type ImageLoadingEnhancerModule = typeof import('../src/scripts/imageLoadingEnhancer');
 
-if (typeof document !== 'undefined') {
+let imageLoadingEnhancerImport: Promise<ImageLoadingEnhancerModule> | undefined;
+
+const loadImageLoadingEnhancer = (): Promise<ImageLoadingEnhancerModule> => {
+  imageLoadingEnhancerImport ??= import('../src/scripts/imageLoadingEnhancer').catch((error) => {
+    imageLoadingEnhancerImport = undefined;
+    throw error;
+  });
+
+  return imageLoadingEnhancerImport;
+};
+
+const prepareImageLoadingEnhancer = async () => {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
   document.documentElement.dataset.js = 'true';
 
+  if (document.documentElement.dataset.imageEnhancer !== IMAGE_ENHANCER_AVAILABILITY.active) {
+    document.documentElement.dataset.imageEnhancer = IMAGE_ENHANCER_AVAILABILITY.pending;
+  }
+
   try {
+    const { initImageLoadingEnhancer } = await loadImageLoadingEnhancer();
     initImageLoadingEnhancer(document);
   } catch (error) {
+    document.documentElement.dataset.imageEnhancer = IMAGE_ENHANCER_AVAILABILITY.unavailable;
+
     if (isDev) {
       console.warn('Image loading enhancer initialization failed in Storybook.', error);
     }
   }
-}
+};
+
+void prepareImageLoadingEnhancer();
 
 const preview: Preview = {
   parameters: {
@@ -89,13 +114,7 @@ const preview: Preview = {
       if (typeof document !== 'undefined') {
         queueMicrotask(() => {
           requestAnimationFrame(() => {
-            try {
-              initImageLoadingEnhancer(document);
-            } catch (error) {
-              if (isDev) {
-                console.warn('Image loading enhancer initialization failed in Storybook.', error);
-              }
-            }
+            void prepareImageLoadingEnhancer();
 
             try {
               initLogoHoverTilt(document);

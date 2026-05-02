@@ -1,4 +1,11 @@
 <script lang="ts">
+  import {
+    IMAGE_DECLARATIVE_MODES,
+    IMAGE_ENHANCEMENT_ATTRIBUTES,
+    IMAGE_LOAD_STATES,
+    IMAGE_LOADING_MODES,
+  } from '../lib/imageEnhancementContract';
+
   /**
    * Image atom for consistent media rendering across layouts.
    *
@@ -8,6 +15,10 @@
    * - frame="ratio" enforces a fixed aspect ratio.
    * - frame="auto" uses the image's intrinsic dimensions.
    * - frame="clamped" applies aspect ratio with viewport-driven height clamping.
+   *
+   * Enhancement contract:
+   * - Image owns SSR-safe inputs and the initial pending state.
+   * - imageLoadingEnhancer owns runtime load state and fallback switching.
    */
   type ImageFit = 'cover' | 'contain';
   type Frame = 'ratio' | 'auto' | 'clamped';
@@ -144,7 +155,11 @@
     return alt;
   });
   const ratioValue = $derived(RATIO_MAP[ratio]);
-  const imageMode = $derived(activeIsFallback ? 'declarative-fallback' : 'primary');
+  const imageMode = $derived(
+    activeIsFallback
+      ? IMAGE_DECLARATIVE_MODES.declarativeFallback
+      : IMAGE_DECLARATIVE_MODES.primary
+  );
   const normalizedWidth = $derived(normalizeDimension(width));
   const normalizedHeight = $derived(normalizeDimension(height));
   const normalizedFallbackWidth = $derived(normalizeDimension(fallbackWidth));
@@ -179,6 +194,21 @@
 
     return fallbackAlt.trim().length > 0 ? fallbackAlt : undefined;
   });
+  const imageEnhancementAttributes = $derived.by((): Record<string, string | undefined> => ({
+    [IMAGE_ENHANCEMENT_ATTRIBUTES.loading]: IMAGE_LOADING_MODES.fade,
+    [IMAGE_ENHANCEMENT_ATTRIBUTES.loadState]: IMAGE_LOAD_STATES.pending,
+    [IMAGE_ENHANCEMENT_ATTRIBUTES.mode]: imageMode,
+    [IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackSrc]: fallbackDataSrc,
+    [IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackSrcset]: fallbackDataSrcset,
+    [IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackSizes]: fallbackDataSizes,
+    [IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackAlt]: fallbackDataAlt,
+    [IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackWidth]: activeIsFallback
+      ? undefined
+      : normalizedFallbackWidth,
+    [IMAGE_ENHANCEMENT_ATTRIBUTES.fallbackHeight]: activeIsFallback
+      ? undefined
+      : normalizedFallbackHeight,
+  }));
 
   const imageClasses = $derived(
     [
@@ -222,15 +252,7 @@
   {#if canRenderImage}
     <img
       class="image__media"
-      data-image-loading="fade"
-      data-load-state="pending"
-      data-image-mode={imageMode}
-      data-fallback-src={fallbackDataSrc}
-      data-fallback-srcset={fallbackDataSrcset}
-      data-fallback-sizes={fallbackDataSizes}
-      data-fallback-alt={fallbackDataAlt}
-      data-fallback-width={activeIsFallback ? undefined : normalizedFallbackWidth}
-      data-fallback-height={activeIsFallback ? undefined : normalizedFallbackHeight}
+      {...imageEnhancementAttributes}
       src={activeSrc}
       srcset={activeSrcset}
       sizes={activeSizes}
@@ -280,7 +302,10 @@
     object-position: var(--image-object-position);
   }
 
-  :global(html[data-js='true']) .image__media[data-load-state='pending']:not([data-load-complete='true']) {
+  :global(html[data-js='true'][data-image-enhancer='pending'])
+    .image__media[data-load-state='pending']:not([data-load-complete='true']),
+  :global(html[data-js='true'][data-image-enhancer='active'])
+    .image__media[data-load-state='pending']:not([data-load-complete='true']) {
     opacity: 0;
     color: transparent;
   }
@@ -319,9 +344,7 @@
   }
 
   .image__placeholder {
-    background:
-      radial-gradient(circle at 20% 15%, rgb(255 255 255 / 0.28) 0 10px, transparent 11px),
-      linear-gradient(145deg, var(--color-green-060), var(--color-green-080));
+    background: linear-gradient(145deg, var(--color-green-060), var(--color-green-080));
   }
 
   .image--radius-small {
