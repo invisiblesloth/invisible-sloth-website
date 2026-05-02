@@ -252,7 +252,7 @@
     border-radius: var(--radius-full);
     transition: transform var(--button-transition);
     overflow: hidden;
-    
+
     transform: translate(-1px, -3px);
   }
 
@@ -293,7 +293,6 @@
   }
 
   .button--filled-primary .button__side {
-    /* Tokenized: defaults to #013201 in tokens */
     background-color: var(--color-button-side-primary);
   }
 
@@ -311,7 +310,6 @@
   }
 
   .button--filled-secondary .button__side {
-    /* Tokenized: defaults to var(--color-accent-secondary) */
     background-color: var(--color-button-side-secondary);
   }
 
@@ -329,7 +327,6 @@
   }
 
   .button--filled-tertiary .button__side {
-    /* Tokenized: defaults to #013C3C in tokens */
     background-color: var(--color-button-side-tertiary);
   }
 

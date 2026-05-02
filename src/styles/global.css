@@ -5,14 +5,13 @@
    Import order:
    1. Tailwind CSS base
    2. Reset & normalization
-   3. Design tokens (primitives + default semantic tokens)
-   4. Dark mode (@media prefers-color-scheme)
-   5. Theme switching (data-theme attribute)
-   6. Base element styles
-   7. Typography utilities
-   8. Visual effects (elevation, glow)
-   9. Layout utilities (page containers, sections, grid, stack)
-   10. Storybook integration
+   3. Design tokens (primitives + semantic token registration)
+   4. Theme routing (system fallback + manual data-theme)
+   5. Base element styles
+   6. Typography utilities
+   7. Visual effects (elevation, glow)
+   8. Layout utilities (page containers, sections, grid, stack)
+   9. Storybook integration
    ========================================== */
 
 /* Tailwind CSS base */
@@ -24,10 +23,7 @@
 /* Design system tokens (colors, typography, spacing, etc.) */
 @import "./tokens.css";
 
-/* Dark mode color overrides (automatic via @media prefers-color-scheme) */
-@import "./dark-mode.css";
-
-/* Theme switching (manual via data-theme attribute) */
+/* Theme routing (automatic system fallback plus manual data-theme override) */
 @import "./theme.css";
 
 /* Global element styles (body, b, strong, mark, etc.) */
@@ -46,14 +42,10 @@
 @import "./layout.css";
 
 /* ==========================================
-   STORYBOOK PREVIEW BACKGROUNDS
-   Sync canvas background with theme
+   STORYBOOK PREVIEW BACKGROUND
+   Sync canvas background with the active semantic theme.
    ========================================== */
 
-html[data-theme='light'] #storybook-root {
-  background: var(--color-gray-098) !important; /* Light mode background: #f8faf6 */
-}
-
-html[data-theme='dark'] #storybook-root {
-  background: var(--color-gray-008) !important; /* Dark mode background: #151818 */
+#storybook-root {
+  background: var(--color-background) !important;
 }

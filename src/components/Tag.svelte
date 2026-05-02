@@ -240,9 +240,7 @@
   @media (hover: hover) and (pointer: fine) {
     .tag:hover .tag__surface {
       transform: translate3d(-1px, -2px, 0);
-      box-shadow:
-        1px 1px 4px rgba(0, 0, 0, 0.25),
-        3px 3px 3px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--effect-tag-hover);
     }
 
     .tag:hover .tag__surface::before {

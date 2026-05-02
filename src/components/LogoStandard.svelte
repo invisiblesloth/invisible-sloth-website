@@ -1,10 +1,10 @@
 <script lang="ts">
   /**
-   * Standard Logo component with automatic dark mode support
+   * Standard Logo component with system and manual theme support
    *
    * Displays the Invisible Sloth standard logo (full design for footers)
-   * with automatic theme switching based on system preferences
-   * (prefers-color-scheme) and manual theme override (data-theme attribute).
+   * using the global theme contract: no data-theme follows system preference,
+   * while data-theme="light" or "dark" forces the matching logo.
    *
    * @prop {string} size - Size variant ('sm', 'md', 'lg', 'xl') or custom CSS value (default: 'md')
    * @prop {string} alt - Alternative text for accessibility (default: 'Invisible Sloth')
@@ -31,10 +31,10 @@
 
 <div class="logo-standard" style="--logo-size: {logoSize}">
   <!--
-    Uses CSS background-image with media queries for automatic dark mode.
+    Uses CSS background-image with the global theme contract.
     The logo image changes based on:
     1. System preference (prefers-color-scheme: dark)
-    2. Manual override (html[data-theme="dark"])
+    2. Manual override (html[data-theme])
   -->
   <div class="logo-standard__mark" role="img" aria-label={alt}></div>
 </div>
@@ -55,19 +55,19 @@
     background-position: center;
   }
 
-  /* Dark mode: Automatic system preference detection */
+  /* System dark route */
   @media (prefers-color-scheme: dark) {
     .logo-standard__mark {
       background-image: url('/logos/logo-standard-dark.svg');
     }
   }
 
-  /* Dark mode: Manual theme override (future-proof for theme toggle) */
+  /* Manual dark route */
   :global(html[data-theme='dark']) .logo-standard__mark {
     background-image: url('/logos/logo-standard-dark.svg');
   }
 
-  /* Light mode: Manual theme override (ensures light logo when explicitly set) */
+  /* Manual light route */
   :global(html[data-theme='light']) .logo-standard__mark {
     background-image: url('/logos/logo-standard-light.svg');
   }

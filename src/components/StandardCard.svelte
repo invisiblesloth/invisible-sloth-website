@@ -248,11 +248,7 @@
     /* Hover - lift card with elevation shadow and state layer */
     .standard-card:hover .standard-card__surface {
       transform: translate(-2px, -4px);
-      box-shadow:
-        1px 1px 4px 0px rgba(0, 0, 0, 0.08),
-        4px 4px 7px 0px rgba(0, 0, 0, 0.04),
-        6px 6px 14px 0px rgba(0, 0, 0, 0.04),
-        3px 3px 7px 0px rgba(0, 0, 0, 0.02);
+      box-shadow: var(--effect-standard-card-lift);
     }
 
     .standard-card:hover .standard-card__state-layer {
@@ -288,11 +284,7 @@
     /* Touch devices - default lifted state */
     .standard-card__surface {
       transform: translate(-2px, -4px);
-      box-shadow:
-        1px 1px 4px 0px rgba(0, 0, 0, 0.08),
-        4px 4px 7px 0px rgba(0, 0, 0, 0.04),
-        6px 6px 14px 0px rgba(0, 0, 0, 0.04),
-        3px 3px 7px 0px rgba(0, 0, 0, 0.02);
+      box-shadow: var(--effect-standard-card-lift);
     }
 
     /* Active/Pressed - return to origin */

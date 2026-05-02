@@ -10,7 +10,7 @@
       docs: {
         description: {
           component:
-            'Invisible Sloth logo components with automatic dark mode support. Two variants available: Technical (simplified for headers at 96px) and Standard (full design for footers at 160px). Both use CSS-based theme switching with no JavaScript required. Toggle dark mode in the toolbar to see theme switching in action.',
+            'Invisible Sloth logo components with system and manual theme support. Two variants available: Technical (simplified for headers at 96px) and Standard (full design for footers at 160px). Both use CSS-based theme routing with no JavaScript required. Use the theme toolbar to compare system, light, and dark modes.',
         },
       },
     },

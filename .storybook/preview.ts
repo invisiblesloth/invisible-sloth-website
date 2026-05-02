@@ -5,6 +5,7 @@ import { initLogoHoverTilt } from '../src/scripts/logoHoverTilt';
 
 const isDev = import.meta.env.DEV;
 type ImageLoadingEnhancerModule = typeof import('../src/scripts/imageLoadingEnhancer');
+type PreviewTheme = 'system' | 'light' | 'dark';
 
 let imageLoadingEnhancerImport: Promise<ImageLoadingEnhancerModule> | undefined;
 
@@ -89,10 +90,11 @@ const preview: Preview = {
     theme: {
       name: 'Theme',
       description: 'Global theme for components',
-      defaultValue: 'light',
+      defaultValue: 'system',
       toolbar: {
         icon: 'circlehollow',
         items: [
+          { value: 'system', title: 'System', icon: 'browser' },
           { value: 'light', title: 'Light', icon: 'circlehollow' },
           { value: 'dark', title: 'Dark', icon: 'circle' },
         ],
@@ -103,10 +105,15 @@ const preview: Preview = {
 
   decorators: [
     (Story, context) => {
-      // Apply data-theme attribute to sync with design system
+      // System mode leaves data-theme unset so Storybook validates production fallback.
       if (typeof document !== 'undefined') {
-        const theme = (context.globals.theme as 'light' | 'dark') || 'light';
-        document.documentElement.setAttribute('data-theme', theme);
+        const theme = (context.globals.theme as PreviewTheme | undefined) ?? 'system';
+
+        if (theme === 'light' || theme === 'dark') {
+          document.documentElement.setAttribute('data-theme', theme);
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
       }
 
       const rendered = Story();

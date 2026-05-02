@@ -9,7 +9,15 @@
   --effect-elevation-2: 1px 1px 2px 0px #0000000a, 2px 2px 5px 0px #0000000a, 4px 4px 10px 0px #00000003;
   --effect-elevation-3: 1px 1px 3px 0px #00000012, 3px 3px 6px 0px #0000000a, 5px 5px 12px 0px #00000008, 3px 3px 4px 0px #00000005;
   --effect-elevation-4: 1px 2px 4px 0px #00000014, 4px 4px 7px 0px #0000000a, 6px 7px 14px 0px #0000000a, 3px 3px 7px 0px #00000005;
-  
+  --effect-tag-hover:
+    1px 1px 4px rgba(0, 0, 0, 0.25),
+    3px 3px 3px rgba(0, 0, 0, 0.05);
+  --effect-standard-card-lift:
+    1px 1px 4px 0px rgba(0, 0, 0, 0.08),
+    4px 4px 7px 0px rgba(0, 0, 0, 0.04),
+    6px 6px 14px 0px rgba(0, 0, 0, 0.04),
+    3px 3px 7px 0px rgba(0, 0, 0, 0.02);
+
   /* Glow */
   --effect-glow-1: 0px 0px 4px 0px #ffffff24;
   --effect-glow-2: 0px 0px 10px 1px #ffffff24, 0px 0px 4px -1px #ffffff40;
