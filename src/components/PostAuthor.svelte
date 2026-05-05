@@ -2,8 +2,8 @@
 /**
  * PostAuthor
  *
- * Content-only author byline block with optional avatar and responsive label
- * typography. Renders text-only when no usable image source is provided.
+ * Content-only author byline block with optional avatar and component-scoped
+ * label typography. Renders text-only when no usable image source is provided.
  *
  * @prop {string} name - Required author name; trimmed and rendered as text
  * @prop {string} imageSrc - Optional avatar source; ignored when empty after trim
@@ -93,6 +93,7 @@
     margin: 0;
     inline-size: 100%;
     overflow-wrap: anywhere;
+    /* Metadata label treatment; not part of page/section heading scale. */
     font-family: var(--typography-label-large-family);
     font-size: var(--typography-label-large-size);
     font-weight: var(--typography-label-large-weight);

@@ -3,7 +3,7 @@
    * ProjectCard component for displaying project information
    *
    * Featured project card with badges, name, subhead, slotted description, and CTA button.
-   * Card width and typography respond to viewport size for optimal readability.
+   * Card width and component-scoped typography respond to viewport size for optimal readability.
    *
    * Responsive behavior:
    * - Compact (0-631px): 398px width, smaller typography
@@ -118,7 +118,7 @@
     width: 100%;
   }
 
-  /* Extended breakpoint (1015px+): display-small */
+  /* Card-specific h2 treatment; page/section heading scale remains in .heading-h*. */
   @media (min-width: 1015px) {
     .project-card__title {
       font-family: var(--typography-display-small-family);
@@ -134,7 +134,7 @@
     width: 100%;
   }
 
-  /* Extended breakpoint (1015px+): headline-medium */
+  /* Card-specific subhead treatment. */
   @media (min-width: 1015px) {
     .project-card__subhead {
       font-family: var(--typography-headline-medium-family);
@@ -156,7 +156,7 @@
     margin-block: 0;
   }
 
-  /* Extended breakpoint (1015px+): body-large */
+  /* Card-specific description treatment. */
   @media (min-width: 1015px) {
     .project-card__description {
       font-family: var(--typography-body-large-family);

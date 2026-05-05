@@ -2,7 +2,10 @@
   /**
    * Detail Header
    *
-   * Content-only title and excerpt block for page and post header wrappers.
+   * Content-only title and lead-copy excerpt block for page and post header wrappers.
+   *
+   * The title is intentionally hardcoded to h1 for page/detail-header-level use.
+   * Nested-section reuse would need a separate heading-level API.
    *
    * @prop {string} title - Required visible page title text
    * @prop {string} excerpt - Optional supporting excerpt text
@@ -57,6 +60,7 @@
   }
 
   .detail-header__excerpt {
+    /* Lead copy intentionally mirrors responsive headline scale while remaining a paragraph. */
     font-family: var(--typography-headline-small-family);
     font-size: var(--typography-headline-small-size);
     font-weight: var(--typography-headline-small-weight);

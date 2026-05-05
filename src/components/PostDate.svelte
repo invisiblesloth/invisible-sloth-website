@@ -3,7 +3,7 @@
  * PostDate
  *
  * Content-only publication date atom that renders preformatted,
- * human-readable text inside a semantic <time> element.
+ * human-readable metadata text inside a semantic <time> element.
  *
  * @prop {string} date - Required human-readable date text rendered as provided
  * @prop {string} dateTime - Optional machine-readable value mapped to the datetime attribute
@@ -51,6 +51,7 @@
     padding-block: var(--space-100);
     color: var(--color-on-surface);
     text-align: start;
+    /* Metadata text treatment; not part of page/section heading scale. */
     font-family: var(--typography-title-medium-family);
     font-size: var(--typography-title-medium-size);
     font-weight: var(--typography-title-medium-weight);

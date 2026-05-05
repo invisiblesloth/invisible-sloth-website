@@ -8,7 +8,7 @@
    * Breakpoint sizing strategy:
    * - Base (0-631px): Compact layout with smaller logo
    * - Medium (632-1014px): Larger logo, headline-small tagline
-   * - Extended (1015px+): Same logo, headline-large tagline
+   * - Extended (1015px+): Same logo, headline-medium tagline
    * - Large (1176px+): Content constrained to max-width
    *
    * @prop {string} homeHref - URL for logo link (default: '/') - set to empty string to disable link
@@ -137,10 +137,9 @@
     width: 100%;
   }
 
-  /* Extended breakpoint (1015px+) */
+  /* Brand/footer tagline treatment; keep visually stable outside .heading-h* scale. */
   @media (min-width: 1015px) {
     .site-footer__tagline-text {
-      /* Extended+ (1015px+): headline-medium */
       font-family: var(--typography-headline-medium-family);
       font-size: var(--typography-headline-medium-size);
       font-weight: var(--typography-headline-medium-weight);

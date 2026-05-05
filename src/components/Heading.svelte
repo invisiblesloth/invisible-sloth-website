@@ -1,8 +1,11 @@
 <!--
 /**
  * Heading
- * Semantic heading component with responsive typography and spacing.
- * Supports all heading levels (h1-h6) with appropriate visual hierarchy.
+ * Semantic heading layout wrapper.
+ *
+ * Renders h1-h6 elements with the matching .heading-h* utility.
+ * Global heading utilities own responsive typography scale; this component
+ * owns heading composition, spacing, and layout constraints.
  *
  * @prop {string} level - Semantic heading level (h1-h6)
  * @prop {string} text - Optional heading text (use children snippet for rich content)
