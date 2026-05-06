@@ -42,115 +42,17 @@ const socialCardUrl = new URL("/social-card.png", Astro.site).toString();
       data-system-theme-color
     />
 
+    <!-- Browser bootstrap. -->
     <script is:inline>
       document.documentElement.dataset.js = "true";
       document.documentElement.dataset.imageEnhancer = "pending";
     </script>
 
-    <script is:inline>
-      (() => {
-        const root = document.documentElement;
-        const manualThemeColorSelector = 'meta[name="theme-color"][data-manual-theme-color]';
-        const systemThemeColorSelector = 'meta[name="theme-color"][data-system-theme-color]';
-        let syncFrame = 0;
+    <!-- Theme color sync. -->
+    <script>
+      import { initThemeColorSync } from "../scripts/themeColorSync";
 
-        const setSystemThemeColorRouting = (enabled) => {
-          document.querySelectorAll(systemThemeColorSelector).forEach((meta) => {
-            if (!(meta instanceof HTMLMetaElement)) {
-              return;
-            }
-
-            if (!meta.dataset.systemThemeColorMedia) {
-              meta.dataset.systemThemeColorMedia = meta.getAttribute('media') ?? '';
-            }
-
-            if (enabled) {
-              const media = meta.dataset.systemThemeColorMedia;
-
-              if (media) {
-                meta.setAttribute('media', media);
-              } else {
-                meta.removeAttribute('media');
-              }
-
-              return;
-            }
-
-            meta.setAttribute('media', 'not all');
-          });
-        };
-
-        const readConcreteBackgroundColor = () => {
-          const probe = document.createElement('span');
-          probe.style.cssText = [
-            'position: fixed',
-            'inline-size: 0',
-            'block-size: 0',
-            'overflow: hidden',
-            'pointer-events: none',
-            'background-color: var(--color-background)'
-          ].join(';');
-
-          (document.body || root).appendChild(probe);
-          const color = getComputedStyle(probe).backgroundColor.trim();
-          probe.remove();
-
-          return color;
-        };
-
-        const syncManualThemeColor = () => {
-          syncFrame = 0;
-
-          const theme = root.dataset.theme;
-          const hasManualTheme = theme === 'light' || theme === 'dark';
-          let manualThemeColor = document.querySelector(manualThemeColorSelector);
-
-          if (!hasManualTheme) {
-            manualThemeColor?.remove();
-            setSystemThemeColorRouting(true);
-            return;
-          }
-
-          const color = readConcreteBackgroundColor();
-
-          if (!color || color.includes('var(')) {
-            manualThemeColor?.remove();
-            setSystemThemeColorRouting(true);
-            return;
-          }
-
-          if (!manualThemeColor) {
-            manualThemeColor = document.createElement('meta');
-            manualThemeColor.setAttribute('name', 'theme-color');
-            manualThemeColor.dataset.manualThemeColor = 'true';
-            manualThemeColor.setAttribute('content', color);
-            document.head.appendChild(manualThemeColor);
-          } else {
-            manualThemeColor.setAttribute('content', color);
-          }
-
-          setSystemThemeColorRouting(false);
-        };
-
-        const requestThemeColorSync = () => {
-          if (syncFrame) {
-            return;
-          }
-
-          syncFrame = requestAnimationFrame(syncManualThemeColor);
-        };
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', requestThemeColorSync, { once: true });
-        } else {
-          requestThemeColorSync();
-        }
-
-        new MutationObserver(requestThemeColorSync).observe(root, {
-          attributes: true,
-          attributeFilter: ['data-theme']
-        });
-      })();
+      initThemeColorSync(document);
     </script>
 
     <link rel="canonical" href={canonical} />
@@ -180,6 +82,7 @@ const socialCardUrl = new URL("/social-card.png", Astro.site).toString();
       rel="stylesheet"
     />
 
+    <!-- Legacy DOM polyfill. -->
     <script is:inline>
       (() => {
         const polyfillRemove = (Ctor) => {
@@ -201,6 +104,7 @@ const socialCardUrl = new URL("/social-card.png", Astro.site).toString();
   <body class="page">
     <slot />
 
+    <!-- Browser enhancements. -->
     <script>
       const isDev = import.meta.env.DEV;
 
