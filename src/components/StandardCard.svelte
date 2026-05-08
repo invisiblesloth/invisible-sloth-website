@@ -258,7 +258,7 @@
     /* Hover - underline title */
     .standard-card:hover .standard-card__title {
       text-decoration: underline;
-      text-decoration-thickness: 1px;
+      text-decoration-thickness: 0.16em;
       text-decoration-color: var(--color-on-surface);
       text-underline-position: from-font;
     }
@@ -300,7 +300,7 @@
     /* Touch - underline title on active */
     .standard-card:active .standard-card__title {
       text-decoration: underline;
-      text-decoration-thickness: 1px;
+      text-decoration-thickness: 0.16em;
       text-decoration-color: var(--color-on-surface);
       text-underline-position: from-font;
     }
