@@ -2,11 +2,12 @@
 /**
  * PageHeader
  *
- * Reusable page header composition with wide media, clickable tags, and
- * detail-header title/excerpt content.
+ * Reusable page header composition with optional wide media, clickable tags,
+ * and detail-header title/excerpt content.
  *
- * Media mode is fixed for this pattern: PageHeader always renders its image
- * with frame="auto" and fit="contain" so shaped assets are not cropped.
+ * When media with a non-empty source is provided, media is meaningful content
+ * for this pattern: PageHeader always renders it as non-decorative with
+ * frame="auto" and fit="contain" so shaped assets are not cropped.
  */
 -->
 <script module lang="ts">
@@ -41,7 +42,7 @@
     title,
     excerpt = '',
     tags = [],
-    imageProps,
+    imageProps = undefined,
     captionText = '',
     creditText = '',
     caption,
@@ -51,7 +52,7 @@
     title: string;
     excerpt?: string;
     tags?: PageHeaderTag[];
-    imageProps: ImageProps;
+    imageProps?: ImageProps;
     captionText?: string;
     creditText?: string;
     caption?: Snippet;
@@ -83,6 +84,7 @@
     resolvedTags.filter((tag): tag is ResolvedPageHeaderTag => !('invalid' in tag))
   );
   const hasTags = $derived(normalizedTags.length > 0);
+  const hasImage = $derived(String(imageProps?.src ?? '').trim().length > 0);
   const pageHeaderImageProps = $derived.by((): ImageProps => {
     const resolvedImageProps = imageProps ?? ({} as ImageProps);
     const imageClass = ['page-header__media', resolvedImageProps.class].filter(Boolean).join(' ');
@@ -90,6 +92,7 @@
     return {
       ...resolvedImageProps,
       class: imageClass,
+      decorative: false,
       frame: 'auto',
       fit: 'contain',
     };
@@ -115,16 +118,18 @@
 </script>
 
 <header class={pageHeaderClasses}>
-  <div class="page-header__image-rail">
-    <Figure
-      imageProps={pageHeaderImageProps}
-      {captionText}
-      {creditText}
-      {caption}
-      {credit}
-      class="page-header__figure"
-    />
-  </div>
+  {#if hasImage}
+    <div class="page-header__image-rail">
+      <Figure
+        imageProps={pageHeaderImageProps}
+        {captionText}
+        {creditText}
+        {caption}
+        {credit}
+        class="page-header__figure"
+      />
+    </div>
+  {/if}
 
   {#if hasTags}
     <div class="page-header__content-rail">

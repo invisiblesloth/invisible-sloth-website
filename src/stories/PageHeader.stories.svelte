@@ -36,7 +36,7 @@
       docs: {
         description: {
           component:
-            'Responsive page header composition with wide media, clickable tag links, and DetailHeader content. The default tag hrefs are future-route placeholders for planned tag landing pages; they are not current site routes.',
+            'Responsive page header composition with optional wide media, clickable tag links, and DetailHeader content. When media is present, PageHeader treats it as non-decorative content and needs meaningful image alt text. The default tag hrefs are future-route placeholders for planned tag landing pages; they are not current site routes.',
         },
       },
     },
@@ -72,6 +72,8 @@
       },
       imageProps: {
         control: false,
+        description:
+          'Optional media props. PageHeader renders media only when src is non-empty, forces decorative=false, frame="auto", and fit="contain"; provide meaningful alt text when media is present.',
         table: {
           disable: true,
         },
@@ -99,6 +101,39 @@
 </script>
 
 <Story name="Default" />
+
+<Story
+  name="Title Only"
+  args={{
+    excerpt: '',
+    tags: [],
+    imageProps: undefined,
+  }}
+/>
+
+<Story
+  name="Title And Excerpt"
+  args={{
+    tags: [],
+    imageProps: undefined,
+  }}
+/>
+
+<Story
+  name="With Tags"
+  args={{
+    excerpt: '',
+    imageProps: undefined,
+  }}
+/>
+
+<Story
+  name="With Image"
+  args={{
+    excerpt: '',
+    tags: [],
+  }}
+/>
 
 <Story
   name="With Caption And Credit"

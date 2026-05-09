@@ -7,7 +7,7 @@
 
   const imageSrc = '/assets/note-thanun-86_8M5BckfA-unsplash-1024.webp';
   const imageAlt =
-    'Aerial view of Tokyo Tower painted in red and white, surrounded by modern skyscrapers.';
+    'Aerial view of Tokyo Tower painted in red and white, surrounded by modern skyscrapers in Tokyo, Japan under a clear blue sky.';
 
   const noRenderableSourceArgs = {
     kicker: 'Kicker',
