@@ -52,6 +52,10 @@
         ],
       },
       docs: {
+        canvas: {
+          // Allow the Docs page to scroll past this tall preview.
+          className: 'docs-preview--page-scroll',
+        },
         description: {
           component:
             'Responsive blog post header composition for Storybook only. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',

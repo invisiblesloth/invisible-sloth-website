@@ -49,3 +49,14 @@
 #storybook-root {
   background: var(--color-background) !important;
 }
+
+/*
+   Let tall, page-like Docs previews pass wheel scrolling back to the Docs page.
+   These selectors mirror Storybook internals; remove or revise this opt-in
+   workaround if a Storybook upgrade changes the preview wrapper behavior.
+*/
+.sbdocs-preview.docs-preview--page-scroll .docs-story,
+.sbdocs-preview.docs-preview--page-scroll [data-story-block="true"],
+.sbdocs-preview.docs-preview--page-scroll .innerZoomElementWrapper {
+  overflow: visible !important;
+}
