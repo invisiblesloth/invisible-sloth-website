@@ -116,6 +116,9 @@
   --theme-light-state-on-primary-08: rgba(255, 255, 255, 0.08);
   --theme-light-state-on-primary-12: rgba(255, 255, 255, 0.12);
   --theme-light-state-on-primary-16: rgba(255, 255, 255, 0.16);
+  --theme-light-state-on-inverse-primary-08: rgba(32, 73, 18, 0.08);
+  --theme-light-state-on-inverse-primary-12: rgba(32, 73, 18, 0.12);
+  --theme-light-state-on-inverse-primary-16: rgba(32, 73, 18, 0.16);
   --theme-light-state-secondary-08: rgba(75, 84, 84, 0.08);
   --theme-light-state-secondary-12: rgba(75, 84, 84, 0.12);
   --theme-light-state-secondary-16: rgba(75, 84, 84, 0.16);
@@ -267,6 +270,9 @@
   --theme-dark-state-on-primary-08: rgba(10, 57, 0, 0.08);
   --theme-dark-state-on-primary-12: rgba(10, 57, 0, 0.12);
   --theme-dark-state-on-primary-16: rgba(10, 57, 0, 0.16);
+  --theme-dark-state-on-inverse-primary-08: rgba(170, 229, 144, 0.08);
+  --theme-dark-state-on-inverse-primary-12: rgba(170, 229, 144, 0.12);
+  --theme-dark-state-on-inverse-primary-16: rgba(170, 229, 144, 0.16);
   --theme-dark-state-secondary-08: rgba(190, 201, 198, 0.08);
   --theme-dark-state-secondary-12: rgba(190, 201, 198, 0.12);
   --theme-dark-state-secondary-16: rgba(190, 201, 198, 0.16);
@@ -441,6 +447,9 @@
   --color-state-on-primary-08: var(--theme-active-state-on-primary-08);
   --color-state-on-primary-12: var(--theme-active-state-on-primary-12);
   --color-state-on-primary-16: var(--theme-active-state-on-primary-16);
+  --color-state-on-inverse-primary-08: var(--theme-active-state-on-inverse-primary-08);
+  --color-state-on-inverse-primary-12: var(--theme-active-state-on-inverse-primary-12);
+  --color-state-on-inverse-primary-16: var(--theme-active-state-on-inverse-primary-16);
   --color-state-secondary-08: var(--theme-active-state-secondary-08);
   --color-state-secondary-12: var(--theme-active-state-secondary-12);
   --color-state-secondary-16: var(--theme-active-state-secondary-16);

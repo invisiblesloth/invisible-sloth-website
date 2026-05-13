@@ -127,6 +127,9 @@
   --theme-active-state-on-primary-08: var(--theme-light-state-on-primary-08);
   --theme-active-state-on-primary-12: var(--theme-light-state-on-primary-12);
   --theme-active-state-on-primary-16: var(--theme-light-state-on-primary-16);
+  --theme-active-state-on-inverse-primary-08: var(--theme-light-state-on-inverse-primary-08);
+  --theme-active-state-on-inverse-primary-12: var(--theme-light-state-on-inverse-primary-12);
+  --theme-active-state-on-inverse-primary-16: var(--theme-light-state-on-inverse-primary-16);
   --theme-active-state-secondary-08: var(--theme-light-state-secondary-08);
   --theme-active-state-secondary-12: var(--theme-light-state-secondary-12);
   --theme-active-state-secondary-16: var(--theme-light-state-secondary-16);
@@ -281,6 +284,9 @@
     --theme-active-state-on-primary-08: var(--theme-dark-state-on-primary-08);
     --theme-active-state-on-primary-12: var(--theme-dark-state-on-primary-12);
     --theme-active-state-on-primary-16: var(--theme-dark-state-on-primary-16);
+    --theme-active-state-on-inverse-primary-08: var(--theme-dark-state-on-inverse-primary-08);
+    --theme-active-state-on-inverse-primary-12: var(--theme-dark-state-on-inverse-primary-12);
+    --theme-active-state-on-inverse-primary-16: var(--theme-dark-state-on-inverse-primary-16);
     --theme-active-state-secondary-08: var(--theme-dark-state-secondary-08);
     --theme-active-state-secondary-12: var(--theme-dark-state-secondary-12);
     --theme-active-state-secondary-16: var(--theme-dark-state-secondary-16);
@@ -439,6 +445,9 @@ html[data-theme='dark'] {
   --theme-active-state-on-primary-08: var(--theme-dark-state-on-primary-08);
   --theme-active-state-on-primary-12: var(--theme-dark-state-on-primary-12);
   --theme-active-state-on-primary-16: var(--theme-dark-state-on-primary-16);
+  --theme-active-state-on-inverse-primary-08: var(--theme-dark-state-on-inverse-primary-08);
+  --theme-active-state-on-inverse-primary-12: var(--theme-dark-state-on-inverse-primary-12);
+  --theme-active-state-on-inverse-primary-16: var(--theme-dark-state-on-inverse-primary-16);
   --theme-active-state-secondary-08: var(--theme-dark-state-secondary-08);
   --theme-active-state-secondary-12: var(--theme-dark-state-secondary-12);
   --theme-active-state-secondary-16: var(--theme-dark-state-secondary-16);
