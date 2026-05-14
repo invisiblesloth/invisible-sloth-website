@@ -224,6 +224,16 @@
   @media (min-width: 632px) {
     .navigation-drawer {
       --navigation-drawer-menu-button-block-offset: clamp(8.5px, calc(7vw - 24px), 24px);
+      --navigation-drawer-panel-block-start: calc(
+        var(--navigation-drawer-menu-button-block-start) - var(--navigation-drawer-panel-padding)
+      );
+      --navigation-drawer-panel-max-block-size: max(
+        var(--radius-xl),
+        calc(
+          100dvh - var(--navigation-drawer-panel-block-start) -
+            var(--navigation-drawer-panel-block-end-gap)
+        )
+      );
       --navigation-menu-inline-size: var(--navigation-drawer-panel-inline-size);
       --navigation-menu-padding-block: var(--navigation-drawer-panel-padding);
       --navigation-menu-padding-inline: var(--navigation-drawer-panel-padding);
@@ -231,15 +241,13 @@
     }
 
     :global(.navigation-drawer__menu) {
-      inset-block-start: calc(
-        var(--navigation-drawer-menu-button-block-start) - var(--navigation-drawer-panel-padding)
-      );
-      inset-block-end: var(--navigation-drawer-panel-block-end-gap);
+      inset-block-start: var(--navigation-drawer-panel-block-start);
+      inset-block-end: auto;
       inset-inline-start: calc(
         var(--navigation-drawer-header-inline) - var(--navigation-drawer-panel-padding)
       );
       min-block-size: 0;
-      max-block-size: none;
+      max-block-size: var(--navigation-drawer-panel-max-block-size);
     }
   }
 
