@@ -1,25 +1,40 @@
 <script lang="ts">
+  import {
+    BADGE_VARIANTS,
+    DEFAULT_BADGE_VARIANT,
+    isBadgeVariant,
+    normalizeBadgeVariant,
+    normalizeBadgeVariantCandidate,
+    type BadgeVariant,
+  } from '../lib/badge';
+  import { warnOnce } from '../lib/devWarnings';
+
   /**
    * Badge component for displaying labels with semantic color variants
    *
-   * @prop {string} variant - Badge style variant (default: 'default')
+   * @prop {BadgeVariant} variant - Badge style variant (default: 'default')
    * @prop {string} label - Badge text label
    */
   let {
-    variant = 'default',
+    variant = DEFAULT_BADGE_VARIANT,
     label = 'Label',
   }: {
-    variant?: 'default' | 'boardgame' | 'playdate' | 'apple' | 'error' | 'web';
+    variant?: BadgeVariant;
     label?: string;
   } = $props();
 
-  const normalizeVariant = (value?: string, fallback: string = 'default') => {
-    if (!value) return fallback;
-    const sanitized = value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
-    return sanitized || fallback;
-  };
+  const normalizedCandidate = $derived(normalizeBadgeVariantCandidate(variant));
+  const normalizedVariant = $derived(normalizeBadgeVariant(variant));
+  const variantModifier = $derived(`badge--${normalizedVariant}`);
 
-  const variantModifier = $derived(`badge--${normalizeVariant(variant, 'default')}`);
+  $effect(() => {
+    if (!isBadgeVariant(normalizedCandidate)) {
+      warnOnce(
+        'badge:invalid-variant',
+        `[Badge] \`variant\` must be one of ${BADGE_VARIANTS.map((value) => `"${value}"`).join(', ')}. Falling back to "${DEFAULT_BADGE_VARIANT}".`
+      );
+    }
+  });
 </script>
 
 <span class="badge {variantModifier}">
@@ -52,8 +67,8 @@
      ========================================== */
 
   .badge--default {
-    background-color: var(--color-inverse-secondary);
-    color: var(--color-on-inverse-secondary);
+    background-color: var(--color-badge-default);
+    color: var(--color-on-badge-default);
   }
 
   /* ==========================================
@@ -62,8 +77,8 @@
      ========================================== */
   
   .badge--boardgame {
-    background-color: var(--color-green-070);
-    color: #092700;
+    background-color: var(--color-badge-boardgame);
+    color: var(--color-on-badge-boardgame);
   }
   
   /* ==========================================
@@ -72,8 +87,8 @@
      ========================================== */
   
   .badge--playdate {
-    background-color: #FCB426;
-    color: #040707;
+    background-color: var(--color-badge-playdate);
+    color: var(--color-on-badge-playdate);
   }
   
   /* ==========================================
@@ -82,8 +97,8 @@
      ========================================== */
   
   .badge--apple {
-    background-color: #0071E3;
-    color: #FFFFFF;
+    background-color: var(--color-badge-apple);
+    color: var(--color-on-badge-apple);
   }
   
   /* ==========================================
@@ -92,8 +107,8 @@
      ========================================== */
   
   .badge--web {
-    background-color: var(--color-inverse-tertiary);
-    color: var(--color-on-inverse-tertiary);
+    background-color: var(--color-badge-web);
+    color: var(--color-on-badge-web);
   }
   
   /* ==========================================
@@ -102,8 +117,8 @@
      ========================================== */
   
   .badge--error {
-    background-color: var(--color-inverse-error);
-    color: var(--color-on-inverse-error);
+    background-color: var(--color-badge-error);
+    color: var(--color-on-badge-error);
   }
 
   /* ==========================================

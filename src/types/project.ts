@@ -1,13 +1,6 @@
-export const PROJECT_BADGE_VARIANTS = [
-  'default',
-  'boardgame',
-  'playdate',
-  'apple',
-  'error',
-  'web',
-] as const;
+import type { BadgeVariant } from '../lib/badge';
 
-export type ProjectBadgeVariant = (typeof PROJECT_BADGE_VARIANTS)[number];
+export type ProjectBadgeVariant = BadgeVariant;
 
 export type ProjectBadge = {
   label: string;

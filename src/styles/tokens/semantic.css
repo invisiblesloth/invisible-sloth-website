@@ -415,6 +415,18 @@
   --color-error-fixed: var(--theme-active-error-fixed);
   --color-on-error-fixed: var(--theme-active-on-error-fixed);
   --color-accent-error: var(--theme-active-accent-error);
+  --color-badge-default: var(--color-inverse-secondary);
+  --color-on-badge-default: var(--color-on-inverse-secondary);
+  --color-badge-boardgame: var(--color-green-070);
+  --color-on-badge-boardgame: #092700;
+  --color-badge-playdate: #FCB426;
+  --color-on-badge-playdate: #040707;
+  --color-badge-apple: #0071E3;
+  --color-on-badge-apple: #FFFFFF;
+  --color-badge-web: var(--color-inverse-tertiary);
+  --color-on-badge-web: var(--color-on-inverse-tertiary);
+  --color-badge-error: var(--color-inverse-error);
+  --color-on-badge-error: var(--color-on-inverse-error);
   --color-background: var(--theme-active-background);
   --color-background-dim: var(--theme-active-background-dim);
   --color-on-background: var(--theme-active-on-background);

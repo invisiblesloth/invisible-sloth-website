@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { PROJECT_BADGE_VARIANTS } from './types/project';
+import { BADGE_VARIANTS } from './lib/badge';
 
 /**
  * Content Collections configuration for the Invisible Sloth website
@@ -13,7 +13,7 @@ import { PROJECT_BADGE_VARIANTS } from './types/project';
 // Badge schema - validates platform and status badges
 const badgeSchema = z.object({
   label: z.string().trim().min(1),
-  variant: z.enum(PROJECT_BADGE_VARIANTS)
+  variant: z.enum(BADGE_VARIANTS)
 });
 
 // Button schema - validates optional button configuration for project cards

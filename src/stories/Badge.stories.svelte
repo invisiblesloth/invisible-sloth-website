@@ -1,6 +1,10 @@
-<script module>
+<script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import Badge from '../components/Badge.svelte';
+  import { BADGE_VARIANTS, type BadgeVariant } from '../lib/badge';
+
+  const normalizedRuntimeVariant = ' Playdate ' as unknown as BadgeVariant;
+  const invalidRuntimeVariant = 'unsupported-platform' as unknown as BadgeVariant;
 
   const { Story } = defineMeta({
     title: 'Atoms/Badge',
@@ -9,7 +13,7 @@
     argTypes: {
       variant: {
         control: 'select',
-        options: ['default', 'boardgame', 'playdate', 'apple', 'web', 'error'],
+        options: BADGE_VARIANTS,
         description: 'Badge color variant',
       },
       label: {
@@ -65,5 +69,37 @@
   args={{
     variant: 'error',
     label: 'Error',
+  }}
+/>
+
+<Story
+  name="Normalized Runtime Variant"
+  args={{
+    variant: normalizedRuntimeVariant,
+    label: 'Playdate',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Casts padded mixed-case runtime input through the strict public type. Badge should normalize to the Playdate variant without warning.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Invalid Runtime Variant Fallback"
+  args={{
+    variant: invalidRuntimeVariant,
+    label: 'Invalid Variant',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Casts an unsupported runtime variant through the strict public type. Badge should render as the default variant and emit the deduplicated dev-only warning.',
+      },
+    },
   }}
 />

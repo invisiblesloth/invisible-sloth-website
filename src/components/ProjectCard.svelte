@@ -21,23 +21,7 @@
   import Button from './Button.svelte';
   import BadgeGroup from './BadgeGroup.svelte';
   import Badge from './Badge.svelte';
-  import type { ProjectBadge, ProjectBadgeVariant, ProjectButton } from '../types/project';
-
-  const BADGE_PRESET_LABELS: Record<ProjectBadgeVariant, string> = {
-    default: 'Badge',
-    boardgame: 'Boardgame',
-    playdate: 'Playdate',
-    apple: 'Apple Platforms',
-    error: 'Error',
-    web: 'Web',
-  };
-
-  const normalizeBadge = (badge: ProjectBadge) => {
-    const variant = badge.variant ?? 'default';
-    const label = badge.label ?? BADGE_PRESET_LABELS[variant] ?? BADGE_PRESET_LABELS.default;
-
-    return { variant, label };
-  };
+  import type { ProjectBadge, ProjectButton } from '../types/project';
 
   let {
     title = 'Project Name',
@@ -55,18 +39,19 @@
     children?: Snippet;
   } = $props();
 
-  const badgeList = $derived(badges.map(normalizeBadge));
-  const hasBadges = $derived(badgeList.length > 0);
+  const hasBadges = $derived(badges.length > 0);
   const fallbackDescription = $derived(description?.trim());
 </script>
 
 <div class="project-card">
   {#if hasBadges}
-    <BadgeGroup>
-      {#each badgeList as badge}
-        <Badge variant={badge.variant} label={badge.label} />
-      {/each}
-    </BadgeGroup>
+    <div class="project-card__badge-group">
+      <BadgeGroup>
+        {#each badges as badge}
+          <Badge variant={badge.variant} label={badge.label} />
+        {/each}
+      </BadgeGroup>
+    </div>
   {/if}
 
   <div class="project-card__content">
@@ -102,6 +87,10 @@
     align-items: flex-start;
     gap: var(--space-gutter);
     width: 100%;
+  }
+
+  .project-card__badge-group {
+    padding-block-end: var(--space-200);
   }
 
   .project-card__content {

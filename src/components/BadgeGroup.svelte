@@ -26,6 +26,5 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-gutter-tight);
-    padding-block-end: var(--space-200);
   }
 </style>
