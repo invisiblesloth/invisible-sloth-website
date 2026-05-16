@@ -10,7 +10,6 @@ badges:
 button:
   label: "Check Roxy out on GitHub"
   href: "https://github.com/invisiblesloth/roxy-engine"
-  hasTrailingIcon: true
   target: "_blank"
 ---
 

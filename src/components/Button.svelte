@@ -1,8 +1,64 @@
 <script lang="ts">
-  import Close from '../icons/Close.svelte';
-  import ExternalLink from '../icons/ExternalLink.svelte';
+  import type { Snippet } from 'svelte';
+  import {
+    DEFAULT_BUTTON_TYPE,
+    DEFAULT_BUTTON_VARIANT,
+    normalizeButtonType,
+    normalizeButtonVariant,
+    type ButtonType,
+    type ButtonVariant,
+  } from '../lib/button';
   import { warnOnce } from '../lib/devWarnings';
   import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
+
+  type ButtonMode = 'link' | 'button';
+
+  type Props = {
+    variant?: ButtonVariant;
+    type?: ButtonType;
+    label?: string;
+    disabled?: boolean;
+    href?: string;
+    target?: string;
+    rel?: string;
+    onclick?: (event: MouseEvent) => void;
+    leadingIcon?: Snippet;
+    trailingIcon?: Snippet;
+    [key: string]: unknown;
+  };
+
+  const BASE_ATTRIBUTES = new Set(['id', 'title', 'lang', 'dir', 'accesskey']);
+  const BLOCKED_ARIA_ATTRIBUTES = new Set([
+    'aria-disabled',
+    'aria-label',
+    'aria-labelledby',
+    'aria-hidden',
+  ]);
+  const OWNED_ATTRIBUTES = new Set([
+    'href',
+    'target',
+    'rel',
+    'type',
+    'disabled',
+    'role',
+    'tabindex',
+    'onclick',
+    'ontouchstart',
+    'ontouchend',
+    'ontouchcancel',
+  ]);
+  const FORWARDED_EVENTS = new Set(['onfocus', 'onblur', 'onmouseenter', 'onmouseleave']);
+  const LINK_ATTRIBUTES = new Set(['download', 'hreflang', 'referrerpolicy']);
+  const BUTTON_ATTRIBUTES = new Set([
+    'name',
+    'value',
+    'form',
+    'formaction',
+    'formenctype',
+    'formmethod',
+    'formnovalidate',
+    'formtarget',
+  ]);
 
   /**
    * Button component with lift-and-reveal hover effect
@@ -10,8 +66,8 @@
    * @prop {string} variant - Button style variant (default: 'filled-primary')
    * @prop {string} type - HTML button type (default: 'button')
    * @prop {string} label - Button text label
-   * @prop {boolean} hasLeadingIcon - Show leading icon (Close icon)
-   * @prop {boolean} hasTrailingIcon - Show trailing icon (ExternalLink icon)
+   * @prop {Snippet} leadingIcon - Optional decorative leading icon snippet; must render inert glyphs only
+   * @prop {Snippet} trailingIcon - Optional decorative trailing icon snippet; must render inert glyphs only
    * @prop {boolean} disabled - Whether the button is disabled
    * @prop {string} href - Optional non-empty URL to render as anchor instead of button
    * @prop {string} target - Optional link target (same-tab by default when href is present)
@@ -22,34 +78,25 @@
    */
 
   let {
-    variant = 'filled-primary',
-    type = 'button',
+    variant = DEFAULT_BUTTON_VARIANT,
+    type = DEFAULT_BUTTON_TYPE,
     label = 'Button',
     disabled = false,
-    hasLeadingIcon = false,
-    hasTrailingIcon = false,
     href = undefined,
     target = undefined,
     rel = undefined,
     onclick = undefined,
-  }: {
-    variant?: string;
-    type?: 'button' | 'submit' | 'reset';
-    label?: string;
-    disabled?: boolean;
-    hasLeadingIcon?: boolean;
-    hasTrailingIcon?: boolean;
-    href?: string;
-    target?: string;
-    rel?: string;
-    onclick?: (event: MouseEvent) => void;
-  } = $props();
+    leadingIcon = undefined,
+    trailingIcon = undefined,
+    ...restProps
+  }: Props = $props();
 
   let pressed = $state(false);
 
   const normalizedHref = $derived(normalizeHref(href));
   const hasHrefProp = $derived(href !== undefined && href !== null);
   const isLinkMode = $derived(Boolean(normalizedHref));
+  const mode = $derived<ButtonMode>(isLinkMode ? 'link' : 'button');
   const isDisabledLink = $derived(Boolean(normalizedHref && disabled));
   const linkHref = $derived<string | undefined>(isDisabledLink ? undefined : normalizedHref);
   const normalizedTarget = $derived<string | undefined>(normalizeTarget(target));
@@ -57,6 +104,42 @@
   const linkRel = $derived<string | undefined>(
     isDisabledLink ? undefined : normalizeRelForTarget(linkTarget, rel)
   );
+  const normalizedVariant = $derived(normalizeButtonVariant(variant));
+  const normalizedType = $derived(normalizeButtonType(type));
+  const variantModifier = $derived(`button--${normalizedVariant}`);
+  const forwardedAttributes = $derived(filterForwardedAttributes(mode, restProps));
+
+  function isAriaAttribute(name: string): boolean {
+    return name.startsWith('aria-') && !BLOCKED_ARIA_ATTRIBUTES.has(name);
+  }
+
+  function isDataAttribute(name: string): boolean {
+    return name.startsWith('data-');
+  }
+
+  function isAllowedAttribute(attributeMode: ButtonMode, name: string): boolean {
+    if (name === 'class' || name === 'style') return false;
+    if (OWNED_ATTRIBUTES.has(name) || BLOCKED_ARIA_ATTRIBUTES.has(name)) return false;
+    if (BASE_ATTRIBUTES.has(name) || isAriaAttribute(name) || isDataAttribute(name)) return true;
+    if (FORWARDED_EVENTS.has(name)) return true;
+
+    return attributeMode === 'link' ? LINK_ATTRIBUTES.has(name) : BUTTON_ATTRIBUTES.has(name);
+  }
+
+  function filterForwardedAttributes(
+    attributeMode: ButtonMode,
+    source: Record<string, unknown>
+  ): Record<string, unknown> {
+    const filtered: Record<string, unknown> = {};
+
+    for (const [key, value] of Object.entries(source)) {
+      if (isAllowedAttribute(attributeMode, key)) {
+        filtered[key] = value;
+      }
+    }
+
+    return filtered;
+  }
 
   $effect(() => {
     if (hasHrefProp && !normalizedHref) {
@@ -65,16 +148,21 @@
         '[Button] `href` must be a non-empty string. Rendering as <button> fallback.'
       );
     }
+
+    if (Object.prototype.hasOwnProperty.call(restProps, 'class')) {
+      warnOnce(
+        'button:unsupported-class',
+        '[Button] `class` is not forwarded. Use the `variant` prop for visual styling.'
+      );
+    }
+
+    if (Object.prototype.hasOwnProperty.call(restProps, 'style')) {
+      warnOnce(
+        'button:unsupported-style',
+        '[Button] `style` is not forwarded. Use component variants and design tokens for styling.'
+      );
+    }
   });
-
-  // Normalized modifier class for BEM variants
-  const normalizeVariant = (value?: string, fallback: string = 'filled-primary'): string => {
-    if (!value) return fallback;
-    const sanitized = value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
-    return sanitized || fallback;
-  };
-
-  const variantModifier = $derived(`button--${normalizeVariant(variant, 'filled-primary')}`);
 
   function handleClick(event: MouseEvent): void {
     onclick?.(event);
@@ -109,9 +197,33 @@
   }
 </script>
 
+{#snippet buttonContent()}
+  <div class="button__side" aria-hidden="true"></div>
+
+  <div class="button__surface">
+    <div class="button__state-layer" aria-hidden="true"></div>
+
+    <span class="button__content">
+      {#if leadingIcon}
+        <span class="button__icon" aria-hidden="true">
+          {@render leadingIcon()}
+        </span>
+      {/if}
+
+      <span class="button__label text-label-large">{label}</span>
+
+      {#if trailingIcon}
+        <span class="button__icon" aria-hidden="true">
+          {@render trailingIcon()}
+        </span>
+      {/if}
+    </span>
+  </div>
+{/snippet}
+
 {#if isLinkMode}
-  <!-- Anchor variant for navigation (Svelte 5 uses event attributes like onclick/ontouch*) -->
   <a
+    {...forwardedAttributes}
     class="button {variantModifier}"
     class:is-pressed={pressed}
     class:is-disabled={isDisabledLink}
@@ -126,70 +238,22 @@
     ontouchcancel={handleTouchEnd}
     onclick={handleAnchorClick}
   >
-    <!-- Shadow/reveal layer (stays in place) -->
-    <div class="button__side" aria-hidden="true"></div>
-
-    <!-- Main button surface (lifts on hover) -->
-    <div class="button__surface">
-      <!-- State layer for interactive feedback -->
-      <div class="button__state-layer" aria-hidden="true"></div>
-
-      <!-- Content -->
-      <span class="button__content">
-        {#if hasLeadingIcon}
-          <span class="button__icon">
-            <Close />
-          </span>
-        {/if}
-
-        <span class="button__label text-label-large">{label}</span>
-
-        {#if hasTrailingIcon}
-          <span class="button__icon">
-            <ExternalLink />
-          </span>
-        {/if}
-      </span>
-    </div>
+    {@render buttonContent()}
   </a>
 {:else}
-  <!-- Button variant for actions (Svelte 5 uses event attributes like onclick/ontouch*) -->
   <button
+    {...forwardedAttributes}
     class="button {variantModifier}"
     class:is-pressed={pressed}
     class:is-disabled={disabled}
-    {type}
+    type={normalizedType}
     {disabled}
     ontouchstart={handleTouchStart}
     ontouchend={handleTouchEnd}
     ontouchcancel={handleTouchEnd}
     onclick={handleClick}
   >
-    <!-- Shadow/reveal layer (stays in place) -->
-    <div class="button__side" aria-hidden="true"></div>
-
-    <!-- Main button surface (lifts on hover) -->
-    <div class="button__surface">
-      <!-- State layer for interactive feedback -->
-      <div class="button__state-layer" aria-hidden="true"></div>
-
-      <!-- Content -->
-      <span class="button__content">
-        {#if hasLeadingIcon}
-          <span class="button__icon">
-            <Close />
-          </span>
-        {/if}
-
-        <span class="button__label text-label-large">{label}</span>
-
-        {#if hasTrailingIcon}
-          <span class="button__icon">
-            <ExternalLink />
-          </span>
-        {/if}
-      </span>
-    </div>
+    {@render buttonContent()}
   </button>
 {/if}
 

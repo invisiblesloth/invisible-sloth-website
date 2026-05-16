@@ -20,7 +20,6 @@ const badgeSchema = z.object({
 const buttonSchema = z.object({
   label: z.string().trim().min(1),
   href: z.string().trim().min(1),
-  hasTrailingIcon: z.boolean().optional(),
   target: z.string().trim().min(1).optional(),
   rel: z.string().trim().min(1).optional()
 }).optional();

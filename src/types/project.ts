@@ -12,5 +12,4 @@ export type ProjectButton = {
   href: string;
   target?: string;
   rel?: string;
-  hasTrailingIcon?: boolean;
 };

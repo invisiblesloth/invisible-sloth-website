@@ -8,8 +8,8 @@
 
   const defaultButton: ProjectButton = {
     label: 'Call to Action',
-    href: '/projects/example',
-    hasTrailingIcon: true,
+    href: 'https://github.com/invisiblesloth/roxy-engine',
+    target: '_blank',
   };
 
   const defaultBadges: ProjectBadge[] = [

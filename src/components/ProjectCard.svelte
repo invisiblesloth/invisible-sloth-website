@@ -21,6 +21,8 @@
   import Button from './Button.svelte';
   import BadgeGroup from './BadgeGroup.svelte';
   import Badge from './Badge.svelte';
+  import ExternalLink from '../icons/ExternalLink.svelte';
+  import { isExternalAbsoluteHttpUrl } from '../lib/siteLinks';
   import type { ProjectBadge, ProjectButton } from '../types/project';
 
   let {
@@ -41,7 +43,12 @@
 
   const hasBadges = $derived(badges.length > 0);
   const fallbackDescription = $derived(description?.trim());
+  const showsExternalCtaIcon = $derived(Boolean(button && isExternalAbsoluteHttpUrl(button.href)));
 </script>
+
+{#snippet externalLinkIcon()}
+  <ExternalLink />
+{/snippet}
 
 <div class="project-card">
   {#if hasBadges}
@@ -75,7 +82,7 @@
       href={button.href}
       target={button.target}
       rel={button.rel}
-      hasTrailingIcon={button.hasTrailingIcon}
+      trailingIcon={showsExternalCtaIcon ? externalLinkIcon : undefined}
     />
   {/if}
 </div>
