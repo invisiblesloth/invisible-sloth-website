@@ -3,6 +3,9 @@
   import SiteFooter from '../components/SiteFooter.svelte';
   import ContactUs from '../components/ContactUs.svelte';
 
+  const contactText = 'For questions, support, or just to say hi, email us at';
+  const contactEmail = 'hello@invisiblesloth.com';
+
   const { Story } = defineMeta({
     title: 'Organisms/SiteFooter',
     component: SiteFooter,
@@ -66,7 +69,7 @@
       tagline="We may be slow, but we're not slowing down!"
       copyrightText="Invisible Sloth, LLC © 2024-2025"
     >
-      <ContactUs />
+      <ContactUs text={contactText} email={contactEmail} />
     </SiteFooter>
   {/snippet}
 </Story>
