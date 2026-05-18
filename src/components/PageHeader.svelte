@@ -11,12 +11,9 @@
  */
 -->
 <script module lang="ts">
-  export type PageHeaderTag = {
-    label: string;
-    href: string;
-    target?: string;
-    rel?: string;
-  };
+  import type { TagLink } from '../lib/tagLinks';
+
+  export type PageHeaderTag = TagLink;
 </script>
 
 <script lang="ts">
@@ -27,16 +24,9 @@
   import Tag from './Tag.svelte';
   import TagGroup from './TagGroup.svelte';
   import { warnOnce } from '../lib/devWarnings';
-  import { normalizeHref } from '../lib/linkBehavior';
+  import { resolveTagLinks } from '../lib/tagLinks';
 
   type ImageProps = ComponentProps<typeof Image>;
-  type ResolvedPageHeaderTag = PageHeaderTag & {
-    index: number;
-  };
-  type TagResolution = ResolvedPageHeaderTag | {
-    index: number;
-    invalid: true;
-  };
 
   let {
     title,
@@ -61,28 +51,8 @@
   } = $props();
 
   const pageHeaderClasses = $derived(['page-header', className].filter(Boolean).join(' '));
-  const tagInputs = $derived(Array.isArray(tags) ? tags : []);
-  const resolvedTags = $derived.by((): TagResolution[] =>
-    tagInputs.map((tag, index) => {
-      const label = String(tag?.label ?? '').trim();
-      const href = normalizeHref(tag?.href);
-
-      if (!label || !href) {
-        return { index, invalid: true };
-      }
-
-      return {
-        index,
-        label,
-        href,
-        target: tag.target,
-        rel: tag.rel,
-      };
-    })
-  );
-  const normalizedTags = $derived(
-    resolvedTags.filter((tag): tag is ResolvedPageHeaderTag => !('invalid' in tag))
-  );
+  const tagResolution = $derived(resolveTagLinks(tags));
+  const normalizedTags = $derived(tagResolution.links);
   const hasTags = $derived(normalizedTags.length > 0);
   const hasImage = $derived(String(imageProps?.src ?? '').trim().length > 0);
   const pageHeaderImageProps = $derived.by((): ImageProps => {
@@ -99,20 +69,18 @@
   });
 
   $effect(() => {
-    if (!Array.isArray(tags)) {
+    if (!tagResolution.inputWasArray) {
       warnOnce(
         'page-header:invalid-tags',
         '[PageHeader] `tags` must be an array. Rendering without tags.'
       );
     }
 
-    for (const tag of resolvedTags) {
-      if ('invalid' in tag) {
-        warnOnce(
-          `page-header:invalid-tag:${tag.index}`,
-          '[PageHeader] Tags need non-empty label and href values. Skipping invalid tag.'
-        );
-      }
+    for (const index of tagResolution.invalidIndexes) {
+      warnOnce(
+        `page-header:invalid-tag:${index}`,
+        '[PageHeader] Tags need non-empty label and href values. Skipping invalid tag.'
+      );
     }
   });
 </script>

@@ -10,12 +10,9 @@
  */
 -->
 <script module lang="ts">
-  export type PostHeaderTag = {
-    label: string;
-    href: string;
-    target?: string;
-    rel?: string;
-  };
+  import type { TagLink } from '../lib/tagLinks';
+
+  export type PostHeaderTag = TagLink;
 </script>
 
 <script lang="ts">
@@ -28,16 +25,9 @@
   import Tag from './Tag.svelte';
   import TagGroup from './TagGroup.svelte';
   import { warnOnce } from '../lib/devWarnings';
-  import { normalizeHref } from '../lib/linkBehavior';
+  import { resolveTagLinks } from '../lib/tagLinks';
 
   type ImageProps = ComponentProps<typeof Image>;
-  type ResolvedPostHeaderTag = PostHeaderTag & {
-    index: number;
-  };
-  type TagResolution = ResolvedPostHeaderTag | {
-    index: number;
-    invalid: true;
-  };
 
   let {
     title,
@@ -88,28 +78,8 @@
   const hasAuthor = $derived(normalizedAuthorName.length > 0);
   const hasAuthorImage = $derived(hasAuthor && normalizedAuthorImageSrc.length > 0);
   const hasImage = $derived(String(resolvedImageProps.src ?? '').trim().length > 0);
-  const tagInputs = $derived(Array.isArray(tags) ? tags : []);
-  const resolvedTags = $derived.by((): TagResolution[] =>
-    tagInputs.map((tag, index) => {
-      const label = String(tag?.label ?? '').trim();
-      const href = normalizeHref(tag?.href);
-
-      if (!label || !href) {
-        return { index, invalid: true };
-      }
-
-      return {
-        index,
-        label,
-        href,
-        target: tag.target,
-        rel: tag.rel,
-      };
-    })
-  );
-  const normalizedTags = $derived(
-    resolvedTags.filter((tag): tag is ResolvedPostHeaderTag => !('invalid' in tag))
-  );
+  const tagResolution = $derived(resolveTagLinks(tags));
+  const normalizedTags = $derived(tagResolution.links);
   const hasTags = $derived(normalizedTags.length > 0);
   const postHeaderImageProps = $derived.by((): ImageProps => {
     const imageClass = ['post-header__media', resolvedImageProps.class].filter(Boolean).join(' ');
@@ -125,20 +95,18 @@
   });
 
   $effect(() => {
-    if (!Array.isArray(tags)) {
+    if (!tagResolution.inputWasArray) {
       warnOnce(
         'post-header:invalid-tags',
         '[PostHeader] `tags` must be an array. Rendering without tags.'
       );
     }
 
-    for (const tag of resolvedTags) {
-      if ('invalid' in tag) {
-        warnOnce(
-          `post-header:invalid-tag:${tag.index}`,
-          '[PostHeader] Tags need non-empty label and href values. Skipping invalid tag.'
-        );
-      }
+    for (const index of tagResolution.invalidIndexes) {
+      warnOnce(
+        `post-header:invalid-tag:${index}`,
+        '[PostHeader] Tags need non-empty label and href values. Skipping invalid tag.'
+      );
     }
   });
 </script>

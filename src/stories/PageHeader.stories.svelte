@@ -23,6 +23,14 @@
     { label: 'Playdate', href: '/tags/playdate' },
     { label: 'Game', href: '/tags/game' },
   ];
+  const malformedTags = [
+    { label: 'Only Valid Tag', href: '/tags/valid', target: 123, rel: false },
+    null,
+    'Roxy',
+    { label: 'Missing Href' },
+    { href: '/tags/missing-label' },
+  ] as unknown as PageHeaderProps['tags'];
+  const nonArrayTags = 'Roxy' as unknown as PageHeaderProps['tags'];
 
   const { Story } = defineMeta({
     title: 'Organisms/PageHeader',
@@ -159,6 +167,40 @@
       description: {
         story:
           'Blank tag hrefs are intentionally skipped so PageHeader never passes label-only tags to Tag as button fallbacks.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Non Array Tags Guard"
+  args={{
+    title: 'Non Array Tags Guard',
+    excerpt: 'The tag group should be skipped when tags is not an array.',
+    tags: nonArrayTags,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Unexpected non-array tags values are ignored so PageHeader does not render malformed tag data.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Malformed Tag Entries Guard"
+  args={{
+    title: 'Malformed Tag Entries Guard',
+    excerpt: 'Only the valid tag should render without malformed target or rel values.',
+    tags: malformedTags,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Malformed array entries are skipped, and non-string target/rel values are omitted before Tag receives valid links.',
       },
     },
   }}

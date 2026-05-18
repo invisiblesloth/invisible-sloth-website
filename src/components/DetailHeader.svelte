@@ -50,7 +50,6 @@
     align-items: flex-start;
     gap: var(--space-200);
     inline-size: 100%;
-    color: var(--color-on-surface);
   }
 
   .detail-header__title,
