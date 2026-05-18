@@ -19,7 +19,6 @@
    * @slot default - Optional page-owned content between tagline and copyright
    */
   import type { Snippet } from 'svelte';
-  import Divider from './Divider.svelte';
   import LogoLink from './LogoLink.svelte';
   import { DEFAULT_LOGO_ALT } from '../lib/logo';
 
@@ -45,8 +44,6 @@
 </script>
 
 <footer class={`site-footer ${className}`}>
-  <Divider ariaHidden />
-
   <div class="site-footer__inner">
     <!-- Logo Section -->
     <div class="site-footer__logo-section">
@@ -86,6 +83,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    border-block-start: 1px solid var(--color-outline-variant);
   }
 
   .site-footer__inner {

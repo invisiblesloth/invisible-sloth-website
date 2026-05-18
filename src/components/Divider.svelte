@@ -1,45 +1,55 @@
 <script lang="ts">
   /**
-   * Divider component for separating content
+   * Divider primitive for separating content.
    *
-   * Features:
-   * - Theme-aware: Automatically adapts color using --color-outline-variant
-   * - Flexible: Supports horizontal and vertical orientations
-   * - Customizable: Full-width or middle-inset layouts, default or double thickness
+   * Parent components own placement, spacing, inset, and container sizing.
+   * The forwarded class is intended for global utilities, global hooks, or
+   * external selectors; scoped parent CSS should use wrappers for layout.
+   *
+   * Vertical dividers stretch only inside a flex/grid parent with a definite
+   * cross-size. Without that parent sizing, the divider may render at zero height.
    */
   interface Props {
     /** Orientation of the divider */
     orientation?: "horizontal" | "vertical";
-    /** Layout variant: full-width spans the entire container, middle-inset has spacing on sides */
-    layout?: "Full-width" | "Middle-inset";
     /** Thickness variant: default is 1px, double is 2px */
     thickness?: "Default" | "Double";
     /** Hide divider from assistive technologies when purely decorative */
     ariaHidden?: boolean;
+    /** Additional global utility or hook classes */
+    class?: string;
   }
 
-  const {
+  let {
     orientation = "horizontal",
-    layout = "Full-width",
     thickness = "Default",
     ariaHidden = false,
+    class: className = "",
   }: Props = $props();
 
-  const sharedModifiers = $derived([
-    layout === "Middle-inset" ? "divider--middle-inset" : "",
-    thickness === "Double" ? "divider--double" : "",
-  ]);
+  function classes(...values: Array<string | false | undefined>): string {
+    return values
+      .map((value) => (typeof value === "string" ? value.trim() : ""))
+      .filter(Boolean)
+      .join(" ");
+  }
 
   const horizontalClasses = $derived(
-    ["divider", "divider--horizontal", ...sharedModifiers]
-      .filter(Boolean)
-      .join(" ")
+    classes(
+      "divider",
+      "divider--horizontal",
+      thickness === "Double" && "divider--double",
+      className
+    )
   );
 
   const verticalClasses = $derived(
-    ["divider", "divider--vertical", ...sharedModifiers]
-      .filter(Boolean)
-      .join(" ")
+    classes(
+      "divider",
+      "divider--vertical",
+      thickness === "Double" && "divider--double",
+      className
+    )
   );
 </script>
 
@@ -78,11 +88,6 @@
     border-block-start-width: 2px;
   }
 
-  .divider--horizontal.divider--middle-inset {
-    width: calc(100% - 2 * var(--space-600));
-    margin-inline: var(--space-600);
-  }
-
   /* Vertical divider */
   .divider--vertical {
     width: 1px;
@@ -93,12 +98,5 @@
   .divider--vertical.divider--double {
     width: 2px;
     border-inline-start-width: 2px;
-  }
-
-  /* Inset variant (requires a parent with a definite height) */
-  .divider--vertical.divider--middle-inset {
-    /* Only apply explicit height for the inset variant */
-    height: calc(100% - 2 * var(--space-600));
-    margin-block: var(--space-600);
   }
 </style>
