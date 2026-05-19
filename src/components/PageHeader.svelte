@@ -17,16 +17,22 @@
 </script>
 
 <script lang="ts">
-  import type { ComponentProps, Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
   import DetailHeader from './DetailHeader.svelte';
   import Figure from './Figure.svelte';
-  import Image from './Image.svelte';
+  import type { FigureImageProps } from './Figure.svelte';
   import Tag from './Tag.svelte';
   import TagGroup from './TagGroup.svelte';
   import { warnOnce } from '../lib/devWarnings';
   import { resolveTagLinks } from '../lib/tagLinks';
 
-  type ImageProps = ComponentProps<typeof Image>;
+  const resolveImageProps = (value: unknown): FigureImageProps => {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      return value as FigureImageProps;
+    }
+
+    return {} as FigureImageProps;
+  };
 
   let {
     title,
@@ -42,7 +48,7 @@
     title: string;
     excerpt?: string;
     tags?: PageHeaderTag[];
-    imageProps?: ImageProps;
+    imageProps?: FigureImageProps;
     captionText?: string;
     creditText?: string;
     caption?: Snippet;
@@ -54,19 +60,8 @@
   const tagResolution = $derived(resolveTagLinks(tags));
   const normalizedTags = $derived(tagResolution.links);
   const hasTags = $derived(normalizedTags.length > 0);
-  const hasImage = $derived(String(imageProps?.src ?? '').trim().length > 0);
-  const pageHeaderImageProps = $derived.by((): ImageProps => {
-    const resolvedImageProps = imageProps ?? ({} as ImageProps);
-    const imageClass = ['page-header__media', resolvedImageProps.class].filter(Boolean).join(' ');
-
-    return {
-      ...resolvedImageProps,
-      class: imageClass,
-      decorative: false,
-      frame: 'auto',
-      fit: 'contain',
-    };
-  });
+  const resolvedImageProps = $derived(resolveImageProps(imageProps));
+  const hasImage = $derived(String(resolvedImageProps.src ?? '').trim().length > 0);
 
   $effect(() => {
     if (!tagResolution.inputWasArray) {
@@ -89,7 +84,8 @@
   {#if hasImage}
     <div class="page-header__image-rail">
       <Figure
-        imageProps={pageHeaderImageProps}
+        imageProps={resolvedImageProps}
+        mediaTreatment="wide-contain"
         {captionText}
         {creditText}
         {caption}
@@ -146,10 +142,6 @@
   }
 
   .page-header__figure {
-    inline-size: 100%;
-  }
-
-  .page-header__figure :global(.page-header__media.image--contain .image__media) {
     inline-size: 100%;
   }
 

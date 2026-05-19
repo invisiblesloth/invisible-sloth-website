@@ -27,6 +27,7 @@
   type LoadingMode = 'lazy' | 'eager';
   type DecodingMode = 'auto' | 'sync' | 'async';
   type FetchPriority = 'auto' | 'high' | 'low';
+  type ContainSizing = 'intrinsic' | 'fill-inline';
   type ImageDimension = number | string;
 
   const RATIO_MAP: Record<AspectRatio, string> = {
@@ -75,6 +76,7 @@
     maxHeight = '560px',
     objectPosition = 'center',
     radius = 'small',
+    containSizing = 'intrinsic',
     loading = 'lazy',
     decoding = 'async',
     fetchPriority = 'auto',
@@ -101,6 +103,7 @@
     maxHeight?: string;
     objectPosition?: string;
     radius?: Radius;
+    containSizing?: ContainSizing;
     loading?: LoadingMode;
     decoding?: DecodingMode;
     fetchPriority?: FetchPriority;
@@ -216,6 +219,9 @@
       `image--${fit}`,
       frame === 'clamped' ? 'image--ratio image--clamped' : `image--${frame}`,
       `image--radius-${radius}`,
+      fit === 'contain' && frame === 'auto' && containSizing === 'fill-inline'
+        ? 'image--contain-sizing-fill-inline'
+        : '',
       className,
     ]
       .filter(Boolean)
@@ -337,6 +343,11 @@
     block-size: auto;
     max-inline-size: 100%;
     max-block-size: 100%;
+  }
+
+  .image--contain.image--contain-sizing-fill-inline .image__media {
+    inline-size: 100%;
+    block-size: auto;
   }
 
   .image--auto .image__media {

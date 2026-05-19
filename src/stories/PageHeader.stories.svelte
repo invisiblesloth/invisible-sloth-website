@@ -44,7 +44,7 @@
       docs: {
         description: {
           component:
-            'Responsive page header composition with optional wide media, clickable tag links, and DetailHeader content. When media is present, PageHeader treats it as non-decorative content and needs meaningful image alt text. The default tag hrefs are future-route placeholders for planned tag landing pages; they are not current site routes.',
+            'Responsive page header composition with optional wide media, clickable tag links, and DetailHeader content. When media is present, PageHeader uses the Figure wide-contain treatment, treats media as non-decorative content, and needs meaningful image alt text. imageProps.class is unsupported; use the root class prop for styling hooks. The default tag hrefs are future-route placeholders for planned tag landing pages; they are not current site routes.',
         },
       },
     },
@@ -81,7 +81,7 @@
       imageProps: {
         control: false,
         description:
-          'Optional media props. PageHeader renders media only when src is non-empty, forces decorative=false, frame="auto", and fit="contain"; provide meaningful alt text when media is present.',
+          'Optional Figure media props. Renders only when primary src is non-empty; wide-contain forces decorative=false, frame="auto", fit="contain", and containSizing="fill-inline". imageProps.class is unsupported.',
         table: {
           disable: true,
         },

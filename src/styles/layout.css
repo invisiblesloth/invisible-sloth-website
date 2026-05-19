@@ -180,35 +180,8 @@
     align-items: center;
   }
 
-  /* ==========================================
-     FIGURE PATTERNS
-     Responsive image containers
-     ========================================== */
-
   figure {
     margin: 0;
-  }
-
-  .figure--rail-sm img {
-    max-inline-size: var(--size-rail-sm); /* 840px */
-    inline-size: 100%;
-    display: block;
-  }
-
-  .figure--rail-md img {
-    max-inline-size: var(--size-rail-md); /* 888px */
-    inline-size: 100%;
-    display: block;
-  }
-
-  .figure--rail-lg img {
-    max-inline-size: var(--size-rail-lg); /* 1128px */
-    inline-size: 100%;
-    display: block;
-  }
-
-  figcaption {
-    margin-block-start: var(--space-200);
   }
 
   /* ==========================================

@@ -5,21 +5,34 @@
  * Storybook-documented blog post header composition with optional tags,
  * publication date, author byline, and featured media.
  *
+ * Featured media defaults to a non-cropping art treatment so transparent or
+ * designed assets are preserved. Use featured-cover only for photo covers that
+ * may be cropped into a fixed frame.
+ *
  * Only title is required. Publishing constraints for date, author, and media
  * belong in future content schemas rather than this presentation component.
  */
 -->
 <script module lang="ts">
+  import type { FigureMediaTreatment } from './Figure.svelte';
   import type { TagLink } from '../lib/tagLinks';
 
+  export const POST_HEADER_MEDIA_TREATMENTS = [
+    'featured-art',
+    'featured-cover',
+  ] as const satisfies readonly FigureMediaTreatment[];
+  export type PostHeaderMediaTreatment = Extract<
+    FigureMediaTreatment,
+    'featured-art' | 'featured-cover'
+  >;
   export type PostHeaderTag = TagLink;
 </script>
 
 <script lang="ts">
-  import type { ComponentProps, Snippet } from 'svelte';
+  import type { Snippet } from 'svelte';
   import DetailHeader from './DetailHeader.svelte';
   import Figure from './Figure.svelte';
-  import Image from './Image.svelte';
+  import type { FigureImageProps } from './Figure.svelte';
   import PostAuthor from './PostAuthor.svelte';
   import PostDate from './PostDate.svelte';
   import Tag from './Tag.svelte';
@@ -27,7 +40,24 @@
   import { warnOnce } from '../lib/devWarnings';
   import { resolveTagLinks } from '../lib/tagLinks';
 
-  type ImageProps = ComponentProps<typeof Image>;
+  const resolveImageProps = (value: unknown): FigureImageProps => {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      return value as FigureImageProps;
+    }
+
+    return {} as FigureImageProps;
+  };
+
+  const resolveMediaTreatment = (value: unknown): PostHeaderMediaTreatment => {
+    if (
+      typeof value === 'string' &&
+      (POST_HEADER_MEDIA_TREATMENTS as readonly string[]).includes(value)
+    ) {
+      return value as PostHeaderMediaTreatment;
+    }
+
+    return 'featured-art';
+  };
 
   let {
     title,
@@ -43,6 +73,7 @@
     creditText = '',
     caption,
     credit,
+    mediaTreatment: requestedMediaTreatment = 'featured-art',
     class: className = '',
   }: {
     title: string;
@@ -53,11 +84,12 @@
     authorImageSrc?: string;
     authorImageAlt?: string;
     tags?: PostHeaderTag[];
-    imageProps?: ImageProps;
+    imageProps?: FigureImageProps;
     captionText?: string;
     creditText?: string;
     caption?: Snippet;
     credit?: Snippet;
+    mediaTreatment?: PostHeaderMediaTreatment;
     class?: string;
   } = $props();
 
@@ -67,13 +99,8 @@
   const normalizedAuthorName = $derived(String(authorName ?? '').trim());
   const normalizedAuthorImageSrc = $derived(String(authorImageSrc ?? '').trim());
   const normalizedAuthorImageAlt = $derived(String(authorImageAlt ?? ''));
-  const resolvedImageProps = $derived.by((): ImageProps => {
-    if (imageProps && typeof imageProps === 'object') {
-      return imageProps;
-    }
-
-    return {} as ImageProps;
-  });
+  const resolvedImageProps = $derived(resolveImageProps(imageProps));
+  const resolvedMediaTreatment = $derived(resolveMediaTreatment(requestedMediaTreatment));
   const hasDate = $derived(normalizedDate.length > 0);
   const hasAuthor = $derived(normalizedAuthorName.length > 0);
   const hasAuthorImage = $derived(hasAuthor && normalizedAuthorImageSrc.length > 0);
@@ -81,20 +108,15 @@
   const tagResolution = $derived(resolveTagLinks(tags));
   const normalizedTags = $derived(tagResolution.links);
   const hasTags = $derived(normalizedTags.length > 0);
-  const postHeaderImageProps = $derived.by((): ImageProps => {
-    const imageClass = ['post-header__media', resolvedImageProps.class].filter(Boolean).join(' ');
-
-    return {
-      ...resolvedImageProps,
-      class: imageClass,
-      frame: 'ratio',
-      ratio: '3:2',
-      fit: 'cover',
-      radius: 'small',
-    };
-  });
 
   $effect(() => {
+    if (requestedMediaTreatment !== resolvedMediaTreatment) {
+      warnOnce(
+        'post-header:invalid-media-treatment',
+        `[PostHeader] \`mediaTreatment\` must be one of ${POST_HEADER_MEDIA_TREATMENTS.map((treatment) => `"${treatment}"`).join(', ')}. Falling back to "featured-art".`
+      );
+    }
+
     if (!tagResolution.inputWasArray) {
       warnOnce(
         'post-header:invalid-tags',
@@ -153,7 +175,8 @@
   {#if hasImage}
     <div class="post-header__image-rail">
       <Figure
-        imageProps={postHeaderImageProps}
+        imageProps={resolvedImageProps}
+        mediaTreatment={resolvedMediaTreatment}
         {captionText}
         {creditText}
         {caption}

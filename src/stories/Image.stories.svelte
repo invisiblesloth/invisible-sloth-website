@@ -38,6 +38,7 @@
       maxHeight: '560px',
       objectPosition: 'center',
       radius: 'small',
+      containSizing: 'intrinsic',
       loading: 'lazy',
       decoding: 'async',
       fetchPriority: 'auto',
@@ -108,6 +109,12 @@
         control: 'select',
         options: ['none', 'small', 'medium', 'large'],
         description: 'Corner radius token mapping.',
+      },
+      containSizing: {
+        control: 'select',
+        options: ['intrinsic', 'fill-inline'],
+        description:
+          'Auto-height contain sizing. fill-inline only affects fit="contain" with frame="auto" and makes media fill available inline size.',
       },
       loading: {
         control: 'select',
@@ -229,6 +236,7 @@
     maxHeight: '560px',
     objectPosition: 'center',
     radius: 'small',
+    containSizing: 'intrinsic',
     loading: 'eager',
     decoding: 'async',
     fetchPriority: 'auto',
@@ -308,6 +316,15 @@
   args={{
     frame: 'auto',
     fit: 'contain',
+  }}
+/>
+
+<Story
+  name="Contain Fill Inline Auto Height"
+  args={{
+    frame: 'auto',
+    fit: 'contain',
+    containSizing: 'fill-inline',
   }}
 />
 

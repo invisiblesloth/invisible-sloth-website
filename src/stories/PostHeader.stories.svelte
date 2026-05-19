@@ -17,6 +17,14 @@
     height: 3072,
   };
 
+  const designedImageProps: PostHeaderProps['imageProps'] = {
+    src: '/social-card.png',
+    alt: 'Invisible Sloth social card artwork.',
+    decorative: false,
+    width: 1200,
+    height: 630,
+  };
+
   const defaultTags: NonNullable<PostHeaderProps['tags']> = [
     { label: 'Story', href: '/tags/story' },
   ];
@@ -28,6 +36,7 @@
     { label: 'Game Dev', href: '/tags/game-dev' },
   ];
   const nonArrayTags = 'Story' as unknown as PostHeaderProps['tags'];
+  const invalidMediaTreatment = 'wide-contain' as unknown as PostHeaderProps['mediaTreatment'];
 
   const defaultAuthorImageSrc = '/assets/image-fallback-default-640.webp';
 
@@ -49,6 +58,7 @@
           'tags',
           'captionText',
           'creditText',
+          'mediaTreatment',
         ],
       },
       docs: {
@@ -58,7 +68,7 @@
         },
         description: {
           component:
-            'Responsive blog post header composition for Storybook only. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',
+            'Responsive blog post header composition for Storybook only. Featured media defaults to the Figure featured-art treatment so designed or transparent assets are preserved; use featured-cover for intentionally cropped photo covers. imageProps.class is unsupported; use the root class prop for styling hooks. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',
         },
       },
     },
@@ -75,6 +85,7 @@
       imageProps: defaultImageProps,
       captionText: '',
       creditText: '',
+      mediaTreatment: 'featured-art',
     },
     argTypes: {
       title: {
@@ -126,10 +137,16 @@
       imageProps: {
         control: false,
         description:
-          'Optional featured media props. PostHeader renders media only when src is non-empty and forces frame="ratio", ratio="3:2", fit="cover", and radius="small".',
+          'Optional Figure media props. Renders only when primary src is non-empty. imageProps.class is unsupported.',
         table: {
           disable: true,
         },
+      },
+      mediaTreatment: {
+        control: 'select',
+        options: ['featured-art', 'featured-cover'],
+        description:
+          'Featured media treatment. featured-art preserves designed or transparent media; featured-cover crops photos into a fixed 3:2 frame.',
       },
       caption: {
         control: false,
@@ -154,6 +171,56 @@
 </script>
 
 <Story name="Default" />
+
+<Story
+  name="Photo Cover"
+  args={{
+    mediaTreatment: 'featured-cover',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Photo covers opt into the cropped featured-cover treatment for a consistent 3:2 post-header frame.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Designed Featured Media"
+  args={{
+    imageProps: designedImageProps,
+    mediaTreatment: 'featured-art',
+    captionText: 'Designed media preserved without a crop frame.',
+    creditText: '',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Designed or transparent featured media uses featured-art so the source asset owns its own composition and edge.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Invalid Media Treatment Guard"
+  args={{
+    mediaTreatment: invalidMediaTreatment,
+    captionText: 'Invalid media treatment falls back to the non-cropping art treatment.',
+    creditText: '',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Unexpected mediaTreatment values are ignored so PostHeader only exposes featured-art and featured-cover semantics at runtime.',
+      },
+    },
+  }}
+/>
 
 <Story
   name="No Featured Image"
