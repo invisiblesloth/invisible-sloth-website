@@ -13,18 +13,20 @@
       docs: {
         description: {
           component:
-            'Figure caption and credit text for image/illustration figures. When both caption and credit are empty, the component renders no DOM output.',
+            'Figure caption and credit text for image/illustration figures. Render directly inside a figure. When both caption and credit are empty, the component renders no DOM output. Rich snippet links are caller-authored content and should opt into the shared text-link utility.',
         },
       },
     },
     argTypes: {
       captionText: {
         control: 'text',
-        description: 'Plain-text caption fallback when no caption snippet is supplied.',
+        description:
+          'Plain-text caption fallback when no caption snippet is supplied. Snippet content takes precedence.',
       },
       creditText: {
         control: 'text',
-        description: 'Plain-text credit fallback when no credit snippet is supplied.',
+        description:
+          'Plain-text credit fallback when no credit snippet is supplied. Snippet content takes precedence.',
       },
     },
   });
@@ -35,6 +37,10 @@
     margin-inline: auto;
     width: 100%;
     max-width: var(--size-rail-md);
+  }
+
+  .figure-caption-story--constrained {
+    --figure-caption-max-inline-size: 24rem;
   }
 </style>
 
@@ -120,6 +126,29 @@
     {/snippet}
     <figure class="figure-caption-story">
       <FigureCaption {credit} />
+    </figure>
+  {/snippet}
+</Story>
+
+<Story
+  name="Constrained by Parent"
+  asChild
+  parameters={{
+    controls: { disable: true },
+    docs: {
+      description: {
+        story:
+          'Parent figure compositions can constrain caption measure with --figure-caption-max-inline-size without selecting FigureCaption internals.',
+      },
+    },
+  }}
+>
+  {#snippet children()}
+    <figure class="figure-caption-story figure-caption-story--constrained">
+      <FigureCaption
+        captionText="A longer caption constrained by the parent figure composition while the caption component still owns its internal layout."
+        creditText="Photo by Travis Touchdown / Unsplash"
+      />
     </figure>
   {/snippet}
 </Story>

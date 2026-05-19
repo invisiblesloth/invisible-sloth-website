@@ -11,6 +11,9 @@
  *
  * Only title is required. Publishing constraints for date, author, and media
  * belong in future content schemas rather than this presentation component.
+ *
+ * Caption/credit snippets pass through to Figure. Use `.text-link` for links
+ * when the shared inline link treatment is needed.
  */
 -->
 <script module lang="ts">
@@ -29,9 +32,9 @@
 </script>
 
 <script lang="ts">
-  import type { Snippet } from 'svelte';
   import DetailHeader from './DetailHeader.svelte';
   import Figure from './Figure.svelte';
+  import type { FigureCaptionContent } from './FigureCaption.svelte';
   import type { FigureImageProps } from './Figure.svelte';
   import PostAuthor from './PostAuthor.svelte';
   import PostDate from './PostDate.svelte';
@@ -59,6 +62,20 @@
     return 'featured-art';
   };
 
+  type Props = FigureCaptionContent & {
+    title: string;
+    excerpt?: string;
+    date?: string;
+    dateTime?: string;
+    authorName?: string;
+    authorImageSrc?: string;
+    authorImageAlt?: string;
+    tags?: PostHeaderTag[];
+    imageProps?: FigureImageProps;
+    mediaTreatment?: PostHeaderMediaTreatment;
+    class?: string;
+  };
+
   let {
     title,
     excerpt = '',
@@ -75,23 +92,7 @@
     credit,
     mediaTreatment: requestedMediaTreatment = 'featured-art',
     class: className = '',
-  }: {
-    title: string;
-    excerpt?: string;
-    date?: string;
-    dateTime?: string;
-    authorName?: string;
-    authorImageSrc?: string;
-    authorImageAlt?: string;
-    tags?: PostHeaderTag[];
-    imageProps?: FigureImageProps;
-    captionText?: string;
-    creditText?: string;
-    caption?: Snippet;
-    credit?: Snippet;
-    mediaTreatment?: PostHeaderMediaTreatment;
-    class?: string;
-  } = $props();
+  }: Props = $props();
 
   const postHeaderClasses = $derived(['post-header', className].filter(Boolean).join(' '));
   const normalizedDate = $derived(String(date ?? '').trim());

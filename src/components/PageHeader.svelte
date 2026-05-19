@@ -8,6 +8,9 @@
  * When media with a non-empty source is provided, media is meaningful content
  * for this pattern: PageHeader always renders it as non-decorative with
  * frame="auto" and fit="contain" so shaped assets are not cropped.
+ *
+ * Caption/credit snippets pass through to Figure. Use `.text-link` for links
+ * when the shared inline link treatment is needed.
  */
 -->
 <script module lang="ts">
@@ -17,9 +20,9 @@
 </script>
 
 <script lang="ts">
-  import type { Snippet } from 'svelte';
   import DetailHeader from './DetailHeader.svelte';
   import Figure from './Figure.svelte';
+  import type { FigureCaptionContent } from './FigureCaption.svelte';
   import type { FigureImageProps } from './Figure.svelte';
   import Tag from './Tag.svelte';
   import TagGroup from './TagGroup.svelte';
@@ -34,6 +37,14 @@
     return {} as FigureImageProps;
   };
 
+  type Props = FigureCaptionContent & {
+    title: string;
+    excerpt?: string;
+    tags?: PageHeaderTag[];
+    imageProps?: FigureImageProps;
+    class?: string;
+  };
+
   let {
     title,
     excerpt = '',
@@ -44,17 +55,7 @@
     caption,
     credit,
     class: className = '',
-  }: {
-    title: string;
-    excerpt?: string;
-    tags?: PageHeaderTag[];
-    imageProps?: FigureImageProps;
-    captionText?: string;
-    creditText?: string;
-    caption?: Snippet;
-    credit?: Snippet;
-    class?: string;
-  } = $props();
+  }: Props = $props();
 
   const pageHeaderClasses = $derived(['page-header', className].filter(Boolean).join(' '));
   const tagResolution = $derived(resolveTagLinks(tags));

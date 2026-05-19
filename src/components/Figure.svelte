@@ -9,6 +9,8 @@
  * - `imageProps.class` is unsupported; Figure owns Image styling internally.
  * - The default media treatment preserves the full image; use featured-cover
  *   only for intentional photo cropping.
+ * - Rich caption/credit snippets are caller-authored content; use `.text-link`
+ *   for links when the shared inline link treatment is needed.
  *
  * Accessibility:
  * - When imageProps.decorative is not true, provide meaningful imageProps.alt.
@@ -29,11 +31,16 @@
 </script>
 
 <script lang="ts">
-  import type { Snippet } from 'svelte';
   import FigureCaption from './FigureCaption.svelte';
+  import type { FigureCaptionContent } from './FigureCaption.svelte';
   import { warnOnce } from '../lib/devWarnings';
 
   type RuntimeFigureImageProps = Partial<FigureImageProps> & { class?: string };
+  type Props = FigureCaptionContent & {
+    imageProps: FigureImageProps;
+    mediaTreatment?: FigureMediaTreatment;
+    class?: string;
+  };
 
   const getRuntimeImageProps = (value: unknown): RuntimeFigureImageProps => {
     if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -55,15 +62,7 @@
     credit,
     mediaTreatment: requestedMediaTreatment = 'default',
     class: className = '',
-  }: {
-    imageProps: FigureImageProps;
-    captionText?: string;
-    creditText?: string;
-    caption?: Snippet;
-    credit?: Snippet;
-    mediaTreatment?: FigureMediaTreatment;
-    class?: string;
-  } = $props();
+  }: Props = $props();
 
   const sanitizedImageProps = $derived.by((): FigureImageProps => {
     const runtimeImageProps = getRuntimeImageProps(imageProps);
@@ -144,10 +143,6 @@
     inline-size: 100%;
   }
 
-  .figure > :global(.figure-caption) {
-    margin-block-start: 0;
-  }
-
   @media (min-width: 632px) {
     .figure {
       gap: var(--space-200);
@@ -155,8 +150,9 @@
   }
 
   @media (min-width: 1176px) {
-    .figure > :global(.figure-caption) {
-      max-inline-size: var(--size-rail-sm);
+    .figure {
+      /* Match the narrow content rail used by header compositions. */
+      --figure-caption-max-inline-size: var(--size-rail-sm);
     }
   }
 </style>
