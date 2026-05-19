@@ -1,87 +1,57 @@
 <!--
 /**
  * Heading
- * Semantic heading layout wrapper.
+ * Semantic heading typography primitive.
  *
- * Renders h1-h6 elements with the matching .heading-h* utility.
- * Global heading utilities own responsive typography scale; this component
- * owns heading composition, spacing, and layout constraints.
+ * Renders one h1-h6 element with the matching .heading-h* utility.
+ * Global heading utilities own responsive typography scale; callers own
+ * layout, width, padding, spacing, and contextual color.
  *
  * @prop {string} level - Semantic heading level (h1-h6)
- * @prop {string} text - Optional heading text (use children snippet for rich content)
+ * @prop {string} visualLevel - Optional visual heading scale (defaults to level)
+ * @prop {string} text - Optional heading text; defined values, including an empty string, take precedence over children
  * @prop {Snippet} children - Optional snippet for rich content
+ * @prop {string} class - Additional classes for the rendered heading element
  */
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import type { SvelteHTMLElements } from 'svelte/elements';
+
+	type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+	type HeadingAttributes = SvelteHTMLElements[HeadingLevel];
+	type HeadingProps = Omit<HeadingAttributes, 'class'> & {
+		level?: HeadingLevel;
+		visualLevel?: HeadingLevel;
+		text?: string;
+		children?: Snippet;
+		class?: string;
+	};
 
 	let {
 		level = 'h1',
+		visualLevel,
 		text,
 		children,
-	}: {
-		level?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-		text?: string;
-		children?: Snippet;
-	} = $props();
+		class: className = '',
+		...restProps
+	}: HeadingProps = $props();
+
+	const resolvedVisualLevel = $derived(visualLevel ?? level);
+	const headingClasses = $derived(
+		['heading', `heading-${resolvedVisualLevel}`, className].filter(Boolean).join(' '),
+	);
 </script>
 
-<div class="heading" data-level={level}>
-	{#if level === 'h1'}
-		<h1 class="heading__title heading-h1">
-			{#if text}{text}{:else if children}{@render children()}{/if}
-		</h1>
-	{:else if level === 'h2'}
-		<h2 class="heading__title heading-h2">
-			{#if text}{text}{:else if children}{@render children()}{/if}
-		</h2>
-	{:else if level === 'h3'}
-		<h3 class="heading__title heading-h3">
-			{#if text}{text}{:else if children}{@render children()}{/if}
-		</h3>
-	{:else if level === 'h4'}
-		<h4 class="heading__title heading-h4">
-			{#if text}{text}{:else if children}{@render children()}{/if}
-		</h4>
-	{:else if level === 'h5'}
-		<h5 class="heading__title heading-h5">
-			{#if text}{text}{:else if children}{@render children()}{/if}
-		</h5>
-	{:else if level === 'h6'}
-		<h6 class="heading__title heading-h6">
-			{#if text}{text}{:else if children}{@render children()}{/if}
-		</h6>
-	{/if}
-</div>
+<svelte:element this={level} {...restProps} class={headingClasses}>
+	{#if text !== undefined}{text}{:else if children}{@render children()}{/if}
+</svelte:element>
 
 <style>
-	/* ==========================================
-	   BASE STRUCTURE
-	   Wrapper container with responsive padding
-	   ========================================== */
 	.heading {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding-inline: var(--space-rail-inline);
-	}
-
-	.heading__title {
-		flex: 1 1 0;
 		min-width: 0;
-		min-height: 1px;
 		margin: 0;
-		color: var(--color-on-surface);
-	}
-
-	/* ==========================================
-	   LAYOUT CONSTRAINTS
-	   Max-width for optimal readability on large viewports
-	   Typography is handled by semantic .heading-h* classes
-	   ========================================== */
-	@media (min-width: 1176px) {
-		.heading__title {
-			max-width: 840px;
-		}
+		color: inherit;
+		overflow-wrap: break-word;
 	}
 </style>
