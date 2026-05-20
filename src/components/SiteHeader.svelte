@@ -14,8 +14,8 @@
    * - Large (1176px+): Content constrained to 51rem max-width
    *
    * @prop {string} homeHref - URL for logo link (default: '/') - set to empty string to disable link
-   * @prop {string} logoAlt - Alt text for the standalone logo when homeHref is empty
-   * @prop {string} ariaLabel - Aria label for logo link, describes both brand and action (default: 'Invisible Sloth home')
+   * @prop {string} homeLabel - Accessible name for the logo link (default: 'Invisible Sloth home')
+   * @prop {string} logoAlt - Alt text used only for the standalone logo when homeHref is empty
    * @prop {boolean} showMenuButton - Enable Storybook menu-button layout (default: false)
    * @prop {boolean} menuExpanded - Current drawer state for aria-expanded (default: false)
    * @prop {string} menuControlsId - Optional controlled drawer id for aria-controls
@@ -23,13 +23,15 @@
    * @prop {Function} onMenuClick - Click handler for the menu button
    */
   import LogoLink from './LogoLink.svelte';
+  import Logo from './Logo.svelte';
   import Menu from '../icons/Menu.svelte';
-  import { DEFAULT_LOGO_ALT } from '../lib/logo';
+  import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
+  import { normalizeHref } from '../lib/linkBehavior';
 
   let {
     homeHref = '/',
+    homeLabel = DEFAULT_LOGO_LINK_LABEL,
     logoAlt = DEFAULT_LOGO_ALT,
-    ariaLabel = 'Invisible Sloth home',
     showMenuButton = false,
     menuExpanded = false,
     menuControlsId = undefined,
@@ -38,8 +40,8 @@
     class: className = '',
   }: {
     homeHref?: string;
+    homeLabel?: string;
     logoAlt?: string;
-    ariaLabel?: string;
     showMenuButton?: boolean;
     menuExpanded?: boolean;
     menuControlsId?: string;
@@ -53,6 +55,7 @@
       .filter(Boolean)
       .join(' ')
   );
+  const normalizedHomeHref = $derived(normalizeHref(homeHref));
 </script>
 
 <header class={headerClasses}>
@@ -77,13 +80,16 @@
       </div>
     {/if}
 
-    <LogoLink
-      href={homeHref}
-      variant="technical"
-      size="var(--header-logo-size)"
-      {ariaLabel}
-      {logoAlt}
-    />
+    {#if normalizedHomeHref}
+      <LogoLink
+        href={normalizedHomeHref}
+        variant="technical"
+        size="var(--header-logo-size)"
+        label={homeLabel}
+      />
+    {:else}
+      <Logo variant="technical" size="var(--header-logo-size)" alt={logoAlt} />
+    {/if}
 
     {#if showMenuButton}
       <div class="site-header__side site-header__side--end" aria-hidden="true"></div>

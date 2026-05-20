@@ -2,6 +2,7 @@
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import Logo from '../components/Logo.svelte';
   import LogoLink from '../components/LogoLink.svelte';
+  import { DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
 
   const defaultLogoAlt = 'Invisible Sloth logo featuring Sloth-Luc, the ghost sloth';
 
@@ -12,7 +13,7 @@
       docs: {
         description: {
           component:
-            'Invisible Sloth logo primitives with system and manual theme support. `Logo` renders the brand mark, while `LogoLink` owns linked or structural wrapper behavior, sizing, focus treatment, and decorative tilt.',
+            'Invisible Sloth logo primitives with system and manual theme support. `Logo` renders the standalone brand mark, while `LogoLink` renders linked brand navigation.',
         },
       },
     },
@@ -51,7 +52,7 @@
     docs: {
       description: {
         story:
-          'Linked wrappers use the anchor accessible name and render the nested logo as decorative.',
+          'LogoLink uses the anchor accessible name and renders the nested logo as decorative.',
       },
     },
   }}
@@ -60,23 +61,50 @@
     href="/"
     variant="technical"
     size="96px"
-    ariaLabel="Invisible Sloth home"
-    logoAlt={defaultLogoAlt}
+    label={DEFAULT_LOGO_LINK_LABEL}
   />
 </Story>
 
 <Story
-  name="Unlinked LogoLink"
+  name="Standalone Logo"
   parameters={{
     docs: {
       description: {
         story:
-          'Unlinked wrappers remain structural. The nested logo carries the accessible image name.',
+          'Use Logo directly for non-link brand marks. The mark carries the accessible image name.',
       },
     },
   }}
 >
-  <LogoLink variant="standard" size="160px" logoAlt={defaultLogoAlt} />
+  <Logo variant="standard" size="160px" alt={defaultLogoAlt} />
+</Story>
+
+<Story
+  name="LogoLink Blank Href Fallback"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Blank LogoLink href values are invalid, fall back to the home URL, and warn in development.',
+      },
+    },
+  }}
+>
+  <LogoLink href="" variant="technical" size="96px" label={DEFAULT_LOGO_LINK_LABEL} />
+</Story>
+
+<Story
+  name="LogoLink Blank Label Fallback"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Blank LogoLink labels are invalid, fall back to the default home link label, and warn in development.',
+      },
+    },
+  }}
+>
+  <LogoLink href="/" variant="technical" size="96px" label="" />
 </Story>
 
 <Story name="Size Comparison">

@@ -1,6 +1,7 @@
 <script module>
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import SiteHeader from '../components/SiteHeader.svelte';
+  import { DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
 
   const { Story } = defineMeta({
     title: 'Organisms/SiteHeader',
@@ -11,8 +12,8 @@
       controls: {
         include: [
           'homeHref',
+          'homeLabel',
           'logoAlt',
-          'ariaLabel',
           'showMenuButton',
           'menuExpanded',
           'menuControlsId',
@@ -23,8 +24,8 @@
     },
     args: {
       homeHref: '/',
+      homeLabel: DEFAULT_LOGO_LINK_LABEL,
       logoAlt: 'Invisible Sloth',
-      ariaLabel: 'Invisible Sloth home',
       showMenuButton: false,
       menuExpanded: false,
       menuButtonLabel: 'Open navigation menu',
@@ -33,16 +34,16 @@
       onMenuClick: { action: 'menu clicked' },
       homeHref: {
         control: 'text',
-        description: 'Destination for the logo link.',
+        description: 'Destination for the logo link. Set to empty string to disable link.',
+      },
+      homeLabel: {
+        control: 'text',
+        description: 'Accessible name for the logo link.',
       },
       logoAlt: {
         control: 'text',
         description:
-          'Alt text for the standalone logo when homeHref is empty. Linked logos use ariaLabel on the link.',
-      },
-      ariaLabel: {
-        control: 'text',
-        description: 'Aria label for the logo link (describes both brand and action for screen readers).',
+          'Alt text used only for the standalone logo when homeHref is empty. Linked logos use homeLabel on the link.',
       },
       showMenuButton: {
         control: 'boolean',
@@ -66,6 +67,21 @@
 </script>
 
 <Story name="Default" />
+
+<Story
+  name="Unlinked Logo"
+  args={{
+    homeHref: '',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'An empty homeHref preserves the documented structural logo mode at the SiteHeader layer.',
+      },
+    },
+  }}
+/>
 
 <Story
   name="Menu Button"

@@ -12,28 +12,30 @@
    * - Large (1176px+): Content constrained to max-width
    *
    * @prop {string} homeHref - URL for logo link (default: '/') - set to empty string to disable link
-   * @prop {string} logoAlt - Alt text for the standalone logo when homeHref is empty
-   * @prop {string} ariaLabel - Aria label for logo link (default: 'Invisible Sloth home')
+   * @prop {string} homeLabel - Accessible name for the logo link (default: 'Invisible Sloth home')
+   * @prop {string} logoAlt - Alt text used only for the standalone logo when homeHref is empty
    * @prop {string} tagline - Tagline text (default: "We may be slow, but we're not slowing down!")
    * @prop {string} copyrightText - Copyright text (default: 'Invisible Sloth, LLC © 2024-2025')
    * @slot default - Optional page-owned content between tagline and copyright
    */
   import type { Snippet } from 'svelte';
   import LogoLink from './LogoLink.svelte';
-  import { DEFAULT_LOGO_ALT } from '../lib/logo';
+  import Logo from './Logo.svelte';
+  import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
+  import { normalizeHref } from '../lib/linkBehavior';
 
   let {
     homeHref = '/',
+    homeLabel = DEFAULT_LOGO_LINK_LABEL,
     logoAlt = DEFAULT_LOGO_ALT,
-    ariaLabel = 'Invisible Sloth home',
     tagline = "We may be slow, but we're not slowing down!",
     copyrightText = '© Invisible Sloth, LLC',
     children,
     class: className = '',
   }: {
     homeHref?: string;
+    homeLabel?: string;
     logoAlt?: string;
-    ariaLabel?: string;
     tagline?: string;
     copyrightText?: string;
     children?: Snippet;
@@ -41,19 +43,23 @@
   } = $props();
 
   const hasContent = $derived(Boolean(children));
+  const normalizedHomeHref = $derived(normalizeHref(homeHref));
 </script>
 
 <footer class={`site-footer ${className}`}>
   <div class="site-footer__inner">
     <!-- Logo Section -->
     <div class="site-footer__logo-section">
-      <LogoLink
-        href={homeHref}
-        variant="standard"
-        size="var(--footer-logo-size)"
-        {ariaLabel}
-        {logoAlt}
-      />
+      {#if normalizedHomeHref}
+        <LogoLink
+          href={normalizedHomeHref}
+          variant="standard"
+          size="var(--footer-logo-size)"
+          label={homeLabel}
+        />
+      {:else}
+        <Logo variant="standard" size="var(--footer-logo-size)" alt={logoAlt} />
+      {/if}
     </div>
 
     <!-- Tagline Section -->

@@ -14,9 +14,11 @@ export type LogoVariant = (typeof LOGO_VARIANTS)[number];
 export const DEFAULT_LOGO_VARIANT: LogoVariant = 'standard';
 export const DEFAULT_LOGO_SIZE: LogoNamedSize = 'md';
 export const DEFAULT_LOGO_ALT = 'Invisible Sloth logo featuring Sloth-Luc, the ghost sloth';
+export const DEFAULT_LOGO_LINK_HREF = '/';
+export const DEFAULT_LOGO_LINK_LABEL = 'Invisible Sloth home';
 
-export function isBlankString(value: string | undefined): boolean {
-  return value === undefined || value.trim().length === 0;
+export function isBlankString(value: string | null | undefined): boolean {
+  return typeof value !== 'string' || value.trim().length === 0;
 }
 
 export function isLogoVariant(value: string | undefined): value is LogoVariant {
@@ -31,6 +33,12 @@ export function normalizeLogoAlt(value: string | undefined): string {
   const trimmedValue = value?.trim();
 
   return trimmedValue ? trimmedValue : DEFAULT_LOGO_ALT;
+}
+
+export function normalizeLogoLinkLabel(value: string | undefined): string {
+  const trimmedValue = value?.trim();
+
+  return trimmedValue ? trimmedValue : DEFAULT_LOGO_LINK_LABEL;
 }
 
 export function resolveLogoSize(size: LogoSize = DEFAULT_LOGO_SIZE): string {

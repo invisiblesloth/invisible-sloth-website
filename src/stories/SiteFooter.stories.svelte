@@ -2,6 +2,7 @@
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import SiteFooter from '../components/SiteFooter.svelte';
   import ContactUs from '../components/ContactUs.svelte';
+  import { DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
 
   const contactText = 'For questions, support, or just to say hi, email us at';
   const contactEmail = 'hello@invisiblesloth.com';
@@ -13,13 +14,13 @@
     parameters: {
       layout: 'fullscreen',
       controls: {
-        include: ['homeHref', 'logoAlt', 'ariaLabel', 'tagline', 'copyrightText'],
+        include: ['homeHref', 'homeLabel', 'logoAlt', 'tagline', 'copyrightText'],
       },
     },
     args: {
       homeHref: '/',
+      homeLabel: DEFAULT_LOGO_LINK_LABEL,
       logoAlt: 'Invisible Sloth',
-      ariaLabel: 'Invisible Sloth home',
       tagline: "We may be slow, but we're not slowing down!",
       copyrightText: 'Invisible Sloth, LLC © 2024-2025',
     },
@@ -28,14 +29,14 @@
         control: 'text',
         description: 'Destination for the logo link. Set to empty string to disable link.',
       },
+      homeLabel: {
+        control: 'text',
+        description: 'Accessible name for the logo link.',
+      },
       logoAlt: {
         control: 'text',
         description:
-          'Alt text for the standalone logo when homeHref is empty. Linked logos use ariaLabel on the link.',
-      },
-      ariaLabel: {
-        control: 'text',
-        description: 'Aria label for the logo link (describes both brand and action).',
+          'Alt text used only for the standalone logo when homeHref is empty. Linked logos use homeLabel on the link.',
       },
       tagline: {
         control: 'text',
@@ -52,6 +53,21 @@
 <Story name="Default" />
 
 <Story
+  name="Unlinked Logo"
+  args={{
+    homeHref: '',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'An empty homeHref preserves the documented structural logo mode at the SiteFooter layer.',
+      },
+    },
+  }}
+/>
+
+<Story
   name="With Contact"
   parameters={{
     docs: {
@@ -65,7 +81,6 @@
   {#snippet template()}
     <SiteFooter
       homeHref="/"
-      ariaLabel="Invisible Sloth home"
       tagline="We may be slow, but we're not slowing down!"
       copyrightText="Invisible Sloth, LLC © 2024-2025"
     >
