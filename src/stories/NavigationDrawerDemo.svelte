@@ -1,12 +1,9 @@
 <script lang="ts">
-  import NavigationDrawer from '../components/NavigationDrawer.svelte';
-  import SiteHeader from '../components/SiteHeader.svelte';
+  import SiteNavigation from '../components/SiteNavigation.svelte';
   import type { NavigationSection } from '../lib/navigation';
 
   const drawerId = 'storybook-navigation-drawer';
   const pageAnchors = ['home', 'blog', 'about', 'roxy', 'privacy-policy', 'terms'];
-
-  let drawerOpen = $state(false);
 
   let {
     sections,
@@ -15,30 +12,10 @@
     sections: NavigationSection[];
     activeHref?: string;
   } = $props();
-
-  function openDrawer(): void {
-    drawerOpen = true;
-  }
-
-  function closeDrawer(): void {
-    drawerOpen = false;
-  }
 </script>
 
 <div class="navigation-demo">
-  <div
-    class="navigation-demo__background"
-    aria-hidden={drawerOpen ? 'true' : undefined}
-    inert={drawerOpen}
-  >
-    <SiteHeader
-      showMenuButton
-      menuExpanded={drawerOpen}
-      menuControlsId={drawerId}
-      onMenuClick={openDrawer}
-      homeHref="/"
-    />
-
+  <SiteNavigation {drawerId} {sections} {activeHref} homeHref="/">
     <main class="navigation-demo__page">
       <div class="navigation-demo__anchors" aria-hidden="true">
         {#each pageAnchors as anchor}
@@ -46,15 +23,7 @@
         {/each}
       </div>
     </main>
-  </div>
-
-  <NavigationDrawer
-    id={drawerId}
-    open={drawerOpen}
-    {sections}
-    {activeHref}
-    onclose={closeDrawer}
-  />
+  </SiteNavigation>
 </div>
 
 <style>

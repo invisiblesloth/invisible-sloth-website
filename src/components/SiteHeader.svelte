@@ -4,8 +4,8 @@
    *
    * Responsive header with brand logo by default.
    * Logo size scales fluidly across breakpoints using clamp().
-   * The menu-button layout is default-off for Storybook validation and does
-   * not affect the current Astro page unless explicitly enabled.
+   * The optional menu-button layout is controlled by parent navigation shells
+   * such as SiteNavigation.
    *
    * Breakpoint sizing strategy:
    * - Base (0-631px): 18vw viewport-based scaling (45px-65px range)
@@ -16,7 +16,7 @@
    * @prop {string} homeHref - URL for logo link (default: '/') - set to empty string to disable link
    * @prop {string} homeLabel - Accessible name for the logo link (default: 'Invisible Sloth home')
    * @prop {string} logoAlt - Alt text used only for the standalone logo when homeHref is empty
-   * @prop {boolean} showMenuButton - Enable Storybook menu-button layout (default: false)
+   * @prop {boolean} showMenuButton - Enable the menu-button layout (default: false)
    * @prop {boolean} menuExpanded - Current drawer state for aria-expanded (default: false)
    * @prop {string} menuControlsId - Optional controlled drawer id for aria-controls
    * @prop {string} menuButtonLabel - Accessible name for the menu button

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Close from '../icons/Close.svelte';
   import {
     normalizeHref,
     normalizeRelForTarget,
@@ -19,51 +18,54 @@
     items: ResolvedNavigationItem[];
   };
 
-  let {
-    sections = [],
-    activeHref = undefined,
-    closeButtonLabel = 'Close navigation menu',
-    onclose = undefined,
-    onClose = undefined,
-    onnavigate = undefined,
-    onNavigate = undefined,
-    class: className = '',
-  }: {
-    sections?: NavigationSection[];
-    activeHref?: string;
-    closeButtonLabel?: string;
-    onclose?: (event?: MouseEvent) => void;
-    onClose?: (event?: MouseEvent) => void;
-    onnavigate?: (event: MouseEvent, item: NavigationItem) => void;
-    onNavigate?: (event: MouseEvent, item: NavigationItem) => void;
-    class?: string;
-  } = $props();
+  function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null;
+  }
 
-  const normalizedActiveHref = $derived(normalizeHref(activeHref));
-  const normalizedCloseButtonLabel = $derived(
-    closeButtonLabel.trim() || 'Close navigation menu'
-  );
-  const menuClasses = $derived(['navigation-menu', className].filter(Boolean).join(' '));
-  const closeCallback = $derived(onclose ?? onClose);
-  const navigateCallback = $derived(onnavigate ?? onNavigate);
+  function normalizeLabel(value: unknown, fallback: string): string {
+    return typeof value === 'string' ? value.trim() || fallback : fallback;
+  }
 
-  const resolvedSections = $derived<ResolvedNavigationSection[]>(
-    sections
+  function resolveNavigationSections(value: unknown): ResolvedNavigationSection[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return value
       .map((section) => {
-        const resolvedItems = section.items
+        const sectionRecord = isRecord(section) ? section : undefined;
+        const sectionItems = Array.isArray(sectionRecord?.items) ? sectionRecord.items : [];
+
+        const resolvedItems = sectionItems
           .map((item) => {
-            const label = item.label.trim();
-            const href = normalizeHref(item.href);
+            if (!isRecord(item)) {
+              return undefined;
+            }
+
+            const labelValue = item.label;
+            const hrefValue = item.href;
+
+            if (typeof labelValue !== 'string' || typeof hrefValue !== 'string') {
+              return undefined;
+            }
+
+            const label = labelValue.trim();
+            const href = normalizeHref(hrefValue);
 
             if (!label || !href) {
               return undefined;
             }
 
-            const target = normalizeTarget(item.target);
-            const rel = normalizeRelForTarget(target, item.rel);
+            const target = normalizeTarget(
+              typeof item.target === 'string' ? item.target : undefined
+            );
+            const rel = normalizeRelForTarget(
+              target,
+              typeof item.rel === 'string' ? item.rel : undefined
+            );
 
             return {
-              ...item,
+              ...(item as NavigationItem),
               label,
               href,
               target,
@@ -73,164 +75,91 @@
           .filter((item): item is ResolvedNavigationItem => Boolean(item));
 
         return {
-          heading: section.heading?.trim() || undefined,
+          heading:
+            typeof sectionRecord?.heading === 'string'
+              ? sectionRecord.heading.trim() || undefined
+              : undefined,
           items: resolvedItems,
         };
       })
-      .filter((section) => section.items.length > 0)
-  );
-
-  function handleClose(event: MouseEvent): void {
-    event.stopPropagation();
-    closeCallback?.(event);
+      .filter((section) => section.items.length > 0);
   }
+
+  let {
+    sections = [],
+    activeHref = undefined,
+    ariaLabel = 'Site navigation',
+    onnavigate = undefined,
+    onNavigate = undefined,
+    class: className = '',
+  }: {
+    sections?: NavigationSection[];
+    activeHref?: string;
+    ariaLabel?: string;
+    onnavigate?: (event: MouseEvent, item: NavigationItem) => void;
+    onNavigate?: (event: MouseEvent, item: NavigationItem) => void;
+    class?: string;
+  } = $props();
+
+  const normalizedActiveHref = $derived(normalizeHref(activeHref));
+  const normalizedAriaLabel = $derived(normalizeLabel(ariaLabel, 'Site navigation'));
+  const menuClasses = $derived(['navigation-menu', className].filter(Boolean).join(' '));
+  const navigateCallback = $derived(onnavigate ?? onNavigate);
+
+  const resolvedSections = $derived<ResolvedNavigationSection[]>(
+    resolveNavigationSections(sections)
+  );
 
   function handleNavigate(event: MouseEvent, item: ResolvedNavigationItem): void {
     navigateCallback?.(event, item);
   }
 </script>
 
-<div class={menuClasses}>
-  <div class="navigation-menu__close-row">
-    <button
-      class="navigation-menu__close-button"
-      type="button"
-      aria-label={normalizedCloseButtonLabel}
-      data-navigation-menu-close
-      onclick={handleClose}
-    >
-      <span class="navigation-menu__close-state" aria-hidden="true"></span>
-      <span class="navigation-menu__close-icon" aria-hidden="true">
-        <Close />
-      </span>
-    </button>
-  </div>
-
-  {#if resolvedSections.length > 0}
-    <nav class="navigation-menu__sections" aria-label="Site navigation">
-      {#each resolvedSections as section, sectionIndex}
-        {#if sectionIndex > 0}
-          <div class="navigation-menu__divider-row" aria-hidden="true">
-            <div class="navigation-menu__divider"></div>
-          </div>
-        {/if}
-
-        {#if section.heading}
-          <div class="navigation-menu__section-heading-row">
-            <p class="navigation-menu__section-heading text-title-small-prominent">
-              {section.heading}
-            </p>
-          </div>
-        {/if}
-
-        <div class="navigation-menu__group">
-          {#each section.items as item}
-            {@const isActive = normalizedActiveHref === item.href}
-            <a
-              class="navigation-menu__item text-label-large"
-              class:navigation-menu__item--active={isActive}
-              href={item.href}
-              target={item.target}
-              rel={item.rel}
-              aria-current={isActive ? 'page' : undefined}
-              onclick={(event) => handleNavigate(event, item)}
-            >
-              <span class="navigation-menu__item-state" aria-hidden="true"></span>
-              <span class="navigation-menu__item-label">{item.label}</span>
-            </a>
-          {/each}
+{#if resolvedSections.length > 0}
+  <nav class={menuClasses} aria-label={normalizedAriaLabel}>
+    {#each resolvedSections as section, sectionIndex}
+      {#if sectionIndex > 0}
+        <div class="navigation-menu__divider-row" aria-hidden="true">
+          <div class="navigation-menu__divider"></div>
         </div>
-      {/each}
-    </nav>
-  {/if}
-</div>
+      {/if}
+
+      {#if section.heading}
+        <div class="navigation-menu__section-heading-row">
+          <p class="navigation-menu__section-heading text-title-small-prominent">
+            {section.heading}
+          </p>
+        </div>
+      {/if}
+
+      <div class="navigation-menu__group">
+        {#each section.items as item}
+          {@const isActive = normalizedActiveHref === item.href}
+          <a
+            class="navigation-menu__item text-label-large"
+            class:navigation-menu__item--active={isActive}
+            href={item.href}
+            target={item.target}
+            rel={item.rel}
+            aria-current={isActive ? 'page' : undefined}
+            onclick={(event) => handleNavigate(event, item)}
+          >
+            <span class="navigation-menu__item-state" aria-hidden="true"></span>
+            <span class="navigation-menu__item-label">{item.label}</span>
+          </a>
+        {/each}
+      </div>
+    {/each}
+  </nav>
+{/if}
 
 <style>
   .navigation-menu {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    inline-size: var(--navigation-menu-inline-size, min(100%, 360px));
-    padding-block: var(--navigation-menu-padding-block, var(--space-300));
-    padding-inline: var(--navigation-menu-padding-inline, var(--space-300));
-    border-radius: var(--navigation-menu-border-radius, var(--radius-xl));
-    background: var(--color-surface-container);
+    inline-size: var(--navigation-menu-inline-size, 100%);
     color: var(--color-on-surface);
-    box-shadow: var(--effect-elevation-4);
-  }
-
-  .navigation-menu__close-row {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    inline-size: 100%;
-    padding-block-end: var(--space-200);
-  }
-
-  .navigation-menu__close-button {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 80px;
-    min-inline-size: 64px;
-    block-size: 48px;
-    padding: 0;
-    border: 0;
-    border-radius: var(--radius-full);
-    background: transparent;
-    color: var(--color-on-surface);
-    cursor: pointer;
-    font: inherit;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .navigation-menu__close-state {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: var(--color-state-on-surface-08);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .navigation-menu__close-icon {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 32px;
-    block-size: 32px;
-    font-size: 32px;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .navigation-menu__close-button:hover .navigation-menu__close-state {
-      opacity: 1;
-    }
-  }
-
-  .navigation-menu__close-button:active .navigation-menu__close-state {
-    background: var(--color-state-on-surface-12);
-    opacity: 1;
-  }
-
-  .navigation-menu__close-button:focus-visible {
-    outline: var(--focus-outline-width) solid var(--color-focus);
-    outline-offset: 4px;
-  }
-
-  .navigation-menu__close-button:focus-visible .navigation-menu__close-state {
-    background: var(--color-state-on-surface-12);
-    opacity: 1;
-  }
-
-  .navigation-menu__sections {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    inline-size: 100%;
   }
 
   .navigation-menu__section-heading-row,

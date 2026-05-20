@@ -48,7 +48,7 @@
       docs: {
         description: {
           component:
-            'Storybook-only page template for validating the header menu button and modal navigation drawer together. This is not wired into any Astro page or layout.',
+            'Storybook page template for validating the production-ready SiteNavigation composition. This is not wired into any Astro page or layout in this pass.',
         },
       },
     },

@@ -47,7 +47,7 @@
       },
       showMenuButton: {
         control: 'boolean',
-        description: 'Default-off Storybook menu-button layout.',
+        description: 'Default-off menu-button layout for controlled navigation shells.',
       },
       menuExpanded: {
         control: 'boolean',
@@ -94,7 +94,7 @@
     docs: {
       description: {
         story:
-          'Header-only Storybook state. This omits aria-controls because no matching drawer is rendered in this story.',
+          'Header-only state. This omits aria-controls because no matching drawer is rendered in this story.',
       },
     },
   }}
