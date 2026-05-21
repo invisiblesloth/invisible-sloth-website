@@ -51,6 +51,11 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    options: {
+      storySort: {
+        order: ['Brand', 'Foundations', 'Atoms', 'Molecules', 'Organisms', 'Templates'],
+      },
+    },
     viewport: {
       viewports: {
         compact: {
