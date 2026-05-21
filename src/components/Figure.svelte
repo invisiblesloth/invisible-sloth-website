@@ -149,10 +149,4 @@
     }
   }
 
-  @media (min-width: 1176px) {
-    .figure {
-      /* Match the narrow content rail used by header compositions. */
-      --figure-caption-max-inline-size: var(--size-rail-sm);
-    }
-  }
 </style>

@@ -4,80 +4,25 @@
  *
  * Content-only author byline block with optional avatar and component-scoped
  * label typography. Renders text-only when no usable image source is provided.
- * Author links apply to visible author names. Single-author linked avatars
- * duplicate that destination for pointer users while staying non-focusable and
- * hidden from assistive tech. The scalar avatar props render only for
- * single-author bylines.
+ * Author identity and links are provided through authors. Single-author linked
+ * avatars duplicate that destination for pointer users while staying
+ * non-focusable and hidden from assistive tech. The scalar avatar props render
+ * only for single-author bylines.
+ *
+ * Omitted, malformed, empty, or all-invalid authors render no DOM. Present
+ * malformed authors warn in development. Blank-name authors are skipped, and
+ * blank hrefs render the author name as text.
  *
  * @prop {PostAuthorItem[]} authors - Optional author list; each item needs a non-empty name
- * @prop {string} name - Required author name when authors is empty
  * @prop {string} imageSrc - Optional avatar source; ignored when empty after trim
  * @prop {string} imageAlt - Optional avatar alt text; ignored for linked duplicate avatars
- * @prop {string} href - Optional single-author name URL; blank values render as text
- * @prop {string} target - Optional single-author link target
- * @prop {string} rel - Optional single-author link rel; _blank targets are hardened
  * @prop {string} class - Additional CSS classes for the root wrapper
  */
 -->
-<script module lang="ts">
-  export type PostAuthorItem = {
-    name: string;
-    href?: string;
-    target?: string;
-    rel?: string;
-  };
-</script>
-
 <script lang="ts">
   import { warnOnce } from '../lib/devWarnings';
-  import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
-
-  type NormalizedPostAuthorItem = {
-    name: string;
-    href?: string;
-    target?: string;
-    rel?: string;
-    hadHrefProp: boolean;
-    index: number;
-    key: string;
-  };
-
-  const resolveAuthors = (
-    value: PostAuthorItem[] | undefined,
-    fallback: PostAuthorItem
-  ): NormalizedPostAuthorItem[] => {
-    const usesAuthorList = Array.isArray(value) && value.length > 0;
-    const source = usesAuthorList ? value : [fallback];
-    const normalized = source.map((author, index) => {
-      const normalizedName = String(author?.name ?? '').trim();
-
-      if (normalizedName.length === 0) {
-        throw new Error(
-          usesAuthorList
-            ? 'PostAuthor authors require non-empty names.'
-            : 'PostAuthor requires a non-empty name when authors is empty.'
-        );
-      }
-
-      const normalizedTarget = normalizeTarget(author?.target);
-
-      return {
-        name: normalizedName,
-        href: normalizeHref(author?.href),
-        target: normalizedTarget,
-        rel: normalizeRelForTarget(normalizedTarget, author?.rel),
-        hadHrefProp: author?.href !== undefined && author?.href !== null,
-        index,
-        key: `${normalizedName}:${index}`,
-      };
-    });
-
-    if (normalized.length === 0) {
-      throw new Error('PostAuthor requires at least one author.');
-    }
-
-    return normalized;
-  };
+  import { resolvePostAuthors } from '../lib/postAuthors';
+  import type { PostAuthorItem } from '../lib/postAuthors';
 
   const getAuthorSeparator = (index: number, total: number): string => {
     if (index === 0) return '';
@@ -88,32 +33,18 @@
 
   let {
     authors = undefined,
-    name = '',
     imageSrc,
     imageAlt = '',
-    href,
-    target,
-    rel,
     class: className = '',
   }: {
     authors?: PostAuthorItem[];
-    name?: string;
     imageSrc?: string;
     imageAlt?: string;
-    href?: string;
-    target?: string;
-    rel?: string;
     class?: string;
   } = $props();
 
-  const normalizedAuthors = $derived(
-    resolveAuthors(authors, {
-      name,
-      href,
-      target,
-      rel,
-    })
-  );
+  const authorResolution = $derived(resolvePostAuthors(authors));
+  const normalizedAuthors = $derived(authorResolution.authors);
 
   const normalizedImageSrc = $derived.by(() => {
     const value = String(imageSrc ?? '').trim();
@@ -126,48 +57,62 @@
   const postAuthorClasses = $derived(['post-author', className].filter(Boolean).join(' '));
 
   $effect(() => {
-    for (const author of normalizedAuthors) {
-      if (author.hadHrefProp && !author.href) {
-        warnOnce(
-          `post-author:invalid-href:${author.index}`,
-          '[PostAuthor] `href` must resolve to a non-empty string after trimming. Rendering author name as text.'
-        );
-      }
+    if (authorResolution.inputWasPresent && !authorResolution.inputWasArray) {
+      warnOnce(
+        'post-author:invalid-authors',
+        '[PostAuthor] `authors` must be an array. Rendering without authors.'
+      );
+    }
+
+    for (const index of authorResolution.invalidAuthorIndexes) {
+      warnOnce(
+        `post-author:invalid-author:${index}`,
+        '[PostAuthor] Authors need non-empty name values. Skipping invalid author.'
+      );
+    }
+
+    for (const index of authorResolution.blankHrefIndexes) {
+      warnOnce(
+        `post-author:blank-href:${index}`,
+        '[PostAuthor] Author href values must resolve to non-empty strings after trimming. Rendering author name as text.'
+      );
     }
   });
 </script>
 
-<div class={postAuthorClasses}>
-  {#if hasImage}
-    {#if avatarAuthor?.href}
-      <a
-        class="post-author__avatar post-author__avatar-link"
-        href={avatarAuthor.href}
-        target={avatarAuthor.target}
-        rel={avatarAuthor.rel}
-        tabindex="-1"
-        aria-hidden="true"
-      >
-        <img class="post-author__image" src={normalizedImageSrc} alt="" />
-      </a>
-    {:else}
-      <div class="post-author__avatar">
-        <img class="post-author__image" src={normalizedImageSrc} alt={normalizedImageAlt} />
-      </div>
+{#if normalizedAuthors.length > 0}
+  <div class={postAuthorClasses}>
+    {#if hasImage}
+      {#if avatarAuthor?.href}
+        <a
+          class="post-author__avatar post-author__avatar-link"
+          href={avatarAuthor.href}
+          target={avatarAuthor.target}
+          rel={avatarAuthor.rel}
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <img class="post-author__image" src={normalizedImageSrc} alt="" />
+        </a>
+      {:else}
+        <div class="post-author__avatar">
+          <img class="post-author__image" src={normalizedImageSrc} alt={normalizedImageAlt} />
+        </div>
+      {/if}
     {/if}
-  {/if}
 
-  <div class="post-author__content">
-    <p class="post-author__name">
-      {#each normalizedAuthors as author, index (author.key)}{#if index > 0}<span class="post-author__separator">{getAuthorSeparator(index, normalizedAuthors.length)}</span>{/if}{#if author.href}<a
-            class="post-author__link text-link"
-            href={author.href}
-            target={author.target}
-            rel={author.rel}>{author.name}</a
-          >{:else}<span class="post-author__text">{author.name}</span>{/if}{/each}
-    </p>
+    <div class="post-author__content">
+      <p class="post-author__name">
+        {#each normalizedAuthors as author, index (author.key)}{#if index > 0}<span class="post-author__separator">{getAuthorSeparator(index, normalizedAuthors.length)}</span>{/if}{#if author.href}<a
+              class="post-author__link text-link"
+              href={author.href}
+              target={author.target}
+              rel={author.rel}>{author.name}</a
+            >{:else}<span class="post-author__text">{author.name}</span>{/if}{/each}
+      </p>
+    </div>
   </div>
-</div>
+{/if}
 
 <style>
   .post-author {

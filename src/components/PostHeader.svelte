@@ -4,6 +4,8 @@
  *
  * Storybook-documented blog post header composition with optional tags,
  * publication date, author byline, and featured media.
+ * Author identity and links are provided through authors. Avatar props are
+ * single-author presentation data.
  *
  * Featured media defaults to a non-cropping art treatment so transparent or
  * designed assets are preserved. Use featured-cover only for photo covers that
@@ -18,7 +20,7 @@
 -->
 <script module lang="ts">
   import type { FigureMediaTreatment } from './Figure.svelte';
-  import type { PostAuthorItem } from './PostAuthor.svelte';
+  import type { PostAuthorItem } from '../lib/postAuthors';
   import type { TagLink } from '../lib/tagLinks';
 
   export const POST_HEADER_MEDIA_TREATMENTS = [
@@ -43,6 +45,7 @@
   import Tag from './Tag.svelte';
   import TagGroup from './TagGroup.svelte';
   import { warnOnce } from '../lib/devWarnings';
+  import { resolvePostAuthors } from '../lib/postAuthors';
   import { resolveTagLinks } from '../lib/tagLinks';
 
   const resolveImageProps = (value: unknown): FigureImageProps => {
@@ -64,72 +67,13 @@
     return 'featured-art';
   };
 
-  type AuthorResolution = {
-    authors: PostHeaderAuthor[];
-    invalidIndexes: number[];
-  };
-
-  function isRecord(value: unknown): value is Record<string, unknown> {
-    return typeof value === 'object' && value !== null;
-  }
-
-  const resolveAuthors = (
-    input: unknown,
-    fallbackAuthor: PostHeaderAuthor | undefined
-  ): AuthorResolution => {
-    if (Array.isArray(input) && input.length > 0) {
-      const resolvedAuthors: PostHeaderAuthor[] = [];
-      const invalidIndexes: number[] = [];
-
-      input.forEach((author, index) => {
-        const authorRecord = isRecord(author) ? author : undefined;
-        const name = String(authorRecord?.name ?? '').trim();
-
-        if (!authorRecord || !name) {
-          invalidIndexes.push(index);
-          return;
-        }
-
-        const resolvedAuthor: PostHeaderAuthor = { name };
-
-        if (typeof authorRecord.href === 'string') {
-          resolvedAuthor.href = authorRecord.href;
-        }
-
-        if (typeof authorRecord.target === 'string') {
-          resolvedAuthor.target = authorRecord.target;
-        }
-
-        if (typeof authorRecord.rel === 'string') {
-          resolvedAuthor.rel = authorRecord.rel;
-        }
-
-        resolvedAuthors.push(resolvedAuthor);
-      });
-
-      return {
-        authors: resolvedAuthors,
-        invalidIndexes,
-      };
-    }
-
-    return {
-      authors: fallbackAuthor ? [fallbackAuthor] : [],
-      invalidIndexes: [],
-    };
-  };
-
   type Props = FigureCaptionContent & {
     title: string;
     excerpt?: string;
     date?: string;
     dateTime?: string;
-    authorName?: string;
     authorImageSrc?: string;
     authorImageAlt?: string;
-    authorHref?: string;
-    authorTarget?: string;
-    authorRel?: string;
     authors?: PostHeaderAuthor[];
     tags?: PostHeaderTag[];
     imageProps?: FigureImageProps;
@@ -142,12 +86,8 @@
     excerpt = '',
     date = '',
     dateTime = '',
-    authorName = '',
     authorImageSrc = '',
     authorImageAlt = '',
-    authorHref = undefined,
-    authorTarget = undefined,
-    authorRel = undefined,
     authors = undefined,
     tags = [],
     imageProps = undefined,
@@ -162,22 +102,9 @@
   const postHeaderClasses = $derived(['post-header', className].filter(Boolean).join(' '));
   const normalizedDate = $derived(String(date ?? '').trim());
   const normalizedDateTime = $derived(String(dateTime ?? '').trim());
-  const normalizedAuthorName = $derived(String(authorName ?? '').trim());
   const normalizedAuthorImageSrc = $derived(String(authorImageSrc ?? '').trim());
   const normalizedAuthorImageAlt = $derived(String(authorImageAlt ?? ''));
-  const authorResolution = $derived(
-    resolveAuthors(
-      authors,
-      normalizedAuthorName.length > 0
-        ? {
-            name: normalizedAuthorName,
-            href: authorHref,
-            target: authorTarget,
-            rel: authorRel,
-          }
-        : undefined
-    )
-  );
+  const authorResolution = $derived(resolvePostAuthors(authors));
   const resolvedAuthors = $derived(authorResolution.authors);
   const resolvedImageProps = $derived(resolveImageProps(imageProps));
   const resolvedMediaTreatment = $derived(resolveMediaTreatment(requestedMediaTreatment));
@@ -213,10 +140,24 @@
       );
     }
 
-    for (const index of authorResolution.invalidIndexes) {
+    if (authorResolution.inputWasPresent && !authorResolution.inputWasArray) {
+      warnOnce(
+        'post-header:invalid-authors',
+        '[PostHeader] `authors` must be an array. Rendering without authors.'
+      );
+    }
+
+    for (const index of authorResolution.invalidAuthorIndexes) {
       warnOnce(
         `post-header:invalid-author:${index}`,
         '[PostHeader] Authors need non-empty name values. Skipping invalid author.'
+      );
+    }
+
+    for (const index of authorResolution.blankHrefIndexes) {
+      warnOnce(
+        `post-header:blank-href:${index}`,
+        '[PostHeader] Author href values must resolve to non-empty strings after trimming. Rendering author name as text.'
       );
     }
   });
@@ -224,7 +165,7 @@
 
 <header class={postHeaderClasses}>
   {#if hasTags}
-    <div class="post-header__content-rail">
+    <div class="post-header__content-rail post-header__tag-section">
       <TagGroup class="post-header__tag-group">
         {#each normalizedTags as tag (tag.href + ':' + tag.index)}
           <Tag
@@ -256,7 +197,7 @@
       <PostAuthor
         authors={resolvedAuthors}
         imageSrc={hasAuthorImage ? normalizedAuthorImageSrc : undefined}
-        imageAlt={normalizedAuthorImageAlt}
+        imageAlt={hasAuthorImage ? normalizedAuthorImageAlt : ''}
       />
     </div>
   {/if}
@@ -306,14 +247,14 @@
     inline-size: 100%;
   }
 
-  .post-header__content-rail :global(.post-header__tag-group),
+  .post-header__tag-section,
   .post-header__date-section,
   .post-header__author-section {
     padding-block: var(--space-100);
   }
 
   @media (min-width: 1015px) {
-    .post-header__content-rail :global(.post-header__tag-group) {
+    .post-header__tag-section {
       padding-block: var(--space-200);
     }
   }
@@ -326,6 +267,10 @@
 
     .post-header__content-rail {
       max-inline-size: var(--size-rail-sm);
+    }
+
+    .post-header__image-rail {
+      --figure-caption-max-inline-size: var(--size-rail-sm);
     }
   }
 </style>

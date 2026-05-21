@@ -1,4 +1,10 @@
 <script lang="ts">
+  /**
+   * TagGroup
+   *
+   * Wraps tags with consistent internal row and column gaps. Parent
+   * compositions own outer vertical spacing and padding.
+   */
   import type { Snippet } from 'svelte';
 
   let {
@@ -25,7 +31,6 @@
     align-items: flex-start;
     row-gap: var(--space-300);
     column-gap: var(--space-200);
-    padding-block: var(--space-100);
   }
 
   @media (min-width: 1015px) {

@@ -35,6 +35,18 @@
     { label: 'Roxy', href: '/tags/roxy' },
     { label: 'Game Dev', href: '/tags/game-dev' },
   ];
+  const defaultAuthors: NonNullable<PostHeaderProps['authors']> = [
+    { name: 'Jason Kisner' },
+  ];
+  const linkedAuthors: NonNullable<PostHeaderProps['authors']> = [
+    { name: 'Jason Kisner', href: '/authors/jason-kisner' },
+  ];
+  const blankTargetAuthors: NonNullable<PostHeaderProps['authors']> = [
+    { name: 'Jason Kisner', href: '/authors/jason-kisner', target: '_blank', rel: 'author' },
+  ];
+  const blankHrefAuthors: NonNullable<PostHeaderProps['authors']> = [
+    { name: 'Jason Kisner', href: '   ', target: '_blank', rel: 'author' },
+  ];
   const multipleAuthors: NonNullable<PostHeaderProps['authors']> = [
     { name: 'Jason', href: '/authors/jason-kisner' },
     { name: 'Fred', href: '/authors/fred' },
@@ -44,6 +56,10 @@
     { name: 'Only Valid Author', href: '/authors/valid' },
     { name: '   ', href: '/authors/blank-name' },
   ];
+  const allInvalidAuthors: NonNullable<PostHeaderProps['authors']> = [
+    { name: '   ', href: '/authors/blank-name' },
+  ];
+  const malformedAuthors = 'Jason Kisner' as unknown as PostHeaderProps['authors'];
   const nonArrayTags = 'Story' as unknown as PostHeaderProps['tags'];
   const invalidMediaTreatment = 'wide-contain' as unknown as PostHeaderProps['mediaTreatment'];
 
@@ -61,12 +77,8 @@
           'excerpt',
           'date',
           'dateTime',
-          'authorName',
           'authorImageSrc',
           'authorImageAlt',
-          'authorHref',
-          'authorTarget',
-          'authorRel',
           'authors',
           'tags',
           'captionText',
@@ -81,7 +93,7 @@
         },
         description: {
           component:
-            'Responsive blog post header composition for Storybook only. Featured media defaults to the Figure featured-art treatment so designed or transparent assets are preserved without cropping while keeping standard Image rounded corners; use featured-cover for intentionally cropped photo covers. imageProps.class is unsupported; use the root class prop for styling hooks. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',
+            'Responsive blog post header composition for Storybook only. Author identity and links are provided through authors only, while avatar props are single-author presentation data. Featured media defaults to the Figure featured-art treatment so designed or transparent assets are preserved without cropping while keeping standard Image rounded corners; use featured-cover for intentionally cropped photo covers. imageProps.class is unsupported; use the root class prop for styling hooks. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',
         },
       },
     },
@@ -91,13 +103,9 @@
         'Learning to code was no easy feat for Sloth-Luc. The lines of code seemed to blur together, and sometimes he felt like giving up.',
       date: '20 December 2025',
       dateTime: '2025-12-20',
-      authorName: 'Jason Kisner',
       authorImageSrc: defaultAuthorImageSrc,
       authorImageAlt: '',
-      authorHref: undefined,
-      authorTarget: undefined,
-      authorRel: undefined,
-      authors: undefined,
+      authors: defaultAuthors,
       tags: defaultTags,
       imageProps: defaultImageProps,
       captionText: '',
@@ -122,10 +130,6 @@
         description:
           'Optional machine-readable datetime. It has no visual effect and is ignored unless date is also set.',
       },
-      authorName: {
-        control: 'text',
-        description: 'Optional visible author name. The author block is skipped when blank.',
-      },
       authorImageSrc: {
         control: 'text',
         description:
@@ -136,24 +140,10 @@
         description:
           'Optional author image alt text for unlinked single-author avatars. Ignored for linked duplicate avatars, which render decorative images.',
       },
-      authorHref: {
-        control: 'text',
-        description:
-          'Optional single-author name link. Ignored when authorName is blank or authors is non-empty; blank values render the author name as text and warn in development.',
-      },
-      authorTarget: {
-        control: 'text',
-        description: 'Optional single-author link target. Applied only when authorHref renders an anchor.',
-      },
-      authorRel: {
-        control: 'text',
-        description:
-          'Optional author link rel. _blank targets are hardened; non-blank targets preserve caller rel.',
-      },
       authors: {
         control: 'object',
         description:
-          'Optional author list. When non-empty, it owns the author section and authorName/authorHref are ignored; blank names are skipped and no byline renders if none are valid.',
+          'Optional author list. Each item needs a non-empty name; blank names are skipped, blank hrefs render as text, and _blank targets are rel-hardened.',
       },
       tags: {
         control: 'object',
@@ -271,8 +261,8 @@
     excerpt: '',
     date: '',
     dateTime: '2025-12-20',
-    authorName: '',
     authorImageSrc: defaultAuthorImageSrc,
+    authors: undefined,
     tags: [],
     imageProps: undefined,
     captionText: 'This caption is ignored because no featured media renders.',
@@ -306,6 +296,7 @@
 <Story
   name="Text Only Author"
   args={{
+    authors: defaultAuthors,
     authorImageSrc: '   ',
     authorImageAlt: '',
   }}
@@ -314,15 +305,28 @@
 <Story
   name="Linked Author"
   args={{
-    authorHref: '/authors/jason-kisner',
-    authorTarget: undefined,
-    authorRel: undefined,
+    authors: linkedAuthors,
   }}
   parameters={{
     docs: {
       description: {
         story:
-          'The author name text links when authorHref resolves to non-empty text after trimming. The avatar duplicates the same destination for pointer users while staying out of the tab order and accessibility tree.',
+          'The author name text links when the author href resolves to non-empty text after trimming. The avatar duplicates the same destination for pointer users while staying out of the tab order and accessibility tree.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Blank Target Hardened Author"
+  args={{
+    authors: blankTargetAuthors,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          '_blank author links preserve caller rel tokens and add noopener/noreferrer through the shared link normalization helper.',
       },
     },
   }}
@@ -331,7 +335,6 @@
 <Story
   name="Multiple Linked Authors"
   args={{
-    authorName: '',
     authors: multipleAuthors,
     authorImageSrc: defaultAuthorImageSrc,
   }}
@@ -350,14 +353,64 @@
   args={{
     title: 'Invalid Author Guard',
     excerpt: 'Only the valid author should render.',
-    authorName: 'Fallback Author',
     authors: invalidAuthors,
   }}
   parameters={{
     docs: {
       description: {
         story:
-          'Blank author names are skipped so PostHeader never passes invalid authors to PostAuthor. When authors is non-empty, authorName remains a legacy fallback only for absent or empty authors arrays.',
+          'Blank author names are skipped so PostHeader never passes invalid authors to PostAuthor. The byline still renders when at least one valid author remains.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Blank Author Href Guard"
+  args={{
+    title: 'Blank Author Href Guard',
+    excerpt: 'The author should render as text instead of a link.',
+    authors: blankHrefAuthors,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Blank author href values warn in development and render the author name as text.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Malformed Authors Guard"
+  args={{
+    title: 'Malformed Authors Guard',
+    excerpt: 'The author section should be skipped when authors is present but not an array.',
+    authors: malformedAuthors,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Present non-array authors values warn in development and render no author section.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="All Invalid Authors"
+  args={{
+    title: 'All Invalid Authors',
+    excerpt: 'The author section should be skipped when every author is invalid.',
+    authors: allInvalidAuthors,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'All-invalid author lists warn for skipped entries and render no author section instead of throwing.',
       },
     },
   }}

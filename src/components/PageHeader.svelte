@@ -97,7 +97,7 @@
   {/if}
 
   {#if hasTags}
-    <div class="page-header__content-rail">
+    <div class="page-header__content-rail page-header__tag-section">
       <TagGroup class="page-header__tag-group">
         {#each normalizedTags as tag (tag.href + ':' + tag.index)}
           <Tag
@@ -146,12 +146,12 @@
     inline-size: 100%;
   }
 
-  .page-header__content-rail :global(.page-header__tag-group) {
+  .page-header__tag-section {
     padding-block: var(--space-100);
   }
 
   @media (min-width: 1015px) {
-    .page-header__content-rail :global(.page-header__tag-group) {
+    .page-header__tag-section {
       padding-block: var(--space-200);
     }
   }
@@ -164,6 +164,10 @@
 
     .page-header__content-rail {
       max-inline-size: var(--size-rail-sm);
+    }
+
+    .page-header__image-rail {
+      --figure-caption-max-inline-size: var(--size-rail-sm);
     }
   }
 </style>
