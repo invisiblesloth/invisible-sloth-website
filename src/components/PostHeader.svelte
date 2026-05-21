@@ -4,12 +4,16 @@
  *
  * Storybook-documented blog post header composition with optional tags,
  * publication date, author byline, and featured media.
+ *
+ * PostHeader owns post-level section order and media semantics. Internal
+ * header pieces own linked tag validation, rail layout, and Figure composition.
+ *
  * Author identity and links are provided through authors. Avatar props are
  * single-author presentation data.
  *
  * Featured media defaults to a non-cropping art treatment so transparent or
- * designed assets are preserved. Use featured-cover only for photo covers that
- * may be cropped into a fixed frame.
+ * designed assets are preserved. Use cover only for photo covers that may be
+ * cropped into a fixed frame.
  *
  * Only title is required. Publishing constraints for date, author, and media
  * belong in future content schemas rather than this presentation component.
@@ -20,54 +24,56 @@
 -->
 <script module lang="ts">
   import type { FigureMediaTreatment } from './Figure.svelte';
+  import type { FigureCaptionContent } from './FigureCaption.svelte';
+  import type { HeaderImageProps } from './header/HeaderMediaSection.svelte';
   import type { PostAuthorItem } from '../lib/postAuthors';
   import type { TagLink } from '../lib/tagLinks';
 
   export const POST_HEADER_MEDIA_TREATMENTS = [
-    'featured-art',
-    'featured-cover',
-  ] as const satisfies readonly FigureMediaTreatment[];
-  export type PostHeaderMediaTreatment = Extract<
-    FigureMediaTreatment,
-    'featured-art' | 'featured-cover'
-  >;
+    'art',
+    'cover',
+  ] as const;
+  export type PostHeaderMediaTreatment = (typeof POST_HEADER_MEDIA_TREATMENTS)[number];
+  export type PostHeaderMedia = FigureCaptionContent & {
+    image: HeaderImageProps;
+    treatment?: PostHeaderMediaTreatment;
+  };
   export type PostHeaderAuthor = PostAuthorItem;
   export type PostHeaderTag = TagLink;
 </script>
 
 <script lang="ts">
   import DetailHeader from './DetailHeader.svelte';
-  import Figure from './Figure.svelte';
-  import type { FigureCaptionContent } from './FigureCaption.svelte';
-  import type { FigureImageProps } from './Figure.svelte';
+  import HeaderMediaSection from './header/HeaderMediaSection.svelte';
+  import HeaderRail from './header/HeaderRail.svelte';
+  import HeaderRoot from './header/HeaderRoot.svelte';
+  import HeaderTagSection from './header/HeaderTagSection.svelte';
   import PostAuthor from './PostAuthor.svelte';
   import PostDate from './PostDate.svelte';
-  import Tag from './Tag.svelte';
-  import TagGroup from './TagGroup.svelte';
   import { warnOnce } from '../lib/devWarnings';
   import { resolvePostAuthors } from '../lib/postAuthors';
-  import { resolveTagLinks } from '../lib/tagLinks';
 
-  const resolveImageProps = (value: unknown): FigureImageProps => {
-    if (value && typeof value === 'object' && !Array.isArray(value)) {
-      return value as FigureImageProps;
+  function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+  }
+
+  const resolveMediaTreatment = (media: unknown): FigureMediaTreatment => {
+    if (!isRecord(media)) {
+      return 'featured-art';
     }
 
-    return {} as FigureImageProps;
+    return media.treatment === 'cover' ? 'featured-cover' : 'featured-art';
   };
 
-  const resolveMediaTreatment = (value: unknown): PostHeaderMediaTreatment => {
-    if (
-      typeof value === 'string' &&
-      (POST_HEADER_MEDIA_TREATMENTS as readonly string[]).includes(value)
-    ) {
-      return value as PostHeaderMediaTreatment;
+  const hasInvalidMediaTreatment = (media: unknown): boolean => {
+    if (!isRecord(media) || media.treatment === undefined) {
+      return false;
     }
 
-    return 'featured-art';
+    return !(POST_HEADER_MEDIA_TREATMENTS as readonly unknown[]).includes(media.treatment);
   };
 
-  type Props = FigureCaptionContent & {
+  type Props = {
     title: string;
     excerpt?: string;
     date?: string;
@@ -76,8 +82,7 @@
     authorImageAlt?: string;
     authors?: PostHeaderAuthor[];
     tags?: PostHeaderTag[];
-    imageProps?: FigureImageProps;
-    mediaTreatment?: PostHeaderMediaTreatment;
+    media?: PostHeaderMedia;
     class?: string;
   };
 
@@ -90,12 +95,7 @@
     authorImageAlt = '',
     authors = undefined,
     tags = [],
-    imageProps = undefined,
-    captionText = '',
-    creditText = '',
-    caption,
-    credit,
-    mediaTreatment: requestedMediaTreatment = 'featured-art',
+    media = undefined,
     class: className = '',
   }: Props = $props();
 
@@ -106,37 +106,17 @@
   const normalizedAuthorImageAlt = $derived(String(authorImageAlt ?? ''));
   const authorResolution = $derived(resolvePostAuthors(authors));
   const resolvedAuthors = $derived(authorResolution.authors);
-  const resolvedImageProps = $derived(resolveImageProps(imageProps));
-  const resolvedMediaTreatment = $derived(resolveMediaTreatment(requestedMediaTreatment));
+  const resolvedMediaTreatment = $derived(resolveMediaTreatment(media));
   const hasDate = $derived(normalizedDate.length > 0);
   const hasAuthor = $derived(resolvedAuthors.length > 0);
   const hasAuthorImage = $derived(
     hasAuthor && resolvedAuthors.length === 1 && normalizedAuthorImageSrc.length > 0
   );
-  const hasImage = $derived(String(resolvedImageProps.src ?? '').trim().length > 0);
-  const tagResolution = $derived(resolveTagLinks(tags));
-  const normalizedTags = $derived(tagResolution.links);
-  const hasTags = $derived(normalizedTags.length > 0);
-
   $effect(() => {
-    if (requestedMediaTreatment !== resolvedMediaTreatment) {
+    if (hasInvalidMediaTreatment(media)) {
       warnOnce(
         'post-header:invalid-media-treatment',
-        `[PostHeader] \`mediaTreatment\` must be one of ${POST_HEADER_MEDIA_TREATMENTS.map((treatment) => `"${treatment}"`).join(', ')}. Falling back to "featured-art".`
-      );
-    }
-
-    if (!tagResolution.inputWasArray) {
-      warnOnce(
-        'post-header:invalid-tags',
-        '[PostHeader] `tags` must be an array. Rendering without tags.'
-      );
-    }
-
-    for (const index of tagResolution.invalidIndexes) {
-      warnOnce(
-        `post-header:invalid-tag:${index}`,
-        '[PostHeader] Tags need non-empty label and href values. Skipping invalid tag.'
+        `[PostHeader] \`media.treatment\` must be one of ${POST_HEADER_MEDIA_TREATMENTS.map((treatment) => `"${treatment}"`).join(', ')}. Falling back to "art".`
       );
     }
 
@@ -163,114 +143,40 @@
   });
 </script>
 
-<header class={postHeaderClasses}>
-  {#if hasTags}
-    <div class="post-header__content-rail post-header__tag-section">
-      <TagGroup class="post-header__tag-group">
-        {#each normalizedTags as tag (tag.href + ':' + tag.index)}
-          <Tag
-            label={tag.label}
-            href={tag.href}
-            target={tag.target}
-            rel={tag.rel}
-          />
-        {/each}
-      </TagGroup>
-    </div>
-  {/if}
+<HeaderRoot class={postHeaderClasses}>
+  <HeaderTagSection
+    {tags}
+    componentLabel="[PostHeader]"
+    warningNamespace="post-header"
+  />
 
   {#if hasDate}
-    <div class="post-header__content-rail post-header__date-section">
+    <HeaderRail section="metadata">
       <PostDate
         date={normalizedDate}
         dateTime={normalizedDateTime || undefined}
       />
-    </div>
+    </HeaderRail>
   {/if}
 
-  <div class="post-header__content-rail">
+  <HeaderRail>
     <DetailHeader {title} {excerpt} />
-  </div>
+  </HeaderRail>
 
   {#if hasAuthor}
-    <div class="post-header__content-rail post-header__author-section">
+    <HeaderRail section="metadata">
       <PostAuthor
         authors={resolvedAuthors}
         imageSrc={hasAuthorImage ? normalizedAuthorImageSrc : undefined}
         imageAlt={hasAuthorImage ? normalizedAuthorImageAlt : ''}
       />
-    </div>
+    </HeaderRail>
   {/if}
 
-  {#if hasImage}
-    <div class="post-header__image-rail">
-      <Figure
-        imageProps={resolvedImageProps}
-        mediaTreatment={resolvedMediaTreatment}
-        {captionText}
-        {creditText}
-        {caption}
-        {credit}
-        class="post-header__figure"
-      />
-    </div>
-  {/if}
-</header>
-
-<style>
-  .post-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-400);
-    inline-size: 100%;
-    padding-block-end: var(--space-section-block);
-    color: var(--color-on-surface);
-  }
-
-  .post-header__content-rail,
-  .post-header__image-rail {
-    inline-size: 100%;
-    margin-inline: auto;
-    padding-inline: var(--space-rail-inline);
-  }
-
-  .post-header__content-rail {
-    max-inline-size: var(--size-rail-lg);
-  }
-
-  .post-header__image-rail {
-    max-inline-size: var(--size-rail-lg);
-  }
-
-  .post-header__figure {
-    inline-size: 100%;
-  }
-
-  .post-header__tag-section,
-  .post-header__date-section,
-  .post-header__author-section {
-    padding-block: var(--space-100);
-  }
-
-  @media (min-width: 1015px) {
-    .post-header__tag-section {
-      padding-block: var(--space-200);
-    }
-  }
-
-  @media (min-width: 1176px) {
-    .post-header__content-rail,
-    .post-header__image-rail {
-      padding-inline: 0;
-    }
-
-    .post-header__content-rail {
-      max-inline-size: var(--size-rail-sm);
-    }
-
-    .post-header__image-rail {
-      --figure-caption-max-inline-size: var(--size-rail-sm);
-    }
-  }
-</style>
+  <HeaderMediaSection
+    {media}
+    mediaTreatment={resolvedMediaTreatment}
+    componentLabel="[PostHeader]"
+    warningNamespace="post-header"
+  />
+</HeaderRoot>

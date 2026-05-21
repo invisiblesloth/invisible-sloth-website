@@ -5,24 +5,27 @@
 
   type PostHeaderProps = ComponentProps<typeof PostHeader>;
 
-  const defaultImageProps: PostHeaderProps['imageProps'] = {
-    src: '/assets/note-thanun-86_8M5BckfA-unsplash.jpg',
-    srcset:
-      '/assets/note-thanun-86_8M5BckfA-unsplash-640.webp 640w, /assets/note-thanun-86_8M5BckfA-unsplash-1024.webp 1024w, /assets/note-thanun-86_8M5BckfA-unsplash-1512.webp 1512w, /assets/note-thanun-86_8M5BckfA-unsplash-3000.webp 3000w',
-    sizes:
-      '(min-width: 1176px) 1128px, (min-width: 1015px) calc(100vw - 96px), (min-width: 632px) calc(100vw - 64px), calc(100vw - 32px)',
-    alt: 'Aerial view of Tokyo Tower painted in red and white, surrounded by modern skyscrapers in Tokyo, Japan under a clear blue sky.',
-    decorative: false,
-    width: 4080,
-    height: 3072,
+  const defaultMedia: NonNullable<PostHeaderProps['media']> = {
+    image: {
+      src: '/assets/note-thanun-86_8M5BckfA-unsplash.jpg',
+      srcset:
+        '/assets/note-thanun-86_8M5BckfA-unsplash-640.webp 640w, /assets/note-thanun-86_8M5BckfA-unsplash-1024.webp 1024w, /assets/note-thanun-86_8M5BckfA-unsplash-1512.webp 1512w, /assets/note-thanun-86_8M5BckfA-unsplash-3000.webp 3000w',
+      sizes:
+        '(min-width: 1176px) 1128px, (min-width: 1015px) calc(100vw - 96px), (min-width: 632px) calc(100vw - 64px), calc(100vw - 32px)',
+      alt: 'Aerial view of Tokyo Tower painted in red and white, surrounded by modern skyscrapers in Tokyo, Japan under a clear blue sky.',
+      width: 4080,
+      height: 3072,
+    },
   };
 
-  const designedImageProps: PostHeaderProps['imageProps'] = {
-    src: '/social-card.png',
-    alt: 'Invisible Sloth social card artwork.',
-    decorative: false,
-    width: 1200,
-    height: 630,
+  const designedMedia: NonNullable<PostHeaderProps['media']> = {
+    image: {
+      src: '/social-card.png',
+      alt: 'Invisible Sloth social card artwork.',
+      width: 1200,
+      height: 630,
+    },
+    treatment: 'art',
   };
 
   const defaultTags: NonNullable<PostHeaderProps['tags']> = [
@@ -61,7 +64,13 @@
   ];
   const malformedAuthors = 'Jason Kisner' as unknown as PostHeaderProps['authors'];
   const nonArrayTags = 'Story' as unknown as PostHeaderProps['tags'];
-  const invalidMediaTreatment = 'wide-contain' as unknown as PostHeaderProps['mediaTreatment'];
+  const malformedMedia = 'Tokyo Tower' as unknown as PostHeaderProps['media'];
+  const missingImageMedia = { captionText: 'Missing image object.' } as unknown as PostHeaderProps['media'];
+  const invalidTreatmentMedia = {
+    ...defaultMedia,
+    treatment: 'wide-contain',
+    captionText: 'Invalid media treatment falls back to the non-cropping art treatment.',
+  } as unknown as PostHeaderProps['media'];
 
   const defaultAuthorImageSrc = '/assets/image-fallback-default-640.webp';
 
@@ -81,9 +90,7 @@
           'authorImageAlt',
           'authors',
           'tags',
-          'captionText',
-          'creditText',
-          'mediaTreatment',
+          'media',
         ],
       },
       docs: {
@@ -93,7 +100,7 @@
         },
         description: {
           component:
-            'Responsive blog post header composition for Storybook only. Author identity and links are provided through authors only, while avatar props are single-author presentation data. Featured media defaults to the Figure featured-art treatment so designed or transparent assets are preserved without cropping while keeping standard Image rounded corners; use featured-cover for intentionally cropped photo covers. imageProps.class is unsupported; use the root class prop for styling hooks. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',
+            'Responsive blog post header composition for Storybook only. PostHeader owns post-level section order and media semantics, while internal header pieces own rail layout, linked tag validation, and Figure composition. Author identity and links are provided through authors only, while avatar props are single-author presentation data. Grouped media defaults to the art treatment so designed or transparent assets are preserved without cropping; use cover for intentionally cropped photo covers. Use the root class prop for styling hooks. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',
         },
       },
     },
@@ -107,10 +114,7 @@
       authorImageAlt: '',
       authors: defaultAuthors,
       tags: defaultTags,
-      imageProps: defaultImageProps,
-      captionText: '',
-      creditText: '',
-      mediaTreatment: 'featured-art',
+      media: defaultMedia,
     },
     argTypes: {
       title: {
@@ -150,41 +154,10 @@
         description:
           'Optional clickable tag links. Non-array values render no tags; blank labels or hrefs are skipped.',
       },
-      captionText: {
-        control: 'text',
+      media: {
+        control: 'object',
         description:
-          'Plain-text caption fallback for featured media. Ignored when no featured media renders.',
-      },
-      creditText: {
-        control: 'text',
-        description:
-          'Plain-text credit fallback for featured media. Ignored when no featured media renders.',
-      },
-      imageProps: {
-        control: false,
-        description:
-          'Optional Figure media props. Renders only when primary src is non-empty. imageProps.class is unsupported.',
-        table: {
-          disable: true,
-        },
-      },
-      mediaTreatment: {
-        control: 'select',
-        options: ['featured-art', 'featured-cover'],
-        description:
-          'Featured media treatment. featured-art preserves designed or transparent media; featured-cover crops photos into a fixed 3:2 frame.',
-      },
-      caption: {
-        control: false,
-        table: {
-          disable: true,
-        },
-      },
-      credit: {
-        control: false,
-        table: {
-          disable: true,
-        },
+          'Optional grouped header media. treatment is a PostHeader-level concept: art maps to non-cropping featured art, and cover maps to cropped photo cover media. Layout fields such as class, decorative, frame, fit, ratio, radius, and containSizing are header-owned and ignored.',
       },
       class: {
         control: false,
@@ -201,13 +174,16 @@
 <Story
   name="Photo Cover"
   args={{
-    mediaTreatment: 'featured-cover',
+    media: {
+      ...defaultMedia,
+      treatment: 'cover',
+    },
   }}
   parameters={{
     docs: {
       description: {
         story:
-          'Photo covers opt into the cropped featured-cover treatment for a consistent 3:2 post-header frame.',
+          'Photo covers opt into the header-level cover treatment, which maps internally to the cropped Figure featured-cover treatment.',
       },
     },
   }}
@@ -216,16 +192,17 @@
 <Story
   name="Designed Featured Media"
   args={{
-    imageProps: designedImageProps,
-    mediaTreatment: 'featured-art',
-    captionText: 'Designed media preserved without a crop frame.',
-    creditText: '',
+    media: {
+      ...designedMedia,
+      captionText: 'Designed media preserved without a crop frame.',
+      creditText: '',
+    },
   }}
   parameters={{
     docs: {
       description: {
         story:
-          'Designed or transparent featured media uses featured-art so the source asset owns its own composition without cropping while keeping the standard Image corner radius.',
+          'Designed or transparent featured media uses the header-level art treatment so the source asset owns its own composition without cropping while keeping the standard Image corner radius.',
       },
     },
   }}
@@ -234,15 +211,47 @@
 <Story
   name="Invalid Media Treatment Guard"
   args={{
-    mediaTreatment: invalidMediaTreatment,
-    captionText: 'Invalid media treatment falls back to the non-cropping art treatment.',
-    creditText: '',
+    media: invalidTreatmentMedia,
   }}
   parameters={{
     docs: {
       description: {
         story:
-          'Unexpected mediaTreatment values are ignored so PostHeader only exposes featured-art and featured-cover semantics at runtime.',
+          'Unexpected media.treatment values are ignored so PostHeader only exposes art and cover semantics at runtime.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Malformed Media Guard"
+  args={{
+    title: 'Malformed Media Guard',
+    excerpt: 'Malformed media should render no media section.',
+    media: malformedMedia,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Unexpected non-object media values warn in development and render no media section.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Missing Media Image Guard"
+  args={{
+    title: 'Missing Media Image Guard',
+    excerpt: 'Media without an image object should render no media section.',
+    media: missingImageMedia,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Media objects need a nested image object; missing image data warns in development and renders no media section.',
       },
     },
   }}
@@ -251,7 +260,7 @@
 <Story
   name="No Featured Image"
   args={{
-    imageProps: undefined,
+    media: undefined,
   }}
 />
 
@@ -264,15 +273,13 @@
     authorImageSrc: defaultAuthorImageSrc,
     authors: undefined,
     tags: [],
-    imageProps: undefined,
-    captionText: 'This caption is ignored because no featured media renders.',
-    creditText: 'This credit is ignored because no featured media renders.',
+    media: undefined,
   }}
   parameters={{
     docs: {
       description: {
         story:
-          'Only title is required. dateTime, author image, captions, and credits are ignored when their visible parent sections are absent.',
+          'Only title is required. dateTime and author image data are ignored when their visible parent sections are absent.',
       },
     },
   }}
@@ -281,8 +288,35 @@
 <Story
   name="With Caption And Credit"
   args={{
-    captionText: 'Tokyo Tower rising above the skyline of central Tokyo, Japan.',
-    creditText: 'Photo by note thanun on Unsplash',
+    media: {
+      ...defaultMedia,
+      captionText: 'Tokyo Tower rising above the skyline of central Tokyo, Japan.',
+      creditText: 'Photo by note thanun on Unsplash',
+    },
+  }}
+/>
+
+<Story
+  name="Empty Media Source"
+  args={{
+    title: 'Empty Media Source',
+    excerpt: 'Empty draft media should render no media section.',
+    media: {
+      image: {
+        src: '',
+        alt: '',
+      },
+      captionText: 'This caption is ignored because no media renders.',
+      creditText: 'This credit is ignored because no media renders.',
+    },
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Empty media sources are treated as absent media and do not render an empty rail or warn.',
+      },
+    },
   }}
 />
 

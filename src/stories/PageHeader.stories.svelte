@@ -5,17 +5,17 @@
 
   type PageHeaderProps = ComponentProps<typeof PageHeader>;
 
-  const defaultImageProps: PageHeaderProps['imageProps'] = {
-    src: '/assets/note-thanun-86_8M5BckfA-unsplash.jpg',
-    srcset:
-      '/assets/note-thanun-86_8M5BckfA-unsplash-640.webp 640w, /assets/note-thanun-86_8M5BckfA-unsplash-1024.webp 1024w, /assets/note-thanun-86_8M5BckfA-unsplash-1512.webp 1512w, /assets/note-thanun-86_8M5BckfA-unsplash-3000.webp 3000w',
-    sizes:
-      '(min-width: 1176px) 1128px, (min-width: 1015px) calc(100vw - 96px), (min-width: 632px) calc(100vw - 64px), calc(100vw - 32px)',
-    alt: 'Aerial view of Tokyo Tower painted in red and white, surrounded by modern skyscrapers in Tokyo, Japan under a clear blue sky.',
-    decorative: false,
-    radius: 'small',
-    width: 4080,
-    height: 3072,
+  const defaultMedia: NonNullable<PageHeaderProps['media']> = {
+    image: {
+      src: '/assets/note-thanun-86_8M5BckfA-unsplash.jpg',
+      srcset:
+        '/assets/note-thanun-86_8M5BckfA-unsplash-640.webp 640w, /assets/note-thanun-86_8M5BckfA-unsplash-1024.webp 1024w, /assets/note-thanun-86_8M5BckfA-unsplash-1512.webp 1512w, /assets/note-thanun-86_8M5BckfA-unsplash-3000.webp 3000w',
+      sizes:
+        '(min-width: 1176px) 1128px, (min-width: 1015px) calc(100vw - 96px), (min-width: 632px) calc(100vw - 64px), calc(100vw - 32px)',
+      alt: 'Aerial view of Tokyo Tower painted in red and white, surrounded by modern skyscrapers in Tokyo, Japan under a clear blue sky.',
+      width: 4080,
+      height: 3072,
+    },
   };
 
   const defaultTags: NonNullable<PageHeaderProps['tags']> = [
@@ -31,6 +31,8 @@
     { href: '/tags/missing-label' },
   ] as unknown as PageHeaderProps['tags'];
   const nonArrayTags = 'Roxy' as unknown as PageHeaderProps['tags'];
+  const malformedMedia = 'Tokyo Tower' as unknown as PageHeaderProps['media'];
+  const missingImageMedia = { captionText: 'Missing image object.' } as unknown as PageHeaderProps['media'];
 
   const { Story } = defineMeta({
     title: 'Organisms/PageHeader',
@@ -39,12 +41,12 @@
     parameters: {
       layout: 'fullscreen',
       controls: {
-        include: ['title', 'excerpt', 'tags', 'captionText', 'creditText'],
+        include: ['title', 'excerpt', 'tags', 'media'],
       },
       docs: {
         description: {
           component:
-            'Responsive page header composition with optional wide media, clickable tag links, and DetailHeader content. When media is present, PageHeader uses the Figure wide-contain treatment, treats media as non-decorative content, and needs meaningful image alt text. imageProps.class is unsupported; use the root class prop for styling hooks. The default tag hrefs are future-route placeholders for planned tag landing pages; they are not current site routes.',
+            'Responsive page header composition with optional grouped media, clickable tag links, and DetailHeader content. PageHeader owns page-level section order and media semantics, while internal header pieces own rail layout, linked tag validation, and Figure composition. When media is present, PageHeader uses the wide non-cropping treatment and needs meaningful image alt text. Use the root class prop for styling hooks. The default tag hrefs are future-route placeholders for planned tag landing pages; they are not current site routes.',
         },
       },
     },
@@ -52,9 +54,7 @@
       title: 'Roxy',
       excerpt: 'A Game Engine for Playdate',
       tags: defaultTags,
-      imageProps: defaultImageProps,
-      captionText: '',
-      creditText: '',
+      media: defaultMedia,
     },
     argTypes: {
       title: {
@@ -70,33 +70,10 @@
         description:
           'Clickable tag links. Blank hrefs are skipped so tags do not render as inert buttons.',
       },
-      captionText: {
-        control: 'text',
-        description: 'Plain-text caption fallback for the header media.',
-      },
-      creditText: {
-        control: 'text',
-        description: 'Plain-text credit fallback for the header media.',
-      },
-      imageProps: {
-        control: false,
+      media: {
+        control: 'object',
         description:
-          'Optional Figure media props. Renders only when primary src is non-empty; wide-contain forces decorative=false, frame="auto", fit="contain", and containSizing="fill-inline". imageProps.class is unsupported.',
-        table: {
-          disable: true,
-        },
-      },
-      caption: {
-        control: false,
-        table: {
-          disable: true,
-        },
-      },
-      credit: {
-        control: false,
-        table: {
-          disable: true,
-        },
+          'Optional grouped header media. Renders only when media.image.src is non-empty; layout fields such as class, decorative, frame, fit, ratio, radius, and containSizing are header-owned and ignored.',
       },
       class: {
         control: false,
@@ -115,7 +92,7 @@
   args={{
     excerpt: '',
     tags: [],
-    imageProps: undefined,
+    media: undefined,
   }}
 />
 
@@ -123,7 +100,7 @@
   name="Title And Excerpt"
   args={{
     tags: [],
-    imageProps: undefined,
+    media: undefined,
   }}
 />
 
@@ -131,7 +108,7 @@
   name="With Tags"
   args={{
     excerpt: '',
-    imageProps: undefined,
+    media: undefined,
   }}
 />
 
@@ -146,8 +123,69 @@
 <Story
   name="With Caption And Credit"
   args={{
-    captionText: 'Tokyo Tower rising above the skyline of central Tokyo, Japan.',
-    creditText: 'Photo by note thanun on Unsplash',
+    media: {
+      ...defaultMedia,
+      captionText: 'Tokyo Tower rising above the skyline of central Tokyo, Japan.',
+      creditText: 'Photo by note thanun on Unsplash',
+    },
+  }}
+/>
+
+<Story
+  name="Empty Media Source"
+  args={{
+    title: 'Empty Media Source',
+    excerpt: 'Empty draft media should render no media section.',
+    media: {
+      image: {
+        src: '',
+        alt: '',
+      },
+      captionText: 'This caption is ignored because no media renders.',
+      creditText: 'This credit is ignored because no media renders.',
+    },
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Empty media sources are treated as absent media and do not render an empty rail or warn.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Malformed Media Guard"
+  args={{
+    title: 'Malformed Media Guard',
+    excerpt: 'Malformed media should render no media section.',
+    media: malformedMedia,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Unexpected non-object media values warn in development and render no media section.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Missing Media Image Guard"
+  args={{
+    title: 'Missing Media Image Guard',
+    excerpt: 'Media without an image object should render no media section.',
+    media: missingImageMedia,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Media objects need a nested image object; missing image data warns in development and renders no media section.',
+      },
+    },
   }}
 />
 
