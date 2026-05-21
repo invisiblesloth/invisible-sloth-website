@@ -6,6 +6,10 @@
   const fallbackDescription =
     'In the heart of the digital jungle, there lived an invisible sloth named Sloth-Luc.';
 
+  const headingLevelOptions = [1, 2, 3, 4, 5, 6] as const;
+  // Exercises ProjectCard's runtime guard for non-typed callers.
+  const invalidRuntimeHeadingLevel = 0 as unknown as (typeof headingLevelOptions)[number];
+
   const defaultButton: ProjectButton = {
     label: 'Call to Action',
     href: 'https://github.com/invisiblesloth/roxy-engine',
@@ -25,13 +29,14 @@
     tags: ['autodocs'],
     parameters: {
       controls: {
-        include: ['title', 'subhead', 'description', 'badges', 'button'],
+        include: ['title', 'subhead', 'description', 'headingLevel', 'badges', 'button'],
       },
     },
     args: {
       title: 'Project Name',
       subhead: 'Project Subhead',
       description: fallbackDescription,
+      headingLevel: 2,
       button: defaultButton,
       badges: defaultBadges,
     },
@@ -47,6 +52,11 @@
       description: {
         control: 'text',
         description: 'Plain text fallback when no rich description slot is provided',
+      },
+      headingLevel: {
+        control: { type: 'select' },
+        options: headingLevelOptions,
+        description: 'Semantic title heading level. Typography remains card-scoped.',
       },
       badges: {
         control: 'object',
@@ -76,3 +86,69 @@
     <ProjectCard {...args} />
   {/snippet}
 </Story>
+
+<Story name="Semantic Heading Level">
+  {#snippet template(args)}
+    <ProjectCard {...args} headingLevel={3} />
+  {/snippet}
+</Story>
+
+<Story name="Invalid Heading Level Fallback">
+  {#snippet template(args)}
+    <ProjectCard {...args} headingLevel={invalidRuntimeHeadingLevel} />
+  {/snippet}
+</Story>
+
+<Story name="CTA Icon Policy">
+  {#snippet template()}
+    <div class="project-card-story-stack">
+      <ProjectCard
+        title="Third-Party Absolute URL"
+        description="External third-party HTTP(S) links show the decorative external-link icon."
+        button={{
+          label: 'External Link',
+          href: 'https://github.com/invisiblesloth/roxy-engine',
+          target: '_blank',
+        }}
+        badges={defaultBadges.slice(0, 1)}
+      />
+
+      <ProjectCard
+        title="First-Party Absolute URL"
+        description="First-party absolute links do not show the external-link icon."
+        button={{
+          label: 'First-Party Link',
+          href: 'https://invisiblesloth.com/projects',
+        }}
+        badges={defaultBadges.slice(0, 1)}
+      />
+
+      <ProjectCard
+        title="Relative URL"
+        description="Relative links stay internal and do not show the external-link icon."
+        button={{
+          label: 'Internal Link',
+          href: '/projects',
+        }}
+        badges={defaultBadges.slice(0, 1)}
+      />
+
+      <ProjectCard
+        title="Invalid Empty URL"
+        description="Invalid or empty href values do not show the external-link icon; Button owns fallback rendering."
+        button={{
+          label: 'Invalid Link Fallback',
+          href: '   ',
+        }}
+        badges={defaultBadges.slice(0, 1)}
+      />
+    </div>
+  {/snippet}
+</Story>
+
+<style>
+  .project-card-story-stack {
+    display: grid;
+    gap: var(--space-gutter-loose);
+  }
+</style>

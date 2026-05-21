@@ -1,6 +1,6 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import ProjectList from '../components/ProjectList.svelte';
+  import ProjectListSurface from '../components/ProjectListSurface.svelte';
   import ProjectCard from '../components/ProjectCard.svelte';
   import Divider from '../components/Divider.svelte';
   import type { ProjectBadge, ProjectButton } from '../types/project';
@@ -16,7 +16,7 @@
 
   const { Story } = defineMeta({
     title: 'Organisms/ProjectList',
-    component: ProjectList,
+    component: ProjectListSurface,
     tags: ['autodocs'],
     parameters: {
       controls: {
@@ -25,7 +25,7 @@
     },
   });
 
-  // Real project data from src/content/projects/, composed as story markup.
+  // Representative visual snapshot based on current project-card content, not synchronized live data.
   const sampleProjects: StoryProject[] = [
     {
       id: 'tracer',
@@ -80,7 +80,7 @@
 
 <Story name="Stacked List">
   {#snippet template()}
-    <ProjectList>
+    <ProjectListSurface>
       {#each sampleProjects as project, index (project.id)}
         <ProjectCard
           title={project.title}
@@ -110,6 +110,6 @@
           <Divider thickness="Double" ariaHidden />
         {/if}
       {/each}
-    </ProjectList>
+    </ProjectListSurface>
   {/snippet}
 </Story>

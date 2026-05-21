@@ -3,16 +3,17 @@
    * ProjectCard component for displaying project information
    *
    * Featured project card with badges, name, subhead, slotted description, and CTA button.
-   * Card width and component-scoped typography respond to viewport size for optimal readability.
+   * Component-scoped typography responds to viewport size for optimal readability.
    *
    * Responsive behavior:
-   * - Compact (0-631px): 398px width, smaller typography
-   * - Medium (632-1014px): 616px width, smaller typography
-   * - Extended (1015px+): 832px width, larger typography
+   * - Compact and medium viewports use the base card typography.
+   * - Extended viewports use larger card-specific typography.
+   * Outer width and rail behavior belong to the parent layout/surface.
    *
    * @prop {string} title - Project name/title
    * @prop {string} subhead - Project subheading
    * @prop {string} description - Plain text fallback when no rich description slot is provided
+   * @prop {number} headingLevel - Semantic title heading level, from 1 to 6
    * @prop {ProjectButton} button - Optional link CTA
    * @prop {Array} badges - Array of badge objects with variant and label
    * @prop {Snippet} children - Rich description content, usually rendered from Astro Markdown
@@ -25,10 +26,16 @@
   import { isExternalAbsoluteHttpUrl } from '../lib/siteLinks';
   import type { ProjectBadge, ProjectButton } from '../types/project';
 
+  type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+  type HeadingTag = `h${HeadingLevel}`;
+
+  const VALID_HEADING_LEVELS = new Set([1, 2, 3, 4, 5, 6]);
+
   let {
     title = 'Project Name',
     subhead,
     description,
+    headingLevel = 2,
     badges = [],
     button,
     children,
@@ -36,13 +43,22 @@
     title?: string;
     subhead?: string;
     description?: string;
+    headingLevel?: HeadingLevel;
     badges?: ProjectBadge[];
     button?: ProjectButton;
     children?: Snippet;
   } = $props();
 
+  function normalizeHeadingLevel(value: unknown): HeadingLevel {
+    return typeof value === 'number' && VALID_HEADING_LEVELS.has(value)
+      ? (value as HeadingLevel)
+      : 2;
+  }
+
   const hasBadges = $derived(badges.length > 0);
   const fallbackDescription = $derived(description?.trim());
+  const resolvedHeadingLevel = $derived(normalizeHeadingLevel(headingLevel));
+  const headingTag = $derived(`h${resolvedHeadingLevel}` as HeadingTag);
   const showsExternalCtaIcon = $derived(Boolean(button && isExternalAbsoluteHttpUrl(button.href)));
 </script>
 
@@ -62,7 +78,9 @@
   {/if}
 
   <div class="project-card__content">
-    <h2 class="project-card__title text-display-extra-small">{title}</h2>
+    <svelte:element this={headingTag} class="project-card__title text-display-extra-small">
+      {title}
+    </svelte:element>
     {#if subhead}
       <p class="project-card__subhead text-headline-small">{subhead}</p>
     {/if}

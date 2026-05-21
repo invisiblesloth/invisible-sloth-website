@@ -1,6 +1,6 @@
 <script lang="ts">
   /**
-   * ProjectList visual shell for displaying project cards in a single-column stack.
+   * ProjectListSurface visual shell for displaying project cards in a single-column stack.
    *
    * Layout deliberately stays as one column across breakpoints to focus attention on each project,
    * while responsive spacing and container padding adapt for larger viewports.

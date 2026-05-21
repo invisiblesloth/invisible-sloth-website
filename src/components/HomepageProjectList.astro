@@ -1,6 +1,6 @@
 ---
 import { render } from 'astro:content';
-import ProjectList from './ProjectList.svelte';
+import ProjectListSurface from './ProjectListSurface.svelte';
 import ProjectCard from './ProjectCard.svelte';
 import Divider from './Divider.svelte';
 import type { HomepageProjectEntry } from '../lib/projectContent';
@@ -19,19 +19,19 @@ const renderedProjects = await Promise.all(
   projects.map(async (project) => {
     const { Content } = await render(project);
     const hasMarkdownBody = (project.body?.trim().length ?? 0) > 0;
-    const description = project.data.description?.trim();
+    const description = project.data.description;
 
     return {
       project,
       Content,
-      description: hasMarkdownBody ? undefined : description,
+      description,
       hasMarkdownBody,
     };
   }),
 );
 ---
 
-<ProjectList>
+<ProjectListSurface>
   {
     renderedProjects.map(({ project, Content, description, hasMarkdownBody }, index) => (
       <>
@@ -40,6 +40,7 @@ const renderedProjects = await Promise.all(
             <ProjectCard
               title={project.data.title}
               subhead={project.data.subhead}
+              description={description}
               button={project.data.button}
               badges={project.data.badges}
             >
@@ -59,4 +60,4 @@ const renderedProjects = await Promise.all(
       </>
     ))
   }
-</ProjectList>
+</ProjectListSurface>
