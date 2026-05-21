@@ -7,13 +7,14 @@
     component: PostDate,
     tags: ['autodocs'],
     parameters: {
+      layout: 'fullscreen',
       controls: {
         include: ['date', 'dateTime'],
       },
       docs: {
         description: {
           component:
-            'Content-only publication-date atom that renders preformatted human-readable text inside a semantic time element with responsive title styling.',
+            'Content-only publication-date atom that renders preformatted human-readable text inside a semantic time element with responsive title styling. Story wrappers provide page padding; parent compositions own vertical rhythm.',
         },
       },
     },
@@ -42,9 +43,25 @@
 </script>
 
 <style>
+  .post-date-story {
+    inline-size: 100%;
+    padding-block: var(--space-section-block-sm);
+  }
+
+  .post-date-story__rail {
+    inline-size: 100%;
+  }
 </style>
 
-<Story name="Default" args={{ date: '5 March 2026', dateTime: '2026-03-05' }} />
+<Story name="Default" args={{ date: '5 March 2026', dateTime: '2026-03-05' }}>
+  {#snippet template(args)}
+    <div class="post-date-story">
+      <div class="rail rail--lg rail--padded post-date-story__rail">
+        <PostDate {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
 
 <Story
   name="With Datetime Attribute"
@@ -52,4 +69,12 @@
     date: '5 March 2026',
     dateTime: '2026-03-05',
   }}
-/>
+>
+  {#snippet template(args)}
+    <div class="post-date-story">
+      <div class="rail rail--lg rail--padded post-date-story__rail">
+        <PostDate {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>

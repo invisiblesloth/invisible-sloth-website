@@ -18,6 +18,7 @@
 -->
 <script module lang="ts">
   import type { FigureMediaTreatment } from './Figure.svelte';
+  import type { PostAuthorItem } from './PostAuthor.svelte';
   import type { TagLink } from '../lib/tagLinks';
 
   export const POST_HEADER_MEDIA_TREATMENTS = [
@@ -28,6 +29,7 @@
     FigureMediaTreatment,
     'featured-art' | 'featured-cover'
   >;
+  export type PostHeaderAuthor = PostAuthorItem;
   export type PostHeaderTag = TagLink;
 </script>
 
@@ -62,6 +64,61 @@
     return 'featured-art';
   };
 
+  type AuthorResolution = {
+    authors: PostHeaderAuthor[];
+    invalidIndexes: number[];
+  };
+
+  function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null;
+  }
+
+  const resolveAuthors = (
+    input: unknown,
+    fallbackAuthor: PostHeaderAuthor | undefined
+  ): AuthorResolution => {
+    if (Array.isArray(input) && input.length > 0) {
+      const resolvedAuthors: PostHeaderAuthor[] = [];
+      const invalidIndexes: number[] = [];
+
+      input.forEach((author, index) => {
+        const authorRecord = isRecord(author) ? author : undefined;
+        const name = String(authorRecord?.name ?? '').trim();
+
+        if (!authorRecord || !name) {
+          invalidIndexes.push(index);
+          return;
+        }
+
+        const resolvedAuthor: PostHeaderAuthor = { name };
+
+        if (typeof authorRecord.href === 'string') {
+          resolvedAuthor.href = authorRecord.href;
+        }
+
+        if (typeof authorRecord.target === 'string') {
+          resolvedAuthor.target = authorRecord.target;
+        }
+
+        if (typeof authorRecord.rel === 'string') {
+          resolvedAuthor.rel = authorRecord.rel;
+        }
+
+        resolvedAuthors.push(resolvedAuthor);
+      });
+
+      return {
+        authors: resolvedAuthors,
+        invalidIndexes,
+      };
+    }
+
+    return {
+      authors: fallbackAuthor ? [fallbackAuthor] : [],
+      invalidIndexes: [],
+    };
+  };
+
   type Props = FigureCaptionContent & {
     title: string;
     excerpt?: string;
@@ -70,6 +127,10 @@
     authorName?: string;
     authorImageSrc?: string;
     authorImageAlt?: string;
+    authorHref?: string;
+    authorTarget?: string;
+    authorRel?: string;
+    authors?: PostHeaderAuthor[];
     tags?: PostHeaderTag[];
     imageProps?: FigureImageProps;
     mediaTreatment?: PostHeaderMediaTreatment;
@@ -84,6 +145,10 @@
     authorName = '',
     authorImageSrc = '',
     authorImageAlt = '',
+    authorHref = undefined,
+    authorTarget = undefined,
+    authorRel = undefined,
+    authors = undefined,
     tags = [],
     imageProps = undefined,
     captionText = '',
@@ -100,11 +165,27 @@
   const normalizedAuthorName = $derived(String(authorName ?? '').trim());
   const normalizedAuthorImageSrc = $derived(String(authorImageSrc ?? '').trim());
   const normalizedAuthorImageAlt = $derived(String(authorImageAlt ?? ''));
+  const authorResolution = $derived(
+    resolveAuthors(
+      authors,
+      normalizedAuthorName.length > 0
+        ? {
+            name: normalizedAuthorName,
+            href: authorHref,
+            target: authorTarget,
+            rel: authorRel,
+          }
+        : undefined
+    )
+  );
+  const resolvedAuthors = $derived(authorResolution.authors);
   const resolvedImageProps = $derived(resolveImageProps(imageProps));
   const resolvedMediaTreatment = $derived(resolveMediaTreatment(requestedMediaTreatment));
   const hasDate = $derived(normalizedDate.length > 0);
-  const hasAuthor = $derived(normalizedAuthorName.length > 0);
-  const hasAuthorImage = $derived(hasAuthor && normalizedAuthorImageSrc.length > 0);
+  const hasAuthor = $derived(resolvedAuthors.length > 0);
+  const hasAuthorImage = $derived(
+    hasAuthor && resolvedAuthors.length === 1 && normalizedAuthorImageSrc.length > 0
+  );
   const hasImage = $derived(String(resolvedImageProps.src ?? '').trim().length > 0);
   const tagResolution = $derived(resolveTagLinks(tags));
   const normalizedTags = $derived(tagResolution.links);
@@ -131,6 +212,13 @@
         '[PostHeader] Tags need non-empty label and href values. Skipping invalid tag.'
       );
     }
+
+    for (const index of authorResolution.invalidIndexes) {
+      warnOnce(
+        `post-header:invalid-author:${index}`,
+        '[PostHeader] Authors need non-empty name values. Skipping invalid author.'
+      );
+    }
   });
 </script>
 
@@ -151,7 +239,7 @@
   {/if}
 
   {#if hasDate}
-    <div class="post-header__content-rail">
+    <div class="post-header__content-rail post-header__date-section">
       <PostDate
         date={normalizedDate}
         dateTime={normalizedDateTime || undefined}
@@ -164,9 +252,9 @@
   </div>
 
   {#if hasAuthor}
-    <div class="post-header__content-rail">
+    <div class="post-header__content-rail post-header__author-section">
       <PostAuthor
-        name={normalizedAuthorName}
+        authors={resolvedAuthors}
         imageSrc={hasAuthorImage ? normalizedAuthorImageSrc : undefined}
         imageAlt={normalizedAuthorImageAlt}
       />
@@ -218,7 +306,9 @@
     inline-size: 100%;
   }
 
-  .post-header__content-rail :global(.post-header__tag-group) {
+  .post-header__content-rail :global(.post-header__tag-group),
+  .post-header__date-section,
+  .post-header__author-section {
     padding-block: var(--space-100);
   }
 

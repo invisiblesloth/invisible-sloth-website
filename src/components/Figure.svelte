@@ -7,8 +7,9 @@
  * - Figure v1 intentionally does not forward arbitrary root figure attributes.
  * - Use `class` for root-level styling hooks.
  * - `imageProps.class` is unsupported; Figure owns Image styling internally.
- * - The default media treatment preserves the full image; use featured-cover
- *   only for intentional photo cropping.
+ * - The default and featured-art treatments preserve the full image and rely on
+ *   Image for corner radius defaults; use featured-cover only for intentional
+ *   photo cropping.
  * - Rich caption/credit snippets are caller-authored content; use `.text-link`
  *   for links when the shared inline link treatment is needed.
  *
@@ -99,7 +100,6 @@
         frame: 'auto',
         fit: 'contain',
         containSizing: 'fill-inline',
-        radius: 'none',
       };
     }
 

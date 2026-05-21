@@ -48,7 +48,6 @@
     display: block;
     inline-size: 100%;
     margin: 0;
-    padding-block: var(--space-100);
     color: var(--color-on-surface);
     text-align: start;
     /* Metadata text treatment; not part of page/section heading scale. */

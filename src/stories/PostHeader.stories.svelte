@@ -35,6 +35,15 @@
     { label: 'Roxy', href: '/tags/roxy' },
     { label: 'Game Dev', href: '/tags/game-dev' },
   ];
+  const multipleAuthors: NonNullable<PostHeaderProps['authors']> = [
+    { name: 'Jason', href: '/authors/jason-kisner' },
+    { name: 'Fred', href: '/authors/fred' },
+    { name: 'Karen', href: '/authors/karen' },
+  ];
+  const invalidAuthors: NonNullable<PostHeaderProps['authors']> = [
+    { name: 'Only Valid Author', href: '/authors/valid' },
+    { name: '   ', href: '/authors/blank-name' },
+  ];
   const nonArrayTags = 'Story' as unknown as PostHeaderProps['tags'];
   const invalidMediaTreatment = 'wide-contain' as unknown as PostHeaderProps['mediaTreatment'];
 
@@ -55,6 +64,10 @@
           'authorName',
           'authorImageSrc',
           'authorImageAlt',
+          'authorHref',
+          'authorTarget',
+          'authorRel',
+          'authors',
           'tags',
           'captionText',
           'creditText',
@@ -68,7 +81,7 @@
         },
         description: {
           component:
-            'Responsive blog post header composition for Storybook only. Featured media defaults to the Figure featured-art treatment so designed or transparent assets are preserved; use featured-cover for intentionally cropped photo covers. imageProps.class is unsupported; use the root class prop for styling hooks. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',
+            'Responsive blog post header composition for Storybook only. Featured media defaults to the Figure featured-art treatment so designed or transparent assets are preserved without cropping while keeping standard Image rounded corners; use featured-cover for intentionally cropped photo covers. imageProps.class is unsupported; use the root class prop for styling hooks. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',
         },
       },
     },
@@ -81,6 +94,10 @@
       authorName: 'Jason Kisner',
       authorImageSrc: defaultAuthorImageSrc,
       authorImageAlt: '',
+      authorHref: undefined,
+      authorTarget: undefined,
+      authorRel: undefined,
+      authors: undefined,
       tags: defaultTags,
       imageProps: defaultImageProps,
       captionText: '',
@@ -112,12 +129,31 @@
       authorImageSrc: {
         control: 'text',
         description:
-          'Optional author image source. Ignored when authorName is blank or imageSrc is blank.',
+          'Optional single-author image source. Ignored when no author section renders, multiple valid authors render, or imageSrc is blank.',
       },
       authorImageAlt: {
         control: 'text',
         description:
-          'Optional author image alt text. Leave empty when the visible author name is sufficient.',
+          'Optional author image alt text for unlinked single-author avatars. Ignored for linked duplicate avatars, which render decorative images.',
+      },
+      authorHref: {
+        control: 'text',
+        description:
+          'Optional single-author name link. Ignored when authorName is blank or authors is non-empty; blank values render the author name as text and warn in development.',
+      },
+      authorTarget: {
+        control: 'text',
+        description: 'Optional single-author link target. Applied only when authorHref renders an anchor.',
+      },
+      authorRel: {
+        control: 'text',
+        description:
+          'Optional author link rel. _blank targets are hardened; non-blank targets preserve caller rel.',
+      },
+      authors: {
+        control: 'object',
+        description:
+          'Optional author list. When non-empty, it owns the author section and authorName/authorHref are ignored; blank names are skipped and no byline renders if none are valid.',
       },
       tags: {
         control: 'object',
@@ -199,7 +235,7 @@
     docs: {
       description: {
         story:
-          'Designed or transparent featured media uses featured-art so the source asset owns its own composition and edge.',
+          'Designed or transparent featured media uses featured-art so the source asset owns its own composition without cropping while keeping the standard Image corner radius.',
       },
     },
   }}
@@ -272,6 +308,58 @@
   args={{
     authorImageSrc: '   ',
     authorImageAlt: '',
+  }}
+/>
+
+<Story
+  name="Linked Author"
+  args={{
+    authorHref: '/authors/jason-kisner',
+    authorTarget: undefined,
+    authorRel: undefined,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'The author name text links when authorHref resolves to non-empty text after trimming. The avatar duplicates the same destination for pointer users while staying out of the tab order and accessibility tree.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Multiple Linked Authors"
+  args={{
+    authorName: '',
+    authors: multipleAuthors,
+    authorImageSrc: defaultAuthorImageSrc,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Multiple authors render as separate author-name links with comma and conjunction separators left as plain text. The scalar author image is ignored for multi-author bylines.',
+      },
+    },
+  }}
+/>
+
+<Story
+  name="Invalid Author Guard"
+  args={{
+    title: 'Invalid Author Guard',
+    excerpt: 'Only the valid author should render.',
+    authorName: 'Fallback Author',
+    authors: invalidAuthors,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Blank author names are skipped so PostHeader never passes invalid authors to PostAuthor. When authors is non-empty, authorName remains a legacy fallback only for absent or empty authors arrays.',
+      },
+    },
   }}
 />
 
