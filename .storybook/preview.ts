@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/svelte-vite';
 import '../src/styles/global.css';
 import { IMAGE_ENHANCER_AVAILABILITY } from '../src/lib/imageEnhancementContract';
+import { initButtonPressEnhancer } from '../src/scripts/buttonPressEnhancer';
 import { initLogoHoverTilt } from '../src/scripts/logoHoverTilt';
 
 const isDev = import.meta.env.DEV;
@@ -133,6 +134,14 @@ const preview: Preview = {
             } catch (error) {
               if (isDev) {
                 console.warn('Logo hover tilt initialization failed in Storybook.', error);
+              }
+            }
+
+            try {
+              initButtonPressEnhancer(document);
+            } catch (error) {
+              if (isDev) {
+                console.warn('Button press enhancer initialization failed in Storybook.', error);
               }
             }
           });

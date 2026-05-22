@@ -136,8 +136,20 @@ const socialCardUrl = new URL("/social-card.png", Astro.site).toString();
         }
       };
 
+      const initButtonPress = async () => {
+        try {
+          const { initButtonPressEnhancer } = await import("../scripts/buttonPressEnhancer");
+          initButtonPressEnhancer(document);
+        } catch (error) {
+          if (isDev) {
+            console.warn("Button press enhancer initialization failed.", error);
+          }
+        }
+      };
+
       void initImageLoading();
       void initLogoTilt();
+      void initButtonPress();
     </script>
   </body>
 </html>

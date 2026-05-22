@@ -500,12 +500,14 @@
   }
 
   /* Touch-driven pressed state helper */
-  .button.is-pressed .button__surface {
+  .button.is-pressed .button__surface,
+  .button.is-enhanced-pressed .button__surface {
     transform: translate(0, 0) !important;
     transition-duration: 50ms;
   }
 
-  .button.is-pressed .button__state-layer {
+  .button.is-pressed .button__state-layer,
+  .button.is-enhanced-pressed .button__state-layer {
     background-color: var(--button-state-pressed);
     opacity: 1;
     transition-duration: 50ms;
@@ -546,7 +548,8 @@
     }
 
     /* Ensure touch/press helper class does not reintroduce motion */
-    .button.is-pressed .button__surface {
+    .button.is-pressed .button__surface,
+    .button.is-enhanced-pressed .button__surface {
       transform: none !important;
     }
 
