@@ -1,10 +1,13 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import {
+    DEFAULT_BUTTON_SHAPE,
     DEFAULT_BUTTON_TYPE,
     DEFAULT_BUTTON_VARIANT,
+    normalizeButtonShape,
     normalizeButtonType,
     normalizeButtonVariant,
+    type ButtonShape,
     type ButtonType,
     type ButtonVariant,
   } from '../lib/button';
@@ -15,6 +18,7 @@
 
   type Props = {
     variant?: ButtonVariant;
+    shape?: ButtonShape;
     type?: ButtonType;
     label?: string;
     disabled?: boolean;
@@ -22,6 +26,7 @@
     target?: string;
     rel?: string;
     onclick?: (event: MouseEvent) => void;
+    icon?: Snippet;
     leadingIcon?: Snippet;
     trailingIcon?: Snippet;
     [key: string]: unknown;
@@ -64,8 +69,10 @@
    * Button component with lift-and-reveal hover effect
    *
    * @prop {string} variant - Button style variant (default: 'filled-primary')
+   * @prop {string} shape - Button shape (default: 'label'); use 'icon' for icon-only controls
    * @prop {string} type - HTML button type (default: 'button')
-   * @prop {string} label - Button text label
+   * @prop {string} label - Button text label or icon button accessible name
+   * @prop {Snippet} icon - Required icon-only snippet when shape is 'icon'; rendered as decorative content
    * @prop {Snippet} leadingIcon - Optional decorative leading icon snippet; must render inert glyphs only
    * @prop {Snippet} trailingIcon - Optional decorative trailing icon snippet; must render inert glyphs only
    * @prop {boolean} disabled - Whether the button is disabled
@@ -79,6 +86,7 @@
 
   let {
     variant = DEFAULT_BUTTON_VARIANT,
+    shape = DEFAULT_BUTTON_SHAPE,
     type = DEFAULT_BUTTON_TYPE,
     label = 'Button',
     disabled = false,
@@ -86,6 +94,7 @@
     target = undefined,
     rel = undefined,
     onclick = undefined,
+    icon = undefined,
     leadingIcon = undefined,
     trailingIcon = undefined,
     ...restProps
@@ -105,9 +114,26 @@
     isDisabledLink ? undefined : normalizeRelForTarget(linkTarget, rel)
   );
   const normalizedVariant = $derived(normalizeButtonVariant(variant));
+  const normalizedShape = $derived(normalizeButtonShape(shape));
   const normalizedType = $derived(normalizeButtonType(type));
+  const normalizedLabel = $derived(normalizeButtonLabel(label));
+  const isRequestedIconShape = $derived(normalizedShape === 'icon');
+  const isIconShape = $derived(isRequestedIconShape && Boolean(icon));
   const variantModifier = $derived(`button--${normalizedVariant}`);
+  const shapeModifier = $derived(`button--shape-${isIconShape ? 'icon' : 'label'}`);
   const forwardedAttributes = $derived(filterForwardedAttributes(mode, restProps));
+
+  function hasValidButtonLabel(value: unknown): value is string {
+    return typeof value === 'string' && value.trim().length > 0;
+  }
+
+  function normalizeButtonLabel(value: unknown): string {
+    if (hasValidButtonLabel(value)) {
+      return value.trim();
+    }
+
+    return 'Button';
+  }
 
   function isAriaAttribute(name: string): boolean {
     return name.startsWith('aria-') && !BLOCKED_ARIA_ATTRIBUTES.has(name);
@@ -162,6 +188,34 @@
         '[Button] `style` is not forwarded. Use component variants and design tokens for styling.'
       );
     }
+
+    if (!hasValidButtonLabel(label)) {
+      warnOnce(
+        'button:invalid-label',
+        '[Button] `label` must be a non-empty string. Falling back to "Button".'
+      );
+    }
+
+    if (isRequestedIconShape && !icon) {
+      warnOnce(
+        'button:missing-icon',
+        '[Button] `shape="icon"` requires an `icon` snippet. Rendering a label-shaped button fallback with visible label text.'
+      );
+    }
+
+    if (!isRequestedIconShape && icon) {
+      warnOnce(
+        'button:ignored-icon',
+        '[Button] `icon` is only used with `shape="icon"`. Ignoring icon snippet.'
+      );
+    }
+
+    if (isRequestedIconShape && (leadingIcon || trailingIcon)) {
+      warnOnce(
+        'button:ignored-label-icons',
+        '[Button] `leadingIcon` and `trailingIcon` are ignored with `shape="icon"`.'
+      );
+    }
   });
 
   function handleClick(event: MouseEvent): void {
@@ -204,18 +258,24 @@
     <div class="button__state-layer" aria-hidden="true"></div>
 
     <span class="button__content">
-      {#if leadingIcon}
+      {#if isIconShape && icon}
         <span class="button__icon" aria-hidden="true">
-          {@render leadingIcon()}
+          {@render icon()}
         </span>
-      {/if}
+      {:else}
+        {#if !isRequestedIconShape && leadingIcon}
+          <span class="button__icon" aria-hidden="true">
+            {@render leadingIcon()}
+          </span>
+        {/if}
 
-      <span class="button__label text-label-large">{label}</span>
+        <span class="button__label text-label-large">{normalizedLabel}</span>
 
-      {#if trailingIcon}
-        <span class="button__icon" aria-hidden="true">
-          {@render trailingIcon()}
-        </span>
+        {#if !isRequestedIconShape && trailingIcon}
+          <span class="button__icon" aria-hidden="true">
+            {@render trailingIcon()}
+          </span>
+        {/if}
       {/if}
     </span>
   </div>
@@ -224,11 +284,12 @@
 {#if isLinkMode}
   <a
     {...forwardedAttributes}
-    class="button {variantModifier}"
+    class="button {variantModifier} {shapeModifier}"
     class:is-pressed={pressed}
     class:is-disabled={isDisabledLink}
     href={linkHref}
     role={isDisabledLink ? 'link' : undefined}
+    aria-label={isIconShape ? normalizedLabel : undefined}
     aria-disabled={isDisabledLink ? 'true' : undefined}
     tabindex={isDisabledLink ? -1 : undefined}
     target={linkTarget}
@@ -243,10 +304,11 @@
 {:else}
   <button
     {...forwardedAttributes}
-    class="button {variantModifier}"
+    class="button {variantModifier} {shapeModifier}"
     class:is-pressed={pressed}
     class:is-disabled={disabled}
     type={normalizedType}
+    aria-label={isIconShape ? normalizedLabel : undefined}
     {disabled}
     ontouchstart={handleTouchStart}
     ontouchend={handleTouchEnd}
@@ -264,29 +326,55 @@
      ========================================== */
 
   .button {
-    /* Shared timing for smooth interactions */
     --button-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    /* Default state-layer tokens (overridden by variant modifiers) */
+    --button-block-size: 40px;
+    --button-min-inline-size: 64px;
+    --button-padding-block: var(--space-300);
+    --button-padding-inline: var(--space-400);
+    --button-icon-size: 18px;
+    --button-surface-color: var(--color-primary);
+    --button-content-color: var(--color-on-primary);
+    --button-side-color: var(--color-button-side-primary);
+    --button-border-width: 0px;
+    --button-border-color: transparent;
+    --button-surface-shadow: 0 0 0 0 transparent;
+    --button-surface-shadow-hover: 0 0 0 0 transparent;
+    --button-surface-shadow-focus: var(--button-surface-shadow-hover);
+    --button-surface-shadow-pressed: 0 0 0 0 transparent;
+    --button-disabled-surface-color: var(--color-state-on-surface-08);
+    --button-disabled-content-color: var(--color-on-surface);
+    --button-disabled-border-color: transparent;
+    --button-disabled-surface-shadow: 0 0 0 0 transparent;
     --button-state-hover: var(--color-state-on-primary-08);
-    --button-state-focus: var(--color-state-on-primary-12);
-    --button-state-pressed: var(--color-state-on-primary-16);
+    --button-state-focus: var(--color-state-on-primary-08);
+    --button-state-pressed: var(--color-state-on-primary-12);
 
     position: relative;
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    height: 40px;
+    min-inline-size: var(--button-min-inline-size);
+    block-size: var(--button-block-size);
     padding: 0;
     margin: 0;
-
     border: none;
-    border-radius: var(--radius-full); /* Shapes the focus outline */
+    border-radius: var(--radius-full);
     background: transparent;
+    appearance: none;
     cursor: pointer;
     font-family: inherit;
-    text-decoration: none; /* Remove underline for anchor variant */
+    text-decoration: none;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  .button--shape-icon {
+    --button-block-size: 48px;
+    --button-icon-size: 32px;
+    --button-padding-block: var(--space-200);
+    --button-padding-inline: var(--space-600);
+
+    inline-size: 80px;
   }
 
   .button:disabled,
@@ -294,104 +382,179 @@
     cursor: not-allowed;
   }
 
-  /* Shadow layer - revealed on hover */
   .button__side {
     position: absolute;
+    box-sizing: border-box;
     inset: 0;
     border-radius: var(--radius-full);
+    background-color: var(--button-side-color);
     pointer-events: none;
   }
 
-  /* Surface layer - lifts to reveal shadow */
   .button__surface {
     position: relative;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    width: 100%;
-    height: 100%;
-    padding: var(--space-300) var(--space-400);
-
+    inline-size: 100%;
+    block-size: 100%;
+    padding: var(--button-padding-block) var(--button-padding-inline);
     border-radius: var(--radius-full);
-    transition: transform var(--button-transition);
+    background-color: var(--button-surface-color);
+    box-shadow:
+      inset 0 0 0 var(--button-border-width) var(--button-border-color),
+      var(--button-surface-shadow);
+    color: var(--button-content-color);
+    transition:
+      transform var(--button-transition),
+      background-color var(--button-transition),
+      box-shadow var(--button-transition);
     overflow: hidden;
-
     transform: translate(-1px, -3px);
   }
 
-  /* State layer - semi-transparent overlay for interactive feedback */
   .button__state-layer {
     position: absolute;
+    box-sizing: border-box;
     inset: 0;
     border-radius: inherit;
-    /* Token-driven state layer hues (alpha encoded in token) */
     background-color: var(--button-state-hover);
     opacity: 0;
     transition: opacity var(--button-transition);
     pointer-events: none;
-    z-index: 0; /* Behind content */
+    z-index: 0;
   }
 
-  /* Content wrapper - above state layer */
   .button__content {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--space-200);
-    z-index: 1; /* Prevents contrast changes from state layer */
+    z-index: 1;
   }
 
   /* ==========================================
-     VARIANT: FILLED PRIMARY
-     All styles for primary button variant
+     VARIANTS
      ========================================== */
 
-  .button--filled-primary .button__surface {
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
+  .button--filled-primary {
+    --button-surface-color: var(--color-primary);
+    --button-content-color: var(--color-on-primary);
+    --button-side-color: var(--color-button-side-primary);
     --button-state-hover: var(--color-state-on-primary-08);
     --button-state-focus: var(--color-state-on-primary-08);
     --button-state-pressed: var(--color-state-on-primary-12);
   }
 
-  .button--filled-primary .button__side {
-    background-color: var(--color-button-side-primary);
+  .button--filled-inverse-primary {
+    --button-surface-color: var(--color-inverse-primary);
+    --button-content-color: var(--color-on-primary-container);
+    --button-side-color: var(--color-button-side-inverse-primary);
+    --button-state-hover: var(--color-state-on-inverse-primary-08);
+    --button-state-focus: var(--color-state-on-inverse-primary-08);
+    --button-state-pressed: var(--color-state-on-inverse-primary-12);
   }
 
-  /* ==========================================
-     VARIANT: FILLED SECONDARY
-     Secondary button variant styling
-     ========================================== */
-
-  .button--filled-secondary .button__surface {
-    background-color: var(--color-secondary);
-    color: var(--color-on-secondary);
+  .button--filled-secondary {
+    --button-surface-color: var(--color-secondary);
+    --button-content-color: var(--color-on-secondary);
+    --button-side-color: var(--color-button-side-secondary);
     --button-state-hover: var(--color-state-on-secondary-08);
     --button-state-focus: var(--color-state-on-secondary-08);
     --button-state-pressed: var(--color-state-on-secondary-12);
   }
 
-  .button--filled-secondary .button__side {
-    background-color: var(--color-button-side-secondary);
+  .button--filled-inverse-secondary {
+    --button-surface-color: var(--color-inverse-secondary);
+    --button-content-color: var(--color-on-inverse-secondary);
+    --button-side-color: var(--color-button-side-inverse-secondary);
+    --button-state-hover: var(--color-state-on-inverse-secondary-08);
+    --button-state-focus: var(--color-state-on-inverse-secondary-08);
+    --button-state-pressed: var(--color-state-on-inverse-secondary-12);
   }
 
-  /* ==========================================
-     VARIANT: FILLED TERTIARY
-     Tertiary button variant styling
-     ========================================== */
-
-  .button--filled-tertiary .button__surface {
-    background-color: var(--color-tertiary);
-    color: var(--color-on-tertiary);
+  .button--filled-tertiary {
+    --button-surface-color: var(--color-tertiary);
+    --button-content-color: var(--color-on-tertiary);
+    --button-side-color: var(--color-button-side-tertiary);
     --button-state-hover: var(--color-state-on-tertiary-08);
     --button-state-focus: var(--color-state-on-tertiary-08);
     --button-state-pressed: var(--color-state-on-tertiary-12);
   }
 
-  .button--filled-tertiary .button__side {
-    background-color: var(--color-button-side-tertiary);
+  .button--filled-inverse-tertiary {
+    --button-surface-color: var(--color-inverse-tertiary);
+    --button-content-color: var(--color-on-inverse-tertiary);
+    --button-side-color: var(--color-button-side-inverse-tertiary);
+    --button-state-hover: var(--color-state-on-inverse-tertiary-08);
+    --button-state-focus: var(--color-state-on-inverse-tertiary-08);
+    --button-state-pressed: var(--color-state-on-inverse-tertiary-12);
+  }
+
+  .button--filled-error {
+    --button-surface-color: var(--color-error);
+    --button-content-color: var(--color-on-error);
+    --button-side-color: var(--color-button-side-error);
+    --button-state-hover: var(--color-state-on-error-08);
+    --button-state-focus: var(--color-state-on-error-08);
+    --button-state-pressed: var(--color-state-on-error-12);
+  }
+
+  .button--filled-inverse-error {
+    --button-surface-color: var(--color-inverse-error);
+    --button-content-color: var(--color-on-inverse-error);
+    --button-side-color: var(--color-button-side-inverse-error);
+    --button-state-hover: var(--color-state-on-inverse-error-08);
+    --button-state-focus: var(--color-state-on-inverse-error-08);
+    --button-state-pressed: var(--color-state-on-inverse-error-12);
+  }
+
+  .button--outline,
+  .button--text,
+  .button--outline-error,
+  .button--text-error {
+    --button-surface-color: transparent;
+    --button-side-color: transparent;
+    --button-surface-shadow-hover: var(--effect-standard-card-lift);
+    --button-surface-shadow-focus: 0 0 0 0 transparent;
+    --button-disabled-surface-color: transparent;
+    --button-disabled-content-color: var(--color-on-surface);
+  }
+
+  .button--outline {
+    --button-content-color: var(--color-on-surface-dim);
+    --button-border-width: 2px;
+    --button-border-color: var(--color-outline);
+    --button-disabled-border-color: var(--color-state-on-surface-12);
+    --button-state-hover: var(--color-state-on-surface-08);
+    --button-state-focus: var(--color-state-on-surface-08);
+    --button-state-pressed: var(--color-state-on-surface-12);
+  }
+
+  .button--text {
+    --button-content-color: var(--color-on-surface-dim);
+    --button-state-hover: var(--color-state-on-surface-08);
+    --button-state-focus: var(--color-state-on-surface-08);
+    --button-state-pressed: var(--color-state-on-surface-12);
+  }
+
+  .button--outline-error {
+    --button-content-color: var(--color-on-error-container);
+    --button-border-width: 2px;
+    --button-border-color: var(--color-error);
+    --button-disabled-border-color: var(--color-state-on-surface-12);
+    --button-state-hover: var(--color-state-error-08);
+    --button-state-focus: var(--color-state-error-08);
+    --button-state-pressed: var(--color-state-error-12);
+  }
+
+  .button--text-error {
+    --button-content-color: var(--color-on-error-container);
+    --button-state-hover: var(--color-state-error-08);
+    --button-state-focus: var(--color-state-error-08);
+    --button-state-pressed: var(--color-state-error-12);
   }
 
   /* ==========================================
@@ -401,24 +564,26 @@
 
   /* POINTER DEVICES (mouse/trackpad) */
   @media (hover: hover) and (pointer: fine) {
-    /* Hover - lift to reveal shadow */
     .button:where(:hover):not(:disabled):not(.is-disabled) .button__surface {
+      box-shadow:
+        inset 0 0 0 var(--button-border-width) var(--button-border-color),
+        var(--button-surface-shadow-hover);
       transform: translate(-1.8px, -4px);
     }
 
-    /* Hover state layer using tokenized on-* color with embedded alpha */
     .button:where(:hover):not(:disabled):not(.is-disabled) .button__state-layer {
       background-color: var(--button-state-hover);
       opacity: 1;
     }
 
-    /* Pressed - return to origin */
     .button:active:not(:disabled):not(.is-disabled) .button__surface {
+      box-shadow:
+        inset 0 0 0 var(--button-border-width) var(--button-border-color),
+        var(--button-surface-shadow-pressed);
       transform: translate(0, 0);
       transition-duration: 50ms;
     }
 
-    /* Active/pressed state layer (tokenized alpha) */
     .button:active:not(:disabled):not(.is-disabled) .button__state-layer {
       background-color: var(--button-state-pressed);
       opacity: 1;
@@ -428,18 +593,18 @@
 
   /* TOUCH DEVICES (touch screens) */
   @media (hover: none) and (pointer: coarse) {
-    /* Default state - raised (like hover on pointer devices) */
     .button:not(:disabled):not(.is-disabled):not(:active):not(:focus-visible) .button__surface {
       transform: translate(-1.4px, -3px);
     }
 
-    /* Touch/pressed - depress to origin */
     .button:active:not(:disabled):not(.is-disabled) .button__surface {
+      box-shadow:
+        inset 0 0 0 var(--button-border-width) var(--button-border-color),
+        var(--button-surface-shadow-pressed);
       transform: translate(0, 0);
       transition-duration: 50ms;
     }
 
-    /* Active/pressed state layer */
     .button:active:not(:disabled):not(.is-disabled) .button__state-layer {
       background-color: var(--button-state-pressed);
       opacity: 1;
@@ -448,27 +613,36 @@
   }
 
   /* FOCUS (applies to all input types) */
-  .button:focus-visible:not(.is-disabled) {
+  .button:focus-visible:not(:disabled):not(.is-disabled) {
     outline: var(--focus-outline-width) solid var(--color-focus);
   }
 
-  .button:focus-visible:not(.is-disabled) .button__surface {
+  .button:focus-visible:not(:disabled):not(.is-disabled) .button__surface {
+    box-shadow:
+      inset 0 0 0 var(--button-border-width) var(--button-border-color),
+      var(--button-surface-shadow-focus);
     transform: translate(0, 0);
   }
 
-  .button:focus-visible:not(.is-disabled) .button__surface::before {
+  .button:focus-visible:not(:disabled):not(.is-disabled) .button__surface::before {
     content: "";
     position: absolute;
     inset: 0;
     border: var(--focus-ring-width) solid var(--color-on-focus);
     border-radius: inherit;
     pointer-events: none;
+    z-index: 2;
   }
 
-  /* Focus state layer 12–16% */
   .button:focus-visible:not(:disabled):not(.is-disabled) .button__state-layer {
     background-color: var(--button-state-focus);
     opacity: 1;
+  }
+
+  .button:focus-visible:active:not(:disabled):not(.is-disabled) .button__surface {
+    box-shadow:
+      inset 0 0 0 var(--button-border-width) var(--button-border-color),
+      var(--button-surface-shadow-pressed);
   }
 
   .button:focus-visible:active:not(:disabled):not(.is-disabled) .button__state-layer {
@@ -480,8 +654,11 @@
   /* Disabled - muted appearance, no shadow */
   .button:disabled .button__surface,
   .button.is-disabled .button__surface {
-    background: var(--color-state-on-surface-08);
-    color: var(--color-on-surface);
+    background: var(--button-disabled-surface-color);
+    box-shadow:
+      inset 0 0 0 var(--button-border-width) var(--button-disabled-border-color),
+      var(--button-disabled-surface-shadow);
+    color: var(--button-disabled-content-color);
   }
 
   .button:disabled .button__side,
@@ -500,14 +677,17 @@
   }
 
   /* Touch-driven pressed state helper */
-  .button.is-pressed .button__surface,
-  .button.is-enhanced-pressed .button__surface {
+  .button.is-pressed:not(:disabled):not(.is-disabled) .button__surface,
+  .button.is-enhanced-pressed:not(:disabled):not(.is-disabled) .button__surface {
+    box-shadow:
+      inset 0 0 0 var(--button-border-width) var(--button-border-color),
+      var(--button-surface-shadow-pressed);
     transform: translate(0, 0) !important;
     transition-duration: 50ms;
   }
 
-  .button.is-pressed .button__state-layer,
-  .button.is-enhanced-pressed .button__state-layer {
+  .button.is-pressed:not(:disabled):not(.is-disabled) .button__state-layer,
+  .button.is-enhanced-pressed:not(:disabled):not(.is-disabled) .button__state-layer {
     background-color: var(--button-state-pressed);
     opacity: 1;
     transition-duration: 50ms;
@@ -524,10 +704,20 @@
 
   .button__icon {
     display: flex;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: center;
-    width: 18px;
-    height: 18px;
+    inline-size: var(--button-icon-size);
+    block-size: var(--button-icon-size);
+    font-size: var(--button-icon-size);
+    pointer-events: none;
+  }
+
+  .button__icon :global(svg) {
+    display: block;
+    inline-size: 1em;
+    block-size: 1em;
+    pointer-events: none;
   }
 
   /* ==========================================
@@ -541,6 +731,13 @@
       transition: none;
     }
 
+    .button--outline,
+    .button--text,
+    .button--outline-error,
+    .button--text-error {
+      --button-surface-shadow-hover: 0 0 0 0 transparent;
+    }
+
     /* Neutralize default and interactive transforms, including touch default lift */
     .button:not(:disabled):not(.is-disabled) .button__surface,
     .button:where(:hover, :active, :focus-visible):not(:disabled):not(.is-disabled) .button__surface {
@@ -548,8 +745,8 @@
     }
 
     /* Ensure touch/press helper class does not reintroduce motion */
-    .button.is-pressed .button__surface,
-    .button.is-enhanced-pressed .button__surface {
+    .button.is-pressed:not(:disabled):not(.is-disabled) .button__surface,
+    .button.is-enhanced-pressed:not(:disabled):not(.is-disabled) .button__surface {
       transform: none !important;
     }
 

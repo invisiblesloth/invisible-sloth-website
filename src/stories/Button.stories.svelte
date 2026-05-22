@@ -3,10 +3,25 @@
   import Button from '../components/Button.svelte';
   import Close from '../icons/Close.svelte';
   import ExternalLink from '../icons/ExternalLink.svelte';
-  import { BUTTON_TYPES, BUTTON_VARIANTS, type ButtonType, type ButtonVariant } from '../lib/button';
+  import {
+    BUTTON_SHAPES,
+    BUTTON_TYPES,
+    BUTTON_VARIANTS,
+    type ButtonShape,
+    type ButtonType,
+    type ButtonVariant,
+  } from '../lib/button';
 
   const invalidRuntimeVariant = 'invalid-runtime-variant' as ButtonVariant;
+  const invalidRuntimeShape = 'invalid-runtime-shape' as ButtonShape;
   const invalidRuntimeType = 'invalid-runtime-type' as ButtonType;
+  const labelVariantExamples = BUTTON_VARIANTS.map((variant) => ({
+    variant,
+    label: variant
+      .split('-')
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' '),
+  }));
 
   const { Story } = defineMeta({
     title: 'Atoms/Button',
@@ -16,11 +31,11 @@
       docs: {
         description: {
           component:
-            'Label-driven button primitive. Icon snippets are decorative glyphs only; do not pass nested interactive controls, focusable SVGs, or activation handlers. Migration note: `on:click` removed, use `onclick`.',
+            'Button primitive with label and icon-only shapes. Snippets are decorative glyphs only; do not pass nested interactive controls, focusable SVGs, or activation handlers. Migration note: `on:click` removed, use `onclick`.',
         },
       },
       controls: {
-        include: ['variant', 'type', 'label', 'disabled', 'href', 'target', 'rel', 'onclick'],
+        include: ['variant', 'shape', 'type', 'label', 'disabled', 'href', 'target', 'rel', 'onclick'],
       },
     },
     argTypes: {
@@ -32,6 +47,15 @@
         table: {
           type: { summary: BUTTON_VARIANTS.join(' | ') },
           defaultValue: { summary: 'filled-primary' },
+        },
+      },
+      shape: {
+        control: 'select',
+        options: BUTTON_SHAPES,
+        description: 'Button shape. Icon shape requires a fixed snippet supplied by the story/template.',
+        table: {
+          type: { summary: BUTTON_SHAPES.join(' | ') },
+          defaultValue: { summary: 'label' },
         },
       },
       type: {
@@ -49,6 +73,14 @@
         table: {
           type: { summary: 'string' },
           defaultValue: { summary: 'Button' },
+        },
+      },
+      icon: {
+        control: false,
+        description: 'Icon-only Svelte snippet. Demonstrated through fixed icon-button stories.',
+        table: {
+          type: { summary: 'Snippet' },
+          defaultValue: { summary: 'undefined' },
         },
       },
       disabled: {
@@ -89,6 +121,15 @@
   });
 </script>
 
+<style>
+  .button-story-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-600);
+  }
+</style>
+
 {#snippet closeIcon()}
   <Close />
 {/snippet}
@@ -102,6 +143,26 @@
 <Story name="Filled Secondary" args={{ label: 'Secondary Button', variant: 'filled-secondary' }} />
 
 <Story name="Filled Tertiary" args={{ label: 'Tertiary Button', variant: 'filled-tertiary' }} />
+
+<Story name="Label Variant Matrix">
+  {#snippet template()}
+    <div class="button-story-grid">
+      {#each labelVariantExamples as example}
+        <Button label={example.label} variant={example.variant} />
+      {/each}
+    </div>
+  {/snippet}
+</Story>
+
+<Story name="Disabled Label Variant Matrix">
+  {#snippet template()}
+    <div class="button-story-grid">
+      {#each labelVariantExamples as example}
+        <Button label={example.label} variant={example.variant} disabled />
+      {/each}
+    </div>
+  {/snippet}
+</Story>
 
 <Story name="Action Button" args={{ label: 'Save Changes', variant: 'filled-primary' }} />
 
@@ -208,6 +269,22 @@
 </Story>
 
 <Story
+  name="Invalid Shape Fallback"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Intentionally passes an invalid runtime shape. Button falls back to `label` and emits a dev-only warning.',
+      },
+    },
+  }}
+>
+  {#snippet template()}
+    <Button label="Invalid Shape Fallback" shape={invalidRuntimeShape} />
+  {/snippet}
+</Story>
+
+<Story
   name="Invalid Type Fallback"
   parameters={{
     docs: {
@@ -220,6 +297,22 @@
 >
   {#snippet template()}
     <Button label="Invalid Type Fallback" type={invalidRuntimeType} />
+  {/snippet}
+</Story>
+
+<Story
+  name="Blank Label Fallback"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Blank labels fall back to "Button" so empty accessible controls are not rendered.',
+      },
+    },
+  }}
+>
+  {#snippet template()}
+    <Button label="   " variant="text" />
   {/snippet}
 </Story>
 

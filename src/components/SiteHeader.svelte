@@ -20,8 +20,10 @@
    * @prop {boolean} menuExpanded - Current drawer state for aria-expanded (default: false)
    * @prop {string} menuControlsId - Optional controlled drawer id for aria-controls
    * @prop {string} menuButtonLabel - Accessible name for the menu button
-   * @prop {Function} onMenuClick - Click handler for the menu button
+   * @prop {(event: MouseEvent) => void} onMenuClick - Click handler for the menu button
    */
+
+  import Button from './Button.svelte';
   import LogoLink from './LogoLink.svelte';
   import Logo from './Logo.svelte';
   import Menu from '../icons/Menu.svelte';
@@ -58,25 +60,24 @@
   const normalizedHomeHref = $derived(normalizeHref(homeHref));
 </script>
 
+{#snippet menuIcon()}
+  <Menu />
+{/snippet}
+
 <header class={headerClasses}>
   <div class="site-header__inner">
     {#if showMenuButton}
       <div class="site-header__side site-header__side--start">
-        <button
-          class="site-header__menu-button"
+        <Button
+          variant="filled-inverse-primary"
+          shape="icon"
           type="button"
-          aria-label={menuButtonLabel}
+          label={menuButtonLabel}
+          icon={menuIcon}
           aria-expanded={menuExpanded}
           aria-controls={menuControlsId}
           onclick={onMenuClick}
-        >
-          <span class="site-header__menu-button-side" aria-hidden="true"></span>
-          <span class="site-header__menu-button-surface" aria-hidden="true"></span>
-          <span class="site-header__menu-button-state" aria-hidden="true"></span>
-          <span class="site-header__menu-button-icon" aria-hidden="true">
-            <Menu />
-          </span>
-        </button>
+        />
       </div>
     {/if}
 
@@ -147,79 +148,6 @@
 
   .site-header__side--end {
     min-block-size: var(--site-header-control-block-size);
-  }
-
-  .site-header__menu-button {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 80px;
-    min-inline-size: 64px;
-    block-size: var(--site-header-control-block-size);
-    padding: 0;
-    border: 0;
-    border-radius: var(--radius-full);
-    background: transparent;
-    color: var(--color-on-inverse-primary);
-    cursor: pointer;
-    font: inherit;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .site-header__menu-button-side,
-  .site-header__menu-button-surface,
-  .site-header__menu-button-state {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-  }
-
-  .site-header__menu-button-side {
-    background: var(--color-button-side-inverse-primary);
-  }
-
-  .site-header__menu-button-surface {
-    background: var(--color-inverse-primary);
-  }
-
-  .site-header__menu-button-state {
-    background: var(--color-state-on-inverse-primary-08);
-    opacity: 0;
-  }
-
-  .site-header__menu-button-icon {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 32px;
-    block-size: 32px;
-    font-size: 32px;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .site-header__menu-button:hover .site-header__menu-button-state {
-      background: var(--color-state-on-inverse-primary-08);
-      opacity: 1;
-    }
-  }
-
-  .site-header__menu-button:active .site-header__menu-button-state {
-    background: var(--color-state-on-inverse-primary-12);
-    opacity: 1;
-  }
-
-  .site-header__menu-button:focus-visible {
-    outline: var(--focus-outline-width) solid var(--color-focus);
-    outline-offset: 4px;
-  }
-
-  .site-header__menu-button:focus-visible .site-header__menu-button-state {
-    background: var(--color-state-on-inverse-primary-12);
-    opacity: 1;
   }
 
   @media (min-width: 1015px) {
