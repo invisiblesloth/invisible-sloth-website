@@ -46,7 +46,7 @@
       docs: {
         description: {
           component:
-            'Responsive page header composition with optional grouped media, clickable tag links, and DetailHeader content. PageHeader owns page-level section order and media semantics, while internal header pieces own rail layout, linked tag validation, and Figure composition. When media is present, PageHeader uses the wide non-cropping treatment and needs meaningful image alt text. Use the root class prop for styling hooks. The default tag hrefs are future-route placeholders for planned tag landing pages; they are not current site routes.',
+            'Responsive page header composition with optional grouped media, clickable tag links, and DetailHeader content. PageHeader owns page-level section order and media semantics, TagLinkGroup owns linked tag validation, and internal header pieces own rail layout and Figure composition. When media is present, PageHeader uses the wide non-cropping treatment and needs meaningful image alt text. Use the root class prop for styling hooks. The default tag hrefs are future-route placeholders for planned tag landing pages; they are not current site routes.',
         },
       },
     },

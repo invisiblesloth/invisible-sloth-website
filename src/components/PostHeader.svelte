@@ -5,8 +5,9 @@
  * Storybook-documented blog post header composition with optional tags,
  * publication date, author byline, and featured media.
  *
- * PostHeader owns post-level section order and media semantics. Internal
- * header pieces own linked tag validation, rail layout, and Figure composition.
+ * PostHeader owns post-level section order and media semantics. TagLinkGroup
+ * owns linked tag validation; internal header pieces own rail layout and
+ * Figure composition.
  *
  * Author identity and links are provided through authors. Avatar props are
  * single-author presentation data.

@@ -5,8 +5,9 @@
  * Reusable page header composition with optional wide media, clickable tags,
  * and detail-header title/excerpt content.
  *
- * PageHeader owns page-level section order and media semantics. Internal
- * header pieces own linked tag validation, rail layout, and Figure composition.
+ * PageHeader owns page-level section order and media semantics. TagLinkGroup
+ * owns linked tag validation; internal header pieces own rail layout and
+ * Figure composition.
  *
  * When media with a non-empty source is provided, media is meaningful content
  * for this pattern and uses the wide non-cropping treatment so shaped assets

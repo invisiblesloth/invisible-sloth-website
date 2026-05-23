@@ -1,9 +1,11 @@
 <script lang="ts">
+  /**
+   * HeaderTagSection adapts linked tag rendering into the header rail.
+   * TagLinkGroup owns validation and empty-state suppression.
+   */
+  import type { Snippet } from 'svelte';
   import HeaderRail from './HeaderRail.svelte';
-  import Tag from '../Tag.svelte';
-  import TagGroup from '../TagGroup.svelte';
-  import { warnOnce } from '../../lib/devWarnings';
-  import { resolveTagLinks } from '../../lib/tagLinks';
+  import TagLinkGroup from '../TagLinkGroup.svelte';
   import type { TagLink } from '../../lib/tagLinks';
 
   let {
@@ -15,39 +17,17 @@
     componentLabel: string;
     warningNamespace: string;
   } = $props();
-
-  const tagResolution = $derived(resolveTagLinks(tags));
-  const normalizedTags = $derived(tagResolution.links);
-  const hasTags = $derived(normalizedTags.length > 0);
-
-  $effect(() => {
-    if (!tagResolution.inputWasArray) {
-      warnOnce(
-        `${warningNamespace}:invalid-tags`,
-        `${componentLabel} \`tags\` must be an array. Rendering without tags.`
-      );
-    }
-
-    for (const index of tagResolution.invalidIndexes) {
-      warnOnce(
-        `${warningNamespace}:invalid-tag:${index}`,
-        `${componentLabel} Tags need non-empty label and href values. Skipping invalid tag.`
-      );
-    }
-  });
 </script>
 
-{#if hasTags}
+{#snippet tagRail(group: Snippet)}
   <HeaderRail section="tag">
-    <TagGroup>
-      {#each normalizedTags as tag (tag.href + ':' + tag.index)}
-        <Tag
-          label={tag.label}
-          href={tag.href}
-          target={tag.target}
-          rel={tag.rel}
-        />
-      {/each}
-    </TagGroup>
+    {@render group()}
   </HeaderRail>
-{/if}
+{/snippet}
+
+<TagLinkGroup
+  {tags}
+  {componentLabel}
+  {warningNamespace}
+  wrapper={tagRail}
+/>

@@ -100,7 +100,7 @@
         },
         description: {
           component:
-            'Responsive blog post header composition for Storybook only. PostHeader owns post-level section order and media semantics, while internal header pieces own rail layout, linked tag validation, and Figure composition. Author identity and links are provided through authors only, while avatar props are single-author presentation data. Grouped media defaults to the art treatment so designed or transparent assets are preserved without cropping; use cover for intentionally cropped photo covers. Use the root class prop for styling hooks. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',
+            'Responsive blog post header composition for Storybook only. PostHeader owns post-level section order and media semantics, TagLinkGroup owns linked tag validation, and internal header pieces own rail layout and Figure composition. Author identity and links are provided through authors only, while avatar props are single-author presentation data. Grouped media defaults to the art treatment so designed or transparent assets are preserved without cropping; use cover for intentionally cropped photo covers. Use the root class prop for styling hooks. It is not wired to site routes, and future publishing requirements belong in blog content schema work.',
         },
       },
     },

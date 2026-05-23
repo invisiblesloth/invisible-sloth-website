@@ -11,7 +11,7 @@
       docs: {
         description: {
           component:
-            'Wraps tags with consistent internal row and column gaps. Parent compositions own outer vertical spacing and padding.',
+            'Layout-only wrapper for consistent internal tag row and column gaps. Parent compositions own data mapping, validation, outer vertical spacing, and padding.',
         },
       },
     },
@@ -26,14 +26,14 @@
   }
 </style>
 
-<Story name="Mixed Actions">
+<Story name="Wrapping And Gaps">
   <div class="tag-group-story">
     <TagGroup>
       <Tag label="Primary Tag" />
-      <Tag label="Secondary Tag" href="https://invisiblesloth.com/" />
       <Tag label="Secondary Tag" />
-      <Tag label="Secondary Tag" href="https://invisiblesloth.com/" target="_blank" />
-      <Tag label="Secondary Tag" />
+      <Tag label="Longer Tag Label" />
+      <Tag label="Compact" />
+      <Tag label="Another Tag" />
     </TagGroup>
   </div>
 </Story>
