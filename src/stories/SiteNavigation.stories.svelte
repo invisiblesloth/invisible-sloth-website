@@ -1,9 +1,13 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import SiteNavigation from '../components/SiteNavigation.svelte';
-  import type { NavigationSection } from '../lib/navigation';
+  import {
+    resolveNavigationSections,
+    type NavigationSection,
+    type ResolvedNavigationSection,
+  } from '../lib/navigation';
 
-  const storySections: NavigationSection[] = [
+  const rawStorySections: NavigationSection[] = [
     {
       items: [
         { label: 'Home', href: '#home' },
@@ -35,6 +39,8 @@
       ],
     },
   ];
+  const storySections: ResolvedNavigationSection[] =
+    resolveNavigationSections(rawStorySections);
 
   const pageAnchors = ['home', 'blog', 'about', 'roxy', 'privacy-policy', 'terms'];
 
@@ -61,7 +67,7 @@
       docs: {
         description: {
           component:
-            'Future production navigation composition for SiteHeader and NavigationDrawer. It owns drawer state, stable aria-controls, and content inerting inside the shell, but it is not wired into the live Astro page until real navigation routes exist.',
+            'Production navigation composition for SiteHeader and NavigationDrawer. It owns drawer state, stable aria-controls, and background content inerting inside the interactive shell.',
         },
       },
     },
@@ -162,6 +168,30 @@
             {/each}
           </div>
         </main>
+      </SiteNavigation>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Empty"
+  args={{
+    sections: [],
+    activeHref: undefined,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'With no resolved sections, SiteNavigation renders a plain SiteHeader without a leading menu trigger or drawer.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <div class="site-navigation-story">
+      <SiteNavigation {...args}>
+        <main class="site-navigation-story__page"></main>
       </SiteNavigation>
     </div>
   {/snippet}

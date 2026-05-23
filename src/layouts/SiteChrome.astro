@@ -1,27 +1,61 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
 import SiteHeader from "../components/SiteHeader.svelte";
+import SiteNavigation from "../components/SiteNavigation.svelte";
 import SiteFooter from "../components/SiteFooter.svelte";
 import ContactUs from "../components/ContactUs.svelte";
+import {
+  resolveNavigationSections,
+  type NavigationSection,
+} from "../lib/navigation";
 
 export interface Props {
   title?: string;
   description?: string;
   canonicalUrl?: string;
+  navigationSections?: NavigationSection[];
 }
 
-const { title, description, canonicalUrl } = Astro.props as Props;
+const {
+  title,
+  description,
+  canonicalUrl,
+  navigationSections = [],
+} = Astro.props as Props;
+const resolvedNavigationSections = resolveNavigationSections(navigationSections);
+const hasNavigation = resolvedNavigationSections.length > 0;
 ---
 
 <BaseLayout {title} {description} {canonicalUrl}>
-  <SiteHeader homeHref="/" />
+  {
+    hasNavigation ? (
+      <SiteNavigation
+        sections={resolvedNavigationSections}
+        homeHref="/"
+        client:idle
+      >
+        <slot />
 
-  <slot />
+        <SiteFooter homeHref="/">
+          <ContactUs
+            text="For questions, support, or just to say hi, email us at"
+            email="hello@invisiblesloth.com"
+          />
+        </SiteFooter>
+      </SiteNavigation>
+    ) : (
+      <>
+        <SiteHeader homeHref="/" />
 
-  <SiteFooter homeHref="/">
-    <ContactUs
-      text="For questions, support, or just to say hi, email us at"
-      email="hello@invisiblesloth.com"
-    />
-  </SiteFooter>
+        <slot />
+
+        <SiteFooter homeHref="/">
+          <ContactUs
+            text="For questions, support, or just to say hi, email us at"
+            email="hello@invisiblesloth.com"
+          />
+        </SiteFooter>
+      </>
+    )
+  }
 </BaseLayout>

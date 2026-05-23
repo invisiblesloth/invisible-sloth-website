@@ -41,7 +41,7 @@
       docs: {
         description: {
           component:
-            'Standalone drawer shell with component-local geometry fallbacks. SiteNavigation supplies shared shell variables when the drawer is used in the full navigation composition.',
+            'Standalone drawer shell with component-local geometry fallbacks. SiteNavigation supplies shared shell variables and host-owned navigation close policy when the drawer is used in the full navigation composition.',
         },
       },
     },

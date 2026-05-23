@@ -1,7 +1,12 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { normalizeTarget } from '../lib/linkBehavior';
   import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
-  import type { NavigationCloseReason, NavigationItem, NavigationSection } from '../lib/navigation';
+  import type {
+    NavigationCloseReason,
+    ResolvedNavigationItem,
+    ResolvedNavigationSection,
+  } from '../lib/navigation';
   import Menu from '../icons/Menu.svelte';
   import Button from './Button.svelte';
   import NavigationDrawer from './NavigationDrawer.svelte';
@@ -23,7 +28,7 @@
     children = undefined,
     class: className = '',
   }: {
-    sections?: NavigationSection[];
+    sections?: ResolvedNavigationSection[];
     activeHref?: string;
     drawerId?: string;
     homeHref?: string;
@@ -34,7 +39,7 @@
     dialogLabel?: string;
     navigationLabel?: string;
     onClose?: (reason: NavigationCloseReason) => void;
-    onNavigate?: (event: MouseEvent, item: NavigationItem) => void;
+    onNavigate?: (event: MouseEvent, item: ResolvedNavigationItem) => void;
     children?: Snippet;
     class?: string;
   } = $props();
@@ -44,6 +49,7 @@
   const siteNavigationClasses = $derived(
     ['site-navigation', className].filter(Boolean).join(' ')
   );
+  const hasNavigation = $derived(sections.length > 0);
   const normalizedDrawerId = $derived(
     typeof drawerId === 'string'
       ? drawerId.trim() || 'site-navigation-drawer'
@@ -51,20 +57,46 @@
   );
 
   function openDrawer(): void {
+    if (!hasNavigation) return;
     drawerOpen = true;
+  }
+
+  function closeDrawer(reason: NavigationCloseReason): void {
+    drawerOpen = false;
+    onClose?.(reason);
   }
 
   function handleClose(
     _event?: MouseEvent | KeyboardEvent,
     reason: NavigationCloseReason = 'button'
   ): void {
-    drawerOpen = false;
-    onClose?.(reason);
+    closeDrawer(reason);
   }
 
-  function handleNavigate(event: MouseEvent, item: NavigationItem): void {
-    onNavigate?.(event, item);
+  function shouldCloseAfterNavigation(
+    event: MouseEvent,
+    item: ResolvedNavigationItem
+  ): boolean {
+    if (event.defaultPrevented) return false;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
+    if (event.button !== 0) return false;
+
+    return normalizeTarget(item.target) !== '_blank';
   }
+
+  function handleNavigate(event: MouseEvent, item: ResolvedNavigationItem): void {
+    onNavigate?.(event, item);
+
+    if (shouldCloseAfterNavigation(event, item)) {
+      closeDrawer('navigation');
+    }
+  }
+
+  $effect(() => {
+    if (!hasNavigation && drawerOpen) {
+      drawerOpen = false;
+    }
+  });
 </script>
 
 {#snippet menuIcon()}
@@ -94,37 +126,39 @@
       {homeHref}
       {homeLabel}
       {logoAlt}
-      leading={menuTrigger}
+      leading={hasNavigation ? menuTrigger : undefined}
     />
 
     {@render children?.()}
   </div>
 
-  <NavigationDrawer
-    id={normalizedDrawerId}
-    open={drawerOpen}
-    {sections}
-    {activeHref}
-    {dialogLabel}
-    {navigationLabel}
-    {closeButtonLabel}
-    onClose={handleClose}
-    onNavigate={handleNavigate}
-  />
+  {#if hasNavigation}
+    <NavigationDrawer
+      id={normalizedDrawerId}
+      open={drawerOpen}
+      {sections}
+      {activeHref}
+      {dialogLabel}
+      {navigationLabel}
+      {closeButtonLabel}
+      onClose={handleClose}
+      onNavigate={handleNavigate}
+    />
+  {/if}
 </div>
 
 <style>
   .site-navigation {
-    --site-navigation-header-inline: var(--space-rail-inline);
-    --site-navigation-header-block: var(--space-section-block);
-    --site-navigation-trigger-block-size: 48px;
-    --site-navigation-drawer-panel-padding: var(--space-300);
-    --site-navigation-drawer-panel-inline-start: calc(
-      var(--site-navigation-header-inline) - var(--site-navigation-drawer-panel-padding)
+    --site-chrome-header-inline: var(--space-rail-inline);
+    --site-chrome-header-block: var(--space-section-block);
+    --site-chrome-trigger-block-size: 48px;
+    --site-chrome-drawer-panel-padding: var(--space-300);
+    --site-chrome-drawer-panel-inline-start: calc(
+      var(--site-chrome-header-inline) - var(--site-chrome-drawer-panel-padding)
     );
-    --site-navigation-drawer-panel-contained-inline-start: calc(
+    --site-chrome-drawer-panel-contained-inline-start: calc(
       50% - (var(--size-rail-md) / 2) + var(--space-gutter) -
-        var(--site-navigation-drawer-panel-padding)
+        var(--site-chrome-drawer-panel-padding)
     );
 
     min-block-size: inherit;

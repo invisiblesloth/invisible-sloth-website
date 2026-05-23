@@ -1,12 +1,11 @@
 <script lang="ts">
   import Close from '../icons/Close.svelte';
-  import { normalizeTarget } from '../lib/linkBehavior';
   import type {
     NavigationCloseCallback,
     NavigationCloseEvent,
     NavigationCloseReason,
-    NavigationItem,
     NavigationSection,
+    ResolvedNavigationItem,
   } from '../lib/navigation';
   import NavigationMenu from './NavigationMenu.svelte';
 
@@ -42,8 +41,8 @@
     closeButtonLabel?: string;
     onclose?: NavigationCloseCallback;
     onClose?: NavigationCloseCallback;
-    onnavigate?: (event: MouseEvent, item: NavigationItem) => void;
-    onNavigate?: (event: MouseEvent, item: NavigationItem) => void;
+    onnavigate?: (event: MouseEvent, item: ResolvedNavigationItem) => void;
+    onNavigate?: (event: MouseEvent, item: ResolvedNavigationItem) => void;
     class?: string;
   } = $props();
 
@@ -99,14 +98,6 @@
     );
   }
 
-  function shouldCloseAfterNavigation(event: MouseEvent, item: NavigationItem): boolean {
-    if (event.defaultPrevented) return false;
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
-    if (event.button !== 0) return false;
-
-    return normalizeTarget(item.target) !== '_blank';
-  }
-
   function handleKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       event.preventDefault();
@@ -147,12 +138,14 @@
     }
   }
 
-  function handleNavigate(event: MouseEvent, item: NavigationItem): void {
+  function handleNavigate(event: MouseEvent, item: ResolvedNavigationItem): void {
+    pendingCloseReason = 'navigation';
     navigateCallback?.(event, item);
-
-    if (shouldCloseAfterNavigation(event, item)) {
-      requestClose(event, 'navigation');
-    }
+    queueMicrotask(() => {
+      if (open) {
+        pendingCloseReason = undefined;
+      }
+    });
   }
 
   $effect(() => {
@@ -164,6 +157,7 @@
     previousFocusElement =
       document.activeElement instanceof HTMLElement ? document.activeElement : undefined;
 
+    // A stacked modal model would need shared ownership of this global lock.
     const previousBodyOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
@@ -232,7 +226,7 @@
 <style>
   .navigation-drawer {
     --navigation-drawer-panel-padding: var(
-      --site-navigation-drawer-panel-padding,
+      --site-chrome-drawer-panel-padding,
       var(--space-300)
     );
     --navigation-drawer-panel-inline-size: 360px;
@@ -240,15 +234,15 @@
       var(--radius-xl) + env(safe-area-inset-bottom, 0px)
     );
     --navigation-drawer-header-inline: var(
-      --site-navigation-header-inline,
+      --site-chrome-header-inline,
       var(--space-rail-inline)
     );
     --navigation-drawer-header-block: var(
-      --site-navigation-header-block,
+      --site-chrome-header-block,
       var(--space-section-block)
     );
     --navigation-drawer-trigger-block-size: var(
-      --site-navigation-trigger-block-size,
+      --site-chrome-trigger-block-size,
       48px
     );
     --navigation-drawer-menu-button-block-offset: clamp(0px, calc(9vw - 24px), 24px);
@@ -380,7 +374,7 @@
       inset-block-start: var(--navigation-drawer-panel-block-start);
       inset-block-end: auto;
       inset-inline-start: var(
-        --site-navigation-drawer-panel-inline-start,
+        --site-chrome-drawer-panel-inline-start,
         calc(var(--navigation-drawer-header-inline) - var(--navigation-drawer-panel-padding))
       );
       min-block-size: 0;
@@ -397,7 +391,7 @@
   @media (min-width: 1176px) {
     .navigation-drawer__panel {
       inset-inline-start: var(
-        --site-navigation-drawer-panel-contained-inline-start,
+        --site-chrome-drawer-panel-contained-inline-start,
         calc(
           50% - (var(--size-rail-md) / 2) + var(--space-gutter) -
             var(--navigation-drawer-panel-padding)

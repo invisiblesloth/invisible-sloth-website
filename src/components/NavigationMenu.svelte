@@ -2,7 +2,6 @@
   import { normalizeHref } from '../lib/linkBehavior';
   import {
     resolveNavigationSections,
-    type NavigationItem,
     type NavigationSection,
     type ResolvedNavigationItem,
     type ResolvedNavigationSection,
@@ -23,8 +22,8 @@
     sections?: NavigationSection[];
     activeHref?: string;
     ariaLabel?: string;
-    onnavigate?: (event: MouseEvent, item: NavigationItem) => void;
-    onNavigate?: (event: MouseEvent, item: NavigationItem) => void;
+    onnavigate?: (event: MouseEvent, item: ResolvedNavigationItem) => void;
+    onNavigate?: (event: MouseEvent, item: ResolvedNavigationItem) => void;
     class?: string;
   } = $props();
 

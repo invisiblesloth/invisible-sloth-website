@@ -81,18 +81,18 @@
 <style>
   .site-header {
     --header-padding-inline: min(
-      var(--site-navigation-header-inline, var(--space-rail-inline)),
+      var(--site-chrome-header-inline, var(--space-rail-inline)),
       var(--space-400)
     );
     --header-padding-block: min(
-      var(--site-navigation-header-block, var(--space-section-block)),
+      var(--site-chrome-header-block, var(--space-section-block)),
       var(--space-600)
     );
     --header-content-max-width: 51rem;
     --header-logo-min: 45px;
     --header-logo-max: 96px;
     --header-logo-size: clamp(var(--header-logo-min), 18vw, var(--header-logo-max));
-    --site-header-control-block-size: var(--site-navigation-trigger-block-size, 48px);
+    --site-header-control-block-size: var(--site-chrome-trigger-block-size, 48px);
 
     display: flex;
     justify-content: center;
@@ -110,8 +110,8 @@
   }
 
   .site-header--with-side-regions {
-    --header-padding-inline: var(--site-navigation-header-inline, var(--space-rail-inline));
-    --header-padding-block: var(--site-navigation-header-block, var(--space-section-block));
+    --header-padding-inline: var(--site-chrome-header-inline, var(--space-rail-inline));
+    --header-padding-block: var(--site-chrome-header-block, var(--space-section-block));
   }
 
   .site-header--with-side-regions .site-header__inner {
@@ -139,8 +139,8 @@
 
   @media (min-width: 1015px) {
     .site-header {
-      --header-padding-inline: var(--site-navigation-header-inline, var(--space-rail-inline));
-      --header-padding-block: var(--site-navigation-header-block, var(--space-section-block));
+      --header-padding-inline: var(--site-chrome-header-inline, var(--space-rail-inline));
+      --header-padding-block: var(--site-chrome-header-block, var(--space-section-block));
     }
   }
 
