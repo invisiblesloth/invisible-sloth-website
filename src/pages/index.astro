@@ -1,19 +1,14 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import SiteHeader from "../components/SiteHeader.svelte";
+import SiteChrome from "../layouts/SiteChrome.astro";
 import Container from "../components/Container.astro";
 import Heading from "../components/Heading.svelte";
 import HomepageProjectList from "../components/HomepageProjectList.astro";
-import SiteFooter from "../components/SiteFooter.svelte";
-import ContactUs from "../components/ContactUs.svelte";
 import { getHomepageProjectEntries } from "../lib/projectContent";
 
 const projects = await getHomepageProjectEntries();
 ---
 
-<BaseLayout title="Invisible Sloth" description="Invisible Sloth projects">
-	<SiteHeader homeHref="/" />
-
+<SiteChrome title="Invisible Sloth" description="Invisible Sloth projects">
 	<main class="site-main">
 		<section class="section">
 			<Container padded={false} size="md" class="stack">
@@ -25,11 +20,4 @@ const projects = await getHomepageProjectEntries();
 			</Container>
 		</section>
 	</main>
-
-	<SiteFooter homeHref="/">
-		<ContactUs
-			text="For questions, support, or just to say hi, email us at"
-			email="hello@invisiblesloth.com"
-		/>
-	</SiteFooter>
-</BaseLayout>
+</SiteChrome>

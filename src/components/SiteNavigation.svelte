@@ -2,6 +2,8 @@
   import type { Snippet } from 'svelte';
   import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
   import type { NavigationCloseReason, NavigationItem, NavigationSection } from '../lib/navigation';
+  import Menu from '../icons/Menu.svelte';
+  import Button from './Button.svelte';
   import NavigationDrawer from './NavigationDrawer.svelte';
   import SiteHeader from './SiteHeader.svelte';
 
@@ -65,6 +67,23 @@
   }
 </script>
 
+{#snippet menuIcon()}
+  <Menu />
+{/snippet}
+
+{#snippet menuTrigger()}
+  <Button
+    variant="filled-inverse-primary"
+    shape="icon"
+    type="button"
+    label={menuButtonLabel}
+    icon={menuIcon}
+    aria-expanded={drawerOpen}
+    aria-controls={normalizedDrawerId}
+    onclick={openDrawer}
+  />
+{/snippet}
+
 <div class={siteNavigationClasses}>
   <div
     class="site-navigation__content"
@@ -72,14 +91,10 @@
     inert={drawerOpen}
   >
     <SiteHeader
-      showMenuButton
-      menuExpanded={drawerOpen}
-      menuControlsId={normalizedDrawerId}
-      {menuButtonLabel}
-      onMenuClick={openDrawer}
       {homeHref}
       {homeLabel}
       {logoAlt}
+      leading={menuTrigger}
     />
 
     {@render children?.()}
@@ -100,6 +115,18 @@
 
 <style>
   .site-navigation {
+    --site-navigation-header-inline: var(--space-rail-inline);
+    --site-navigation-header-block: var(--space-section-block);
+    --site-navigation-trigger-block-size: 48px;
+    --site-navigation-drawer-panel-padding: var(--space-300);
+    --site-navigation-drawer-panel-inline-start: calc(
+      var(--site-navigation-header-inline) - var(--site-navigation-drawer-panel-padding)
+    );
+    --site-navigation-drawer-panel-contained-inline-start: calc(
+      50% - (var(--size-rail-md) / 2) + var(--space-gutter) -
+        var(--site-navigation-drawer-panel-padding)
+    );
+
     min-block-size: inherit;
   }
 

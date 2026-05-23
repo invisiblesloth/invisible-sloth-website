@@ -22,7 +22,7 @@
       homeLabel: DEFAULT_LOGO_LINK_LABEL,
       logoAlt: 'Invisible Sloth',
       tagline: "We may be slow, but we're not slowing down!",
-      copyrightText: 'Invisible Sloth, LLC © 2024-2025',
+      copyrightText: '© Invisible Sloth, LLC',
     },
     argTypes: {
       homeHref: {
@@ -82,7 +82,7 @@
     <SiteFooter
       homeHref="/"
       tagline="We may be slow, but we're not slowing down!"
-      copyrightText="Invisible Sloth, LLC © 2024-2025"
+      copyrightText="© Invisible Sloth, LLC"
     >
       <ContactUs text={contactText} email={contactEmail} />
     </SiteFooter>

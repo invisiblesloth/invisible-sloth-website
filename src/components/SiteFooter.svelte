@@ -15,14 +15,12 @@
    * @prop {string} homeLabel - Accessible name for the logo link (default: 'Invisible Sloth home')
    * @prop {string} logoAlt - Alt text used only for the standalone logo when homeHref is empty
    * @prop {string} tagline - Tagline text (default: "We may be slow, but we're not slowing down!")
-   * @prop {string} copyrightText - Copyright text (default: 'Invisible Sloth, LLC © 2024-2025')
+   * @prop {string} copyrightText - Copyright text (default: '© Invisible Sloth, LLC')
    * @slot default - Optional page-owned content between tagline and copyright
    */
   import type { Snippet } from 'svelte';
-  import LogoLink from './LogoLink.svelte';
-  import Logo from './Logo.svelte';
+  import BrandHomeMark from './internal/BrandHomeMark.svelte';
   import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
-  import { normalizeHref } from '../lib/linkBehavior';
 
   let {
     homeHref = '/',
@@ -43,23 +41,20 @@
   } = $props();
 
   const hasContent = $derived(Boolean(children));
-  const normalizedHomeHref = $derived(normalizeHref(homeHref));
+  const footerClasses = $derived(['site-footer', className].filter(Boolean).join(' '));
 </script>
 
-<footer class={`site-footer ${className}`}>
+<footer class={footerClasses}>
   <div class="site-footer__inner">
     <!-- Logo Section -->
     <div class="site-footer__logo-section">
-      {#if normalizedHomeHref}
-        <LogoLink
-          href={normalizedHomeHref}
-          variant="standard"
-          size="var(--footer-logo-size)"
-          label={homeLabel}
-        />
-      {:else}
-        <Logo variant="standard" size="var(--footer-logo-size)" alt={logoAlt} />
-      {/if}
+      <BrandHomeMark
+        {homeHref}
+        {homeLabel}
+        {logoAlt}
+        variant="standard"
+        size="var(--footer-logo-size)"
+      />
     </div>
 
     <!-- Tagline Section -->

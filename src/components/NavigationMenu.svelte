@@ -1,88 +1,15 @@
 <script lang="ts">
+  import { normalizeHref } from '../lib/linkBehavior';
   import {
-    normalizeHref,
-    normalizeRelForTarget,
-    normalizeTarget,
-  } from '../lib/linkBehavior';
-  import type { NavigationItem, NavigationSection } from '../lib/navigation';
-
-  type ResolvedNavigationItem = NavigationItem & {
-    href: string;
-    label: string;
-    target?: string;
-    rel?: string;
-  };
-
-  type ResolvedNavigationSection = {
-    heading?: string;
-    items: ResolvedNavigationItem[];
-  };
-
-  function isRecord(value: unknown): value is Record<string, unknown> {
-    return typeof value === 'object' && value !== null;
-  }
+    resolveNavigationSections,
+    type NavigationItem,
+    type NavigationSection,
+    type ResolvedNavigationItem,
+    type ResolvedNavigationSection,
+  } from '../lib/navigation';
 
   function normalizeLabel(value: unknown, fallback: string): string {
     return typeof value === 'string' ? value.trim() || fallback : fallback;
-  }
-
-  function resolveNavigationSections(value: unknown): ResolvedNavigationSection[] {
-    if (!Array.isArray(value)) {
-      return [];
-    }
-
-    return value
-      .map((section) => {
-        const sectionRecord = isRecord(section) ? section : undefined;
-        const sectionItems = Array.isArray(sectionRecord?.items) ? sectionRecord.items : [];
-
-        const resolvedItems = sectionItems
-          .map((item) => {
-            if (!isRecord(item)) {
-              return undefined;
-            }
-
-            const labelValue = item.label;
-            const hrefValue = item.href;
-
-            if (typeof labelValue !== 'string' || typeof hrefValue !== 'string') {
-              return undefined;
-            }
-
-            const label = labelValue.trim();
-            const href = normalizeHref(hrefValue);
-
-            if (!label || !href) {
-              return undefined;
-            }
-
-            const target = normalizeTarget(
-              typeof item.target === 'string' ? item.target : undefined
-            );
-            const rel = normalizeRelForTarget(
-              target,
-              typeof item.rel === 'string' ? item.rel : undefined
-            );
-
-            return {
-              ...(item as NavigationItem),
-              label,
-              href,
-              target,
-              rel,
-            };
-          })
-          .filter((item): item is ResolvedNavigationItem => Boolean(item));
-
-        return {
-          heading:
-            typeof sectionRecord?.heading === 'string'
-              ? sectionRecord.heading.trim() || undefined
-              : undefined,
-          items: resolvedItems,
-        };
-      })
-      .filter((section) => section.items.length > 0);
   }
 
   let {

@@ -1,11 +1,15 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
+  import BrandHomeMark from './internal/BrandHomeMark.svelte';
+  import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
+
   /**
    * Site Header Component
    *
    * Responsive header with brand logo by default.
    * Logo size scales fluidly across breakpoints using clamp().
-   * The optional menu-button layout is controlled by parent navigation shells
-   * such as SiteNavigation.
+   * Optional leading and trailing regions are balanced so the logo remains
+   * centered when a navigation shell provides controls on one side.
    *
    * Breakpoint sizing strategy:
    * - Base (0-631px): 18vw viewport-based scaling (45px-65px range)
@@ -16,97 +20,79 @@
    * @prop {string} homeHref - URL for logo link (default: '/') - set to empty string to disable link
    * @prop {string} homeLabel - Accessible name for the logo link (default: 'Invisible Sloth home')
    * @prop {string} logoAlt - Alt text used only for the standalone logo when homeHref is empty
-   * @prop {boolean} showMenuButton - Enable the menu-button layout (default: false)
-   * @prop {boolean} menuExpanded - Current drawer state for aria-expanded (default: false)
-   * @prop {string} menuControlsId - Optional controlled drawer id for aria-controls
-   * @prop {string} menuButtonLabel - Accessible name for the menu button
-   * @prop {(event: MouseEvent) => void} onMenuClick - Click handler for the menu button
+   * @prop {Snippet} leading - Optional leading header region
+   * @prop {Snippet} trailing - Optional trailing header region
    */
-
-  import Button from './Button.svelte';
-  import LogoLink from './LogoLink.svelte';
-  import Logo from './Logo.svelte';
-  import Menu from '../icons/Menu.svelte';
-  import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
-  import { normalizeHref } from '../lib/linkBehavior';
 
   let {
     homeHref = '/',
     homeLabel = DEFAULT_LOGO_LINK_LABEL,
     logoAlt = DEFAULT_LOGO_ALT,
-    showMenuButton = false,
-    menuExpanded = false,
-    menuControlsId = undefined,
-    menuButtonLabel = 'Open navigation menu',
-    onMenuClick = undefined,
+    leading = undefined,
+    trailing = undefined,
     class: className = '',
   }: {
     homeHref?: string;
     homeLabel?: string;
     logoAlt?: string;
-    showMenuButton?: boolean;
-    menuExpanded?: boolean;
-    menuControlsId?: string;
-    menuButtonLabel?: string;
-    onMenuClick?: (event: MouseEvent) => void;
+    leading?: Snippet;
+    trailing?: Snippet;
     class?: string;
   } = $props();
 
+  const hasSideRegions = $derived(Boolean(leading || trailing));
   const headerClasses = $derived(
-    ['site-header', showMenuButton ? 'site-header--with-menu' : '', className]
+    ['site-header', hasSideRegions ? 'site-header--with-side-regions' : '', className]
       .filter(Boolean)
       .join(' ')
   );
-  const normalizedHomeHref = $derived(normalizeHref(homeHref));
 </script>
-
-{#snippet menuIcon()}
-  <Menu />
-{/snippet}
 
 <header class={headerClasses}>
   <div class="site-header__inner">
-    {#if showMenuButton}
-      <div class="site-header__side site-header__side--start">
-        <Button
-          variant="filled-inverse-primary"
-          shape="icon"
-          type="button"
-          label={menuButtonLabel}
-          icon={menuIcon}
-          aria-expanded={menuExpanded}
-          aria-controls={menuControlsId}
-          onclick={onMenuClick}
-        />
+    {#if hasSideRegions}
+      <div
+        class="site-header__side site-header__side--leading"
+        aria-hidden={leading ? undefined : 'true'}
+      >
+        {@render leading?.()}
       </div>
     {/if}
 
-    {#if normalizedHomeHref}
-      <LogoLink
-        href={normalizedHomeHref}
-        variant="technical"
-        size="var(--header-logo-size)"
-        label={homeLabel}
-      />
-    {:else}
-      <Logo variant="technical" size="var(--header-logo-size)" alt={logoAlt} />
-    {/if}
+    <BrandHomeMark
+      {homeHref}
+      {homeLabel}
+      {logoAlt}
+      variant="technical"
+      size="var(--header-logo-size)"
+    />
 
-    {#if showMenuButton}
-      <div class="site-header__side site-header__side--end" aria-hidden="true"></div>
+    {#if hasSideRegions}
+      <div
+        class="site-header__side site-header__side--trailing"
+        aria-hidden={trailing ? undefined : 'true'}
+      >
+        {@render trailing?.()}
+      </div>
     {/if}
   </div>
 </header>
 
 <style>
   .site-header {
-    --header-padding-inline: min(var(--space-rail-inline), var(--space-400));
-    --header-padding-block: min(var(--space-section-block), var(--space-600));
+    --header-padding-inline: min(
+      var(--site-navigation-header-inline, var(--space-rail-inline)),
+      var(--space-400)
+    );
+    --header-padding-block: min(
+      var(--site-navigation-header-block, var(--space-section-block)),
+      var(--space-600)
+    );
     --header-content-max-width: 51rem;
     --header-logo-min: 45px;
     --header-logo-max: 96px;
     --header-logo-size: clamp(var(--header-logo-min), 18vw, var(--header-logo-max));
-    --site-header-control-block-size: 48px;
+    --site-header-control-block-size: var(--site-navigation-trigger-block-size, 48px);
 
     display: flex;
     justify-content: center;
@@ -123,12 +109,12 @@
     gap: var(--space-400);
   }
 
-  .site-header--with-menu {
-    --header-padding-inline: var(--space-rail-inline);
-    --header-padding-block: var(--space-section-block);
+  .site-header--with-side-regions {
+    --header-padding-inline: var(--site-navigation-header-inline, var(--space-rail-inline));
+    --header-padding-block: var(--site-navigation-header-block, var(--space-section-block));
   }
 
-  .site-header--with-menu .site-header__inner {
+  .site-header--with-side-regions .site-header__inner {
     --header-content-max-width: 100%;
 
     justify-content: space-between;
@@ -139,26 +125,27 @@
     display: flex;
     flex: 1 0 0;
     min-inline-size: 0;
+    min-block-size: var(--site-header-control-block-size);
     align-items: center;
   }
 
-  .site-header__side--start {
+  .site-header__side--leading {
     justify-content: flex-start;
   }
 
-  .site-header__side--end {
-    min-block-size: var(--site-header-control-block-size);
+  .site-header__side--trailing {
+    justify-content: flex-end;
   }
 
   @media (min-width: 1015px) {
     .site-header {
-      --header-padding-inline: var(--space-rail-inline);
-      --header-padding-block: var(--space-section-block);
+      --header-padding-inline: var(--site-navigation-header-inline, var(--space-rail-inline));
+      --header-padding-block: var(--site-navigation-header-block, var(--space-section-block));
     }
   }
 
   @media (min-width: 1176px) {
-    .site-header--with-menu .site-header__inner {
+    .site-header--with-side-regions .site-header__inner {
       width: min(100%, var(--size-rail-md));
       padding-inline: var(--space-gutter);
     }

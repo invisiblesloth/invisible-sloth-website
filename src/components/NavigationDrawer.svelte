@@ -231,13 +231,26 @@
 
 <style>
   .navigation-drawer {
-    --navigation-drawer-panel-padding: var(--space-300);
+    --navigation-drawer-panel-padding: var(
+      --site-navigation-drawer-panel-padding,
+      var(--space-300)
+    );
     --navigation-drawer-panel-inline-size: 360px;
     --navigation-drawer-panel-block-end-gap: calc(
       var(--radius-xl) + env(safe-area-inset-bottom, 0px)
     );
-    --navigation-drawer-header-inline: var(--space-rail-inline);
-    --navigation-drawer-header-block: var(--space-section-block);
+    --navigation-drawer-header-inline: var(
+      --site-navigation-header-inline,
+      var(--space-rail-inline)
+    );
+    --navigation-drawer-header-block: var(
+      --site-navigation-header-block,
+      var(--space-section-block)
+    );
+    --navigation-drawer-trigger-block-size: var(
+      --site-navigation-trigger-block-size,
+      48px
+    );
     --navigation-drawer-menu-button-block-offset: clamp(0px, calc(9vw - 24px), 24px);
     --navigation-drawer-menu-button-block-start: calc(
       var(--navigation-drawer-header-block) + var(--navigation-drawer-menu-button-block-offset)
@@ -292,7 +305,7 @@
     justify-content: center;
     inline-size: 80px;
     min-inline-size: 64px;
-    block-size: 48px;
+    block-size: var(--navigation-drawer-trigger-block-size);
     padding: 0;
     border: 0;
     border-radius: var(--radius-full);
@@ -366,8 +379,9 @@
     .navigation-drawer__panel {
       inset-block-start: var(--navigation-drawer-panel-block-start);
       inset-block-end: auto;
-      inset-inline-start: calc(
-        var(--navigation-drawer-header-inline) - var(--navigation-drawer-panel-padding)
+      inset-inline-start: var(
+        --site-navigation-drawer-panel-inline-start,
+        calc(var(--navigation-drawer-header-inline) - var(--navigation-drawer-panel-padding))
       );
       min-block-size: 0;
       max-block-size: var(--navigation-drawer-panel-max-block-size);
@@ -382,9 +396,12 @@
 
   @media (min-width: 1176px) {
     .navigation-drawer__panel {
-      inset-inline-start: calc(
-        50% - (var(--size-rail-md) / 2) + var(--space-gutter) -
-          var(--navigation-drawer-panel-padding)
+      inset-inline-start: var(
+        --site-navigation-drawer-panel-contained-inline-start,
+        calc(
+          50% - (var(--size-rail-md) / 2) + var(--space-gutter) -
+            var(--navigation-drawer-panel-padding)
+        )
       );
     }
   }

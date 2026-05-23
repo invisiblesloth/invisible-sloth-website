@@ -61,7 +61,7 @@
       docs: {
         description: {
           component:
-            'Production-ready composition for SiteHeader and NavigationDrawer. It owns drawer state, stable aria-controls, and page/header inerting. Use an explicit children snippet for page content; no-children usage is reserved for narrow component tests.',
+            'Future production navigation composition for SiteHeader and NavigationDrawer. It owns drawer state, stable aria-controls, and content inerting inside the shell, but it is not wired into the live Astro page until real navigation routes exist.',
         },
       },
     },
@@ -86,7 +86,7 @@
       },
       drawerId: {
         control: 'text',
-        description: 'Stable id shared by SiteHeader aria-controls and NavigationDrawer.',
+        description: 'Stable id shared by the header trigger aria-controls and NavigationDrawer.',
       },
       onClose: {
         action: 'closed',
