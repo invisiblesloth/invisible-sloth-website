@@ -1,65 +1,223 @@
+<script module lang="ts">
+  import type { ComponentProps } from 'svelte';
+  import Image from './Image.svelte';
+
+  type ImageProps = ComponentProps<typeof Image>;
+
+  export type StandardCardImage = Pick<
+    ImageProps,
+    | 'src'
+    | 'srcset'
+    | 'sizes'
+    | 'alt'
+    | 'decorative'
+    | 'width'
+    | 'height'
+    | 'loading'
+    | 'decoding'
+    | 'fetchPriority'
+    | 'fallbackSrc'
+    | 'fallbackSrcset'
+    | 'fallbackSizes'
+    | 'fallbackAlt'
+    | 'fallbackWidth'
+    | 'fallbackHeight'
+  >;
+
+  type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+  type HeadingTag = `h${HeadingLevel}`;
+</script>
+
 <script lang="ts">
   /**
-   * StandardCard component for blog/article cards
+   * StandardCard component for article and summary cards.
    *
-   * Grid-friendly card with kicker, title, excerpt, date, and author.
-   * Uses CSS container queries to adapt typography based on card width.
+   * Whole-card navigation is required. Parent layouts own outer width and
+   * placement; this component owns only its internal card presentation.
    *
-   * @prop {string} href - Card link URL
-   * @prop {string} kicker - Small text above title (category/tag)
-   * @prop {string} title - Card title/headline
-   * @prop {string} description - Card excerpt/description
-   * @prop {string} date - Publication date
-   * @prop {string} author - Author name
-   * @prop {string} image - Optional image URL
-   * @prop {string} imageAlt - Alt text for image
+   * @prop {string} href - Required non-empty card link URL
+   * @prop {string} title - Required non-empty card title/headline
+   * @prop {string} target - Optional link target
+   * @prop {string} rel - Optional link rel; _blank links are hardened
+   * @prop {string} linkLabel - Optional explicit accessible name for the card link
+   * @prop {number} headingLevel - Semantic title heading level, from 1 to 6
+   * @prop {string} kicker - Optional small text above title
+   * @prop {string} description - Optional card excerpt/description
+   * @prop {string} date - Optional human-readable publication date
+   * @prop {string} dateTime - Optional machine-readable datetime value
+   * @prop {string} author - Optional author name rendered as plain text
+   * @prop {StandardCardImage} image - Optional image input rendered through Image
    */
+  import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
 
-  let {
-    href = '#',
-    kicker = 'Kicker',
-    title = 'Card Title',
-    description = 'Card excerpt.',
-    date = 'Card Date',
-    author = 'Author',
-    image,
-    imageAlt = '',
-  }: {
-    href?: string;
+  type Props = {
+    href: string;
+    title: string;
+    target?: string;
+    rel?: string;
+    linkLabel?: string;
+    headingLevel?: HeadingLevel;
     kicker?: string;
-    title?: string;
     description?: string;
     date?: string;
+    dateTime?: string;
     author?: string;
-    image?: string;
-    imageAlt?: string;
-  } = $props();
+    image?: StandardCardImage;
+  };
+
+  const VALID_HEADING_LEVELS = new Set([1, 2, 3, 4, 5, 6]);
+
+  let {
+    href,
+    title,
+    target,
+    rel,
+    linkLabel,
+    headingLevel = 3,
+    kicker = '',
+    description = '',
+    date = '',
+    dateTime = '',
+    author = '',
+    image,
+  }: Props = $props();
+
+  function normalizeRequiredString(value: unknown, propName: 'href' | 'title'): string {
+    const normalizedValue =
+      propName === 'href'
+        ? normalizeHref(typeof value === 'string' ? value : undefined)
+        : normalizeOptionalString(value);
+
+    if (!normalizedValue) {
+      throw new Error(`StandardCard requires a non-empty ${propName}.`);
+    }
+
+    return normalizedValue;
+  }
+
+  function normalizeOptionalString(value: unknown): string {
+    return typeof value === 'string' ? value.trim() : '';
+  }
+
+  function normalizeNonEmptyString(value: unknown): string | undefined {
+    const normalizedValue = normalizeOptionalString(value);
+    return normalizedValue.length > 0 ? normalizedValue : undefined;
+  }
+
+  function normalizeHeadingLevel(value: unknown): HeadingLevel {
+    return typeof value === 'number' && VALID_HEADING_LEVELS.has(value)
+      ? (value as HeadingLevel)
+      : 3;
+  }
+
+  const normalizedHref = $derived(normalizeRequiredString(href, 'href'));
+  const normalizedTitle = $derived(normalizeRequiredString(title, 'title'));
+  const normalizedTarget = $derived<string | undefined>(normalizeTarget(target));
+  const normalizedRel = $derived<string | undefined>(
+    normalizeRelForTarget(normalizedTarget, typeof rel === 'string' ? rel : undefined)
+  );
+  const normalizedLinkLabel = $derived(normalizeOptionalString(linkLabel));
+  const linkAriaLabel = $derived(normalizedLinkLabel.length > 0 ? normalizedLinkLabel : undefined);
+  const resolvedHeadingLevel = $derived(normalizeHeadingLevel(headingLevel));
+  const headingTag = $derived(`h${resolvedHeadingLevel}` as HeadingTag);
+
+  const normalizedKicker = $derived(normalizeOptionalString(kicker));
+  const normalizedDescription = $derived(normalizeOptionalString(description));
+  const normalizedDate = $derived(normalizeOptionalString(date));
+  const normalizedDateTime = $derived(normalizeNonEmptyString(dateTime));
+  const normalizedAuthor = $derived(normalizeOptionalString(author));
+  const hasKicker = $derived(normalizedKicker.length > 0);
+  const hasDescription = $derived(normalizedDescription.length > 0);
+  const hasDate = $derived(normalizedDate.length > 0);
+  const hasAuthor = $derived(normalizedAuthor.length > 0);
+  const hasFooter = $derived(hasDate || hasAuthor);
+
+  const normalizedImageSrc = $derived.by(() => {
+    return normalizeNonEmptyString(image?.src);
+  });
+  const normalizedImageAlt = $derived(normalizeOptionalString(image?.alt));
+  const requestedImageDecorative = $derived(
+    typeof image?.decorative === 'boolean' ? image.decorative : undefined
+  );
+  const imageDecorative = $derived(requestedImageDecorative ?? normalizedImageAlt.length === 0);
+  const imageProps = $derived.by((): ImageProps | undefined => {
+    if (!image || !normalizedImageSrc) {
+      return undefined;
+    }
+
+    return {
+      src: normalizedImageSrc,
+      srcset: image.srcset,
+      sizes: image.sizes,
+      alt: normalizedImageAlt,
+      decorative: imageDecorative,
+      width: image.width,
+      height: image.height,
+      loading: image.loading,
+      decoding: image.decoding,
+      fetchPriority: image.fetchPriority,
+      fallbackSrc: image.fallbackSrc,
+      fallbackSrcset: image.fallbackSrcset,
+      fallbackSizes: image.fallbackSizes,
+      fallbackAlt: image.fallbackAlt,
+      fallbackWidth: image.fallbackWidth,
+      fallbackHeight: image.fallbackHeight,
+      frame: 'ratio',
+      ratio: '3:2',
+      fit: 'cover',
+      radius: 'none',
+    };
+  });
 </script>
 
 <article class="standard-card">
-  <a {href} class="standard-card__surface" aria-label={title}>
-    <!-- State layer for hover/focus/pressed feedback -->
+  <a
+    href={normalizedHref}
+    target={normalizedTarget}
+    rel={normalizedRel}
+    class="standard-card__surface"
+    aria-label={linkAriaLabel}
+  >
     <div class="standard-card__state-layer" aria-hidden="true"></div>
 
-    <!-- Image container with 3:2 aspect ratio -->
-    {#if image}
-      <div class="standard-card__image-container">
-        <img src={image} alt={imageAlt} class="standard-card__image" />
+    {#if imageProps}
+      <div class="standard-card__media">
+        <Image {...imageProps} />
       </div>
-    {:else}
-      <div class="standard-card__image-container standard-card__image-container--placeholder" aria-hidden="true"></div>
     {/if}
 
-    <!-- Card content -->
     <div class="standard-card__content">
-      <p class="standard-card__kicker text-title-medium">{kicker}</p>
-      <h3 class="standard-card__title text-display-extra-small">{title}</h3>
-      <p class="standard-card__description text-body-small">{description}</p>
+      {#if hasKicker}
+        <p class="standard-card__kicker text-title-medium">{normalizedKicker}</p>
+      {/if}
 
-      <div class="standard-card__footer">
-        <p class="standard-card__date text-label-large">{date}</p>
-        <p class="standard-card__author text-title-small">{author}</p>
-      </div>
+      <svelte:element this={headingTag} class="standard-card__title text-display-extra-small">
+        {normalizedTitle}
+      </svelte:element>
+
+      {#if hasDescription}
+        <p class="standard-card__description text-body-small">{normalizedDescription}</p>
+      {/if}
+
+      {#if hasFooter}
+        <div class="standard-card__footer">
+          {#if hasDate}
+            {#if normalizedDateTime}
+              <time class="standard-card__date text-label-large" datetime={normalizedDateTime}>
+                {normalizedDate}
+              </time>
+            {:else}
+              <span class="standard-card__date text-label-large">
+                {normalizedDate}
+              </span>
+            {/if}
+          {/if}
+
+          {#if hasAuthor}
+            <p class="standard-card__author text-title-small">{normalizedAuthor}</p>
+          {/if}
+        </div>
+      {/if}
     </div>
   </a>
 </article>
@@ -73,8 +231,7 @@
     --card-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
     position: relative;
-    width: 100%;
-    max-width: 430px;
+    inline-size: 100%;
     container-type: inline-size;
     container-name: card;
   }
@@ -88,7 +245,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    width: 100%;
+    inline-size: 100%;
     background-color: var(--color-surface-container);
     color: var(--color-on-surface);
     border-radius: var(--radius-lg);
@@ -112,25 +269,13 @@
   }
 
   /* ========================================================================= */
-  /* Image Container (3:2 aspect ratio)                                        */
+  /* Card Media                                                                */
   /* ========================================================================= */
 
-  .standard-card__image-container {
+  .standard-card__media {
     position: relative;
-    width: 100%;
-    aspect-ratio: 3 / 2;
-    overflow: hidden;
-  }
-
-  .standard-card__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .standard-card__image-container--placeholder {
-    background: linear-gradient(135deg, var(--color-green-050) 0%, var(--color-green-060) 100%);
+    z-index: 1;
+    inline-size: 100%;
   }
 
   /* ========================================================================= */
@@ -144,7 +289,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-400);
-    width: 100%;
+    inline-size: 100%;
     padding: var(--space-600);
   }
 
@@ -154,21 +299,21 @@
 
   .standard-card__kicker {
     margin: 0;
-    width: 100%;
+    inline-size: 100%;
     color: var(--color-on-surface-dim);
     line-height: 1;
   }
 
   .standard-card__title {
     margin: 0;
-    width: 100%;
+    inline-size: 100%;
     color: var(--color-on-surface);
     transition: text-decoration-color var(--card-transition);
   }
 
   .standard-card__description {
     margin: 0;
-    width: 100%;
+    inline-size: 100%;
     color: var(--color-on-surface);
   }
 
@@ -176,18 +321,19 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-200);
-    width: 100%;
+    inline-size: 100%;
   }
 
   .standard-card__date {
+    display: block;
     margin: 0;
-    width: 100%;
+    inline-size: 100%;
     color: var(--color-on-surface);
   }
 
   .standard-card__author {
     margin: 0;
-    width: 100%;
+    inline-size: 100%;
     color: var(--color-on-surface-dim);
   }
 

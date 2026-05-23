@@ -2,44 +2,85 @@
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import type { ComponentProps } from 'svelte';
   import StandardCard from '../components/StandardCard.svelte';
+  import type { StandardCardImage } from '../components/StandardCard.svelte';
 
   type StandardCardArgs = ComponentProps<typeof StandardCard>;
 
   const imageSrc = '/assets/note-thanun-86_8M5BckfA-unsplash-1024.webp';
-  const imageAlt =
+  const defaultImageAlt =
     'Aerial view of Tokyo Tower painted in red and white, surrounded by modern skyscrapers in Tokyo, Japan under a clear blue sky.';
+  const headingLevelOptions = [1, 2, 3, 4, 5, 6] as const;
+  // Exercises StandardCard's runtime guard for non-typed callers.
+  const invalidRuntimeHeadingLevel = 0 as unknown as (typeof headingLevelOptions)[number];
 
-  const noRenderableSourceArgs = {
-    kicker: 'Kicker',
-    title: 'Card Title',
-    description: 'Card excerpt.',
-    date: 'Card Date',
-    author: 'Author',
-    image: '',
-    imageAlt: '',
-  } satisfies StandardCardArgs;
+  const defaultImage = {
+    src: imageSrc,
+    alt: defaultImageAlt,
+    width: 1024,
+    height: 683,
+  } satisfies StandardCardImage;
 
   const defaultArgs = {
-    ...noRenderableSourceArgs,
+    href: '/notes/designing-a-better-project-archive',
     kicker: 'Field Notes',
     title: 'Designing a better project archive',
     description: 'A compact card pattern for future article and project-summary surfaces.',
     date: '3 May 2026',
+    dateTime: '2026-05-03',
     author: 'Invisible Sloth',
-    image: imageSrc,
-    imageAlt,
+    image: defaultImage,
+  } satisfies StandardCardArgs;
+
+  const noImageArgs = {
+    ...defaultArgs,
+    href: '/notes/text-first-card-patterns',
+    kicker: 'No Image',
+    title: 'A text-first card can still feel intentional',
+    description:
+      'When no valid image source is available, the card removes the media block instead of reserving a placeholder.',
+    image: undefined,
+  } satisfies StandardCardArgs;
+
+  const minimalArgs = {
+    href: '/notes/minimal-summary-card',
+    title: 'Minimal summary card',
+    kicker: '   ',
+    description: '   ',
+    date: '   ',
+    dateTime: '   ',
+    author: '   ',
+    image: {
+      src: '   ',
+      alt: defaultImageAlt,
+    },
   } satisfies StandardCardArgs;
 
   const longContentArgs = {
-    ...noRenderableSourceArgs,
+    ...defaultArgs,
+    href: '/notes/component-stress-test',
     kicker: 'Component Stress Test',
     title: 'A much longer card title that wraps across multiple lines without breaking layout',
     description:
       'Longer supporting copy should keep the card readable while preserving the surface, footer, and image spacing across narrow and wide containers.',
-    date: '3 May 2026',
     author: 'Invisible Sloth Editorial',
-    image: imageSrc,
-    imageAlt,
+  } satisfies StandardCardArgs;
+
+  const dateWithoutDateTimeArgs = {
+    ...defaultArgs,
+    href: '/notes/human-readable-date-only',
+    title: 'Human-readable date without machine metadata',
+    date: 'Early May 2026',
+    dateTime: '',
+  } satisfies StandardCardArgs;
+
+  const externalTargetArgs = {
+    ...defaultArgs,
+    href: 'https://example.com/standard-card-contract',
+    target: '_blank',
+    title: 'External article summary target',
+    linkLabel: 'Read the external StandardCard contract note',
+    description:
+      'External blank-target links are normalized through the shared link helpers and receive hardened rel output.',
   } satisfies StandardCardArgs;
 
   const { Story } = defineMeta({
@@ -48,12 +89,25 @@
     tags: ['autodocs'],
     parameters: {
       controls: {
-        include: ['href', 'kicker', 'title', 'description', 'date', 'author', 'image', 'imageAlt'],
+        include: [
+          'href',
+          'target',
+          'rel',
+          'linkLabel',
+          'headingLevel',
+          'kicker',
+          'title',
+          'description',
+          'date',
+          'dateTime',
+          'author',
+          'image',
+        ],
       },
       docs: {
         description: {
           component:
-            'Provisional future-facing blog/article card. Phase 7 restores Storybook coverage without changing component behavior. Before live production use, review the `href` default, raw image path, placeholder behavior, and accessible-name behavior documented in the Phase 7 inventory. Use the Storybook viewport toolbar or browser resizing to inspect the card container-query typography.',
+            'Whole-card article/summary link. `href` and `title` are required and throw when blank. Parent layouts own outer width, StandardCard owns internal text treatment, shared link helpers normalize navigation, and Image owns media rendering after StandardCard confirms a non-empty image source.',
         },
       },
     },
@@ -61,35 +115,55 @@
     argTypes: {
       href: {
         control: 'text',
-        description: 'Card link URL. Current component default is "#".',
+        description: 'Required non-empty card link URL.',
+      },
+      target: {
+        control: 'text',
+        description: 'Optional link target. `_blank` links receive hardened rel output.',
+      },
+      rel: {
+        control: 'text',
+        description: 'Optional link rel value; security tokens are appended for `_blank` links.',
+      },
+      linkLabel: {
+        control: 'text',
+        description:
+          'Optional explicit accessible name. When omitted, the visible card contents name the link.',
+      },
+      headingLevel: {
+        control: { type: 'select' },
+        options: headingLevelOptions,
+        description: 'Semantic title heading level. Typography remains card-scoped.',
       },
       kicker: {
         control: 'text',
-        description: 'Small text above title.',
+        description: 'Optional small text above title.',
       },
       title: {
         control: 'text',
-        description: 'Card title/headline.',
+        description: 'Required non-empty card title/headline.',
       },
       description: {
         control: 'text',
-        description: 'Card excerpt/description.',
+        description: 'Optional card excerpt/description.',
       },
       date: {
         control: 'text',
-        description: 'Publication date rendered as provided.',
+        description:
+          'Optional human-readable publication date. Renders as `<time>` when dateTime is provided.',
+      },
+      dateTime: {
+        control: 'text',
+        description: 'Optional machine-readable datetime attribute for date.',
       },
       author: {
         control: 'text',
-        description: 'Author name rendered as provided.',
+        description: 'Optional author name rendered as plain text.',
       },
       image: {
-        control: 'text',
-        description: 'Optional image URL rendered with the component raw img path.',
-      },
-      imageAlt: {
-        control: 'text',
-        description: 'Alt text for the optional image.',
+        control: 'object',
+        description:
+          'Optional narrow image input. Layout treatment is card-owned; blank src removes the media block.',
       },
     },
   });
@@ -114,7 +188,7 @@
     docs: {
       description: {
         story:
-          'Default image-backed coverage using an existing public asset; no new coverage-only asset is added.',
+          'Default image-backed coverage using an existing public asset and the strict whole-card link contract.',
       },
     },
   }}
@@ -129,13 +203,34 @@
 </Story>
 
 <Story
-  name="No Renderable Source"
-  args={noRenderableSourceArgs}
+  name="No Image"
+  args={noImageArgs}
   parameters={{
     docs: {
       description: {
         story:
-          'Placeholder coverage. This intentionally omits `image` to exercise the current no-renderable-source/default `href` behavior.',
+          'No-image coverage. The media block is removed entirely, with no reserved top placeholder.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <div class="standard-card-story">
+      <div class="standard-card-story__frame">
+        <StandardCard {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Minimal"
+  args={minimalArgs}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Minimal valid card coverage. Blank optional metadata and blank image sources omit their nodes.',
       },
     },
   }}
@@ -157,6 +252,71 @@
       description: {
         story:
           'Stress coverage for longer title, description, date, and author content while keeping the representative image surface.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <div class="standard-card-story">
+      <div class="standard-card-story__frame">
+        <StandardCard {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Date Without DateTime"
+  args={dateWithoutDateTimeArgs}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Human-readable date coverage without machine-readable metadata; the date remains plain text instead of an invalid time element.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <div class="standard-card-story">
+      <div class="standard-card-story__frame">
+        <StandardCard {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story name="Semantic Heading Level" args={{ ...defaultArgs, headingLevel: 2 }}>
+  {#snippet template(args)}
+    <div class="standard-card-story">
+      <div class="standard-card-story__frame">
+        <StandardCard {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Invalid Heading Level Fallback"
+  args={{ ...defaultArgs, headingLevel: invalidRuntimeHeadingLevel }}
+>
+  {#snippet template(args)}
+    <div class="standard-card-story">
+      <div class="standard-card-story__frame">
+        <StandardCard {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="External Target"
+  args={externalTargetArgs}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'External `_blank` coverage with `linkLabel`. The rendered anchor should include hardened rel output.',
       },
     },
   }}
