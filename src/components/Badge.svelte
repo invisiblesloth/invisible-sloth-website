@@ -37,7 +37,7 @@
   });
 </script>
 
-<span class="badge {variantModifier}">
+<span class="badge {variantModifier}" title={label}>
   <span class="badge__label text-label-small-prominent">{label}</span>
 </span>
 
@@ -52,13 +52,13 @@
     justify-content: center;
     align-items: center;
     gap: var(--space-200);
+    box-sizing: border-box;
+    max-width: 100%;
 
     height: var(--space-600);
     padding: var(--space-50) var(--space-200);
     border-radius: var(--radius-xs);
 
-    /* Badge is non-interactive */
-    pointer-events: none;
   }
 
   /* ==========================================
@@ -127,6 +127,9 @@
      ========================================== */
 
   .badge__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
 </style>

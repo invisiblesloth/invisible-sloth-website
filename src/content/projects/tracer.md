@@ -5,7 +5,7 @@ order: 1
 badges:
   - label: "Apple Platforms"
     variant: "apple"
-  - label: "In Progress"
+  - label: "In Internal Testing"
     variant: "default"
 ---
 
