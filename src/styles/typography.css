@@ -237,6 +237,14 @@
     letter-spacing: var(--typography-body-large-letter-spacing);
   }
 
+  .text-body-large-tight {
+    font-family: var(--typography-body-large-family);
+    font-size: var(--typography-body-large-size);
+    font-weight: var(--typography-body-large-weight);
+    line-height: var(--typography-body-large-line-height-tight);
+    letter-spacing: var(--typography-body-large-letter-spacing);
+  }
+
   .text-body-large-prominent {
     font-family: var(--typography-body-large-family);
     font-size: var(--typography-body-large-size);
@@ -268,6 +276,14 @@
     font-size: var(--typography-body-medium-size);
     font-weight: var(--typography-body-medium-weight);
     line-height: var(--typography-body-medium-line-height);
+    letter-spacing: var(--typography-body-medium-letter-spacing);
+  }
+
+  .text-body-medium-tight {
+    font-family: var(--typography-body-medium-family);
+    font-size: var(--typography-body-medium-size);
+    font-weight: var(--typography-body-medium-weight);
+    line-height: var(--typography-body-medium-line-height-tight);
     letter-spacing: var(--typography-body-medium-letter-spacing);
   }
 
@@ -311,6 +327,40 @@
     font-weight: var(--typography-body-small-weight-prominent);
     line-height: var(--typography-body-small-line-height);
     letter-spacing: var(--typography-body-small-letter-spacing);
+  }
+
+  .text-body-responsive {
+    font-family: var(--typography-body-medium-family);
+    font-size: var(--typography-body-medium-size);
+    font-weight: var(--typography-body-medium-weight);
+    line-height: var(--typography-body-medium-line-height);
+    letter-spacing: var(--typography-body-medium-letter-spacing);
+  }
+
+  .text-body-responsive-tight {
+    font-family: var(--typography-body-medium-family);
+    font-size: var(--typography-body-medium-size);
+    font-weight: var(--typography-body-medium-weight);
+    line-height: var(--typography-body-medium-line-height-tight);
+    letter-spacing: var(--typography-body-medium-letter-spacing);
+  }
+
+  @media (min-width: 1015px) {
+    .text-body-responsive {
+      font-family: var(--typography-body-large-family);
+      font-size: var(--typography-body-large-size);
+      font-weight: var(--typography-body-large-weight);
+      line-height: var(--typography-body-large-line-height);
+      letter-spacing: var(--typography-body-large-letter-spacing);
+    }
+
+    .text-body-responsive-tight {
+      font-family: var(--typography-body-large-family);
+      font-size: var(--typography-body-large-size);
+      font-weight: var(--typography-body-large-weight);
+      line-height: var(--typography-body-large-line-height-tight);
+      letter-spacing: var(--typography-body-large-letter-spacing);
+    }
   }
 
   /* ==========================================

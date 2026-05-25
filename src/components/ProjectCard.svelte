@@ -85,11 +85,11 @@
       <p class="project-card__subhead text-headline-small">{subhead}</p>
     {/if}
     {#if children}
-      <div class="project-card__description text-body-medium">
+      <div class="project-card__description text-body-responsive">
         {@render children()}
       </div>
     {:else if fallbackDescription}
-      <p class="project-card__description text-body-medium">{fallbackDescription}</p>
+      <p class="project-card__description text-body-responsive">{fallbackDescription}</p>
     {/if}
   </div>
 
@@ -170,14 +170,4 @@
     margin-block: 0;
   }
 
-  /* Card-specific description treatment. */
-  @media (min-width: 1015px) {
-    .project-card__description {
-      font-family: var(--typography-body-large-family);
-      font-size: var(--typography-body-large-size);
-      font-weight: var(--typography-body-large-weight);
-      line-height: var(--typography-body-large-line-height);
-      letter-spacing: var(--typography-body-large-letter-spacing);
-    }
-  }
 </style>

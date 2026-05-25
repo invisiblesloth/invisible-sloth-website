@@ -55,15 +55,19 @@
       title: 'Body',
       items: [
         'text-body-large',
+        'text-body-large-tight',
         'text-body-large-prominent',
         'text-body-large-italic',
         'text-body-large-italic-prominent',
         'text-body-medium',
+        'text-body-medium-tight',
         'text-body-medium-prominent',
         'text-body-medium-italic',
         'text-body-medium-italic-prominent',
         'text-body-small',
         'text-body-small-prominent',
+        'text-body-responsive',
+        'text-body-responsive-tight',
       ],
     },
   ];
@@ -89,4 +93,3 @@
   {/each}
   
 </div>
-
