@@ -35,8 +35,8 @@
    * Whole-card navigation is required. Parent layouts own outer width and
    * placement; this component owns only its internal card presentation.
    *
-   * @prop {string} href - Required non-empty card link URL
-   * @prop {string} title - Required non-empty card title/headline
+   * @prop {string} href - Required non-empty card link URL, normalized through shared link helpers
+   * @prop {string} title - Required non-empty card title/headline, trimmed at the boundary
    * @prop {string} target - Optional link target
    * @prop {string} rel - Optional link rel; _blank links are hardened
    * @prop {string} linkLabel - Optional explicit accessible name for the card link
@@ -48,6 +48,7 @@
    * @prop {string} author - Optional author name rendered as plain text
    * @prop {StandardCardImage} image - Optional image input rendered through Image
    */
+  import { requireNonEmptyString } from '../lib/componentValidation';
   import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
 
   type Props = {
@@ -82,21 +83,15 @@
     image,
   }: Props = $props();
 
-  function normalizeRequiredString(value: unknown, propName: 'href' | 'title'): string {
-    const normalizedValue =
-      propName === 'href'
-        ? normalizeHref(typeof value === 'string' ? value : undefined)
-        : normalizeOptionalString(value);
-
-    if (!normalizedValue) {
-      throw new Error(`StandardCard requires a non-empty ${propName}.`);
-    }
-
-    return normalizedValue;
-  }
-
   function normalizeOptionalString(value: unknown): string {
     return typeof value === 'string' ? value.trim() : '';
+  }
+
+  function normalizeRequiredHref(value: unknown): string {
+    return requireNonEmptyString(normalizeHref(typeof value === 'string' ? value : undefined), {
+      componentName: 'StandardCard',
+      propName: 'href',
+    });
   }
 
   function normalizeNonEmptyString(value: unknown): string | undefined {
@@ -110,8 +105,10 @@
       : 3;
   }
 
-  const normalizedHref = $derived(normalizeRequiredString(href, 'href'));
-  const normalizedTitle = $derived(normalizeRequiredString(title, 'title'));
+  const normalizedHref = $derived(normalizeRequiredHref(href));
+  const normalizedTitle = $derived(
+    requireNonEmptyString(title, { componentName: 'StandardCard', propName: 'title' })
+  );
   const normalizedTarget = $derived<string | undefined>(normalizeTarget(target));
   const normalizedRel = $derived<string | undefined>(
     normalizeRelForTarget(normalizedTarget, typeof rel === 'string' ? rel : undefined)

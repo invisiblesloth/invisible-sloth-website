@@ -15,7 +15,7 @@
       docs: {
         description: {
           component:
-            'Email contact CTA surface. Parent composition owns placement and width constraints; wrap standalone usage in a rail/container when needed. `text` and `email` are trimmed at the boundary, and blank runtime values emit dev-only warnings. Migration note: every `<ContactUs />` usage must become `<ContactUs text="..." email="..." />`.',
+            'Email contact CTA surface. Parent composition owns placement and width constraints; wrap standalone usage in a rail/container when needed. `text` and `email` are required, trimmed at the boundary, and fail fast when blank; blank static values can fail the production build. Required controls remain editable, so blanking them may break the story canvas. Migration note: every `<ContactUs />` usage must become `<ContactUs text="..." email="..." />`.',
         },
       },
       controls: {
@@ -29,11 +29,12 @@
     argTypes: {
       text: {
         control: 'text',
-        description: 'Contact CTA copy that appears before the email link.',
+        description: 'Required contact CTA copy that appears before the email link.',
       },
       email: {
         control: 'text',
-        description: 'Email address used for both the visible label and mailto link.',
+        description:
+          'Required email address used for both the visible label and mailto link. Syntax validation is out of scope.',
       },
     },
   });

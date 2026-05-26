@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { warnOnce } from '../lib/devWarnings';
+  import { requireNonEmptyString } from '../lib/componentValidation';
 
   /**
    * Email contact CTA surface.
    * Parent composition owns placement and width constraints.
+   * Blank text or email values fail fast during SSR/build/render.
    *
    * Migration note: every `<ContactUs />` usage must become
    * `<ContactUs text="..." email="..." />`.
@@ -15,39 +16,21 @@
 
   let { text, email }: Props = $props();
 
-  function normalizeRequiredString(value: unknown): string {
-    return typeof value === 'string' ? value.trim() : '';
-  }
-
-  const normalizedText = $derived(normalizeRequiredString(text));
-  const normalizedEmail = $derived(normalizeRequiredString(email));
-  const emailHref = $derived(normalizedEmail ? `mailto:${normalizedEmail}` : undefined);
-
-  $effect(() => {
-    if (!normalizedText) {
-      warnOnce(
-        'contact-us:blank-text',
-        '[ContactUs] `text` must resolve to a non-empty string after trimming.'
-      );
-    }
-
-    if (!normalizedEmail) {
-      warnOnce(
-        'contact-us:blank-email',
-        '[ContactUs] `email` must resolve to a non-empty string after trimming. Skipping the email link.'
-      );
-    }
-  });
+  const normalizedText = $derived(
+    requireNonEmptyString(text, { componentName: 'ContactUs', propName: 'text' })
+  );
+  const normalizedEmail = $derived(
+    requireNonEmptyString(email, { componentName: 'ContactUs', propName: 'email' })
+  );
+  const emailHref = $derived(`mailto:${normalizedEmail}`);
 </script>
 
 <div class="contact-us">
   <p class="contact-us__text text-body-large">
-    {#if normalizedText}{normalizedText}{/if}
-    {#if normalizedEmail}
-      <a href={emailHref} class="contact-us__link text-link">
-        <span>{normalizedEmail}</span>
-      </a>
-    {/if}
+    {normalizedText}
+    <a href={emailHref} class="contact-us__link text-link">
+      <span>{normalizedEmail}</span>
+    </a>
   </p>
 </div>
 

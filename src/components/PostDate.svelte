@@ -5,12 +5,14 @@
  * Content-only publication date atom that renders preformatted,
  * human-readable metadata text inside a semantic <time> element.
  *
- * @prop {string} date - Required human-readable date text rendered as provided
+ * @prop {string} date - Required human-readable date text, trimmed at the boundary
  * @prop {string} dateTime - Optional machine-readable value mapped to the datetime attribute
  * @prop {string} class - Additional CSS classes for the root time element
  */
 -->
 <script lang="ts">
+  import { requireNonEmptyString } from '../lib/componentValidation';
+
   let {
     date,
     dateTime,
@@ -21,15 +23,9 @@
     class?: string;
   } = $props();
 
-  const validatedDate = $derived.by(() => {
-    const normalizedDate = String(date ?? '').trim();
-
-    if (normalizedDate.length === 0) {
-      throw new Error('PostDate requires a non-empty date.');
-    }
-
-    return normalizedDate;
-  });
+  const validatedDate = $derived(
+    requireNonEmptyString(date, { componentName: 'PostDate', propName: 'date' })
+  );
 
   const normalizedDateTime = $derived.by(() => {
     const value = String(dateTime ?? '').trim();

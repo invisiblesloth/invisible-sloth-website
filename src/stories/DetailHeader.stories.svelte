@@ -14,7 +14,7 @@
       docs: {
         description: {
           component:
-            'Content-only page/post detail header block with responsive title and excerpt typography.',
+            'Content-only page/post detail header block with responsive title and excerpt typography. `title` is required, trimmed at the boundary, and fails fast when blank; blanking the required control may break the story canvas.',
         },
       },
     },
@@ -25,7 +25,7 @@
     argTypes: {
       title: {
         control: 'text',
-        description: 'Required visible page title text.',
+        description: 'Required visible page title text, trimmed at the boundary.',
       },
       excerpt: {
         control: 'text',

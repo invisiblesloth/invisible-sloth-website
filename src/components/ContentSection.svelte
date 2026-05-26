@@ -8,7 +8,7 @@
  * Forwarded section attributes land on the root <section>. The heading and
  * body wrappers intentionally receive only component-owned attributes.
  *
- * @prop {string} heading - Required visible section heading text
+ * @prop {string} heading - Required visible section heading text, trimmed at the boundary
  * @prop {string} body - Optional plain-text fallback when no children snippet is provided
  * @prop {string} headingLevel - Semantic section heading level, h2-h6
  * @prop {string} visualLevel - Optional visual heading scale, h2-h6
@@ -19,6 +19,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import type { SvelteHTMLElements } from 'svelte/elements';
+  import { requireNonEmptyString } from '../lib/componentValidation';
   import { warnOnce } from '../lib/devWarnings';
   import Heading from './Heading.svelte';
 
@@ -47,15 +48,9 @@
     ...restProps
   }: Props = $props();
 
-  const normalizedHeading = $derived.by(() => {
-    const trimmedHeading = String(heading ?? '').trim();
-
-    if (trimmedHeading.length === 0) {
-      throw new Error('ContentSection requires a non-empty heading.');
-    }
-
-    return trimmedHeading;
-  });
+  const normalizedHeading = $derived(
+    requireNonEmptyString(heading, { componentName: 'ContentSection', propName: 'heading' })
+  );
 
   const normalizedBody = $derived(String(body ?? '').trim());
   const normalizedHeadingLevel = $derived(

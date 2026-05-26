@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { requireNonEmptyString } from '../lib/componentValidation';
+
   /**
    * Detail Header
    *
@@ -7,7 +9,7 @@
    * The title is intentionally hardcoded to h1 for page/detail-header-level use.
    * Nested-section reuse would need a separate heading-level API.
    *
-   * @prop {string} title - Required visible page title text
+   * @prop {string} title - Required visible page title text, trimmed at the boundary
    * @prop {string} excerpt - Optional supporting excerpt text
    * @prop {string} class - Additional CSS classes for the root wrapper
    */
@@ -23,13 +25,9 @@
     [key: string]: unknown;
   } = $props();
 
-  const validatedTitle = $derived.by(() => {
-    if (String(title ?? '').trim().length === 0) {
-      throw new Error('DetailHeader requires a non-empty title.');
-    }
-
-    return title;
-  });
+  const validatedTitle = $derived(
+    requireNonEmptyString(title, { componentName: 'DetailHeader', propName: 'title' })
+  );
 
   const hasExcerpt = $derived(String(excerpt ?? '').trim().length > 0);
   const detailHeaderClasses = $derived(['detail-header', className].filter(Boolean).join(' '));

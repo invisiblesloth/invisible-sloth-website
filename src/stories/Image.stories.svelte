@@ -7,6 +7,12 @@
     component: Image,
     tags: ['autodocs'],
     parameters: {
+      docs: {
+        description: {
+          component:
+            'Responsive image atom with declarative fallback support and runtime loading enhancement. Non-decorative images warn once in client development when Svelte resolves an empty rendered alt; the resolved alt may use fallbackAlt when the fallback is rendered declaratively.',
+        },
+      },
       controls: {
         exclude: [
           'srcset',
@@ -68,7 +74,8 @@
       },
       alt: {
         control: 'text',
-        description: 'Alternative text when image is not decorative.',
+        description:
+          'Alternative text when image is not decorative. Empty resolved alt warns once in client development.',
       },
       decorative: {
         control: 'boolean',
@@ -155,7 +162,8 @@
       },
       fallbackAlt: {
         control: 'text',
-        description: 'Alternative text for fallback imagery.',
+        description:
+          'Alternative text for fallback imagery. It may satisfy the resolved alt when the fallback is rendered declaratively.',
       },
       fallbackWidth: {
         control: 'number',

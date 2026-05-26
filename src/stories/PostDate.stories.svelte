@@ -14,7 +14,7 @@
       docs: {
         description: {
           component:
-            'Content-only publication-date atom that renders preformatted human-readable text inside a semantic time element with responsive title styling. Story wrappers provide page padding; parent compositions own vertical rhythm.',
+            'Content-only publication-date atom that renders trimmed human-readable text inside a semantic time element with responsive title styling. `date` is required and fails fast when blank; blanking the required control may break the story canvas. Story wrappers provide page padding; parent compositions own vertical rhythm.',
         },
       },
     },
@@ -25,7 +25,7 @@
     argTypes: {
       date: {
         control: 'text',
-        description: 'Required preformatted human-readable date text rendered as provided.',
+        description: 'Required human-readable date text, trimmed at the boundary.',
       },
       dateTime: {
         control: 'text',

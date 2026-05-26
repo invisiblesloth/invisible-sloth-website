@@ -43,7 +43,7 @@
       docs: {
         description: {
           component:
-            'Below-page content section with responsive body typography. Attributes forward to the root section; parent compositions own rails, placement, and section spacing.',
+            'Below-page content section with responsive body typography. `heading` is required, trimmed at the boundary, and fails fast when blank; blanking the required control may break the story canvas. Attributes forward to the root section; parent compositions own rails, placement, and section spacing.',
         },
       },
     },
@@ -55,7 +55,7 @@
     argTypes: {
       heading: {
         control: 'text',
-        description: 'Required non-empty visible section heading.',
+        description: 'Required non-empty visible section heading, trimmed at the boundary.',
       },
       body: {
         control: 'text',

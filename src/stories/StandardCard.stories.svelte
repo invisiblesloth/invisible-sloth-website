@@ -107,7 +107,7 @@
       docs: {
         description: {
           component:
-            'Whole-card article/summary link. `href` and `title` are required and throw when blank. Parent layouts own outer width, StandardCard owns internal text treatment, shared link helpers normalize navigation, and Image owns media rendering after StandardCard confirms a non-empty image source.',
+            'Whole-card article/summary link. `href` and `title` are required and fail fast when blank; blanking required controls may break the story canvas. Parent layouts own outer width, StandardCard owns internal text treatment, shared link helpers normalize navigation, and Image owns media rendering after StandardCard confirms a non-empty image source.',
         },
       },
     },
@@ -115,7 +115,7 @@
     argTypes: {
       href: {
         control: 'text',
-        description: 'Required non-empty card link URL.',
+        description: 'Required non-empty card link URL normalized through shared link helpers.',
       },
       target: {
         control: 'text',
@@ -141,7 +141,7 @@
       },
       title: {
         control: 'text',
-        description: 'Required non-empty card title/headline.',
+        description: 'Required non-empty card title/headline, trimmed at the boundary.',
       },
       description: {
         control: 'text',

@@ -5,6 +5,7 @@
     IMAGE_LOAD_STATES,
     IMAGE_LOADING_MODES,
   } from '../lib/imageEnhancementContract';
+  import { warnOnce } from '../lib/devWarnings';
 
   /**
    * Image atom for consistent media rendering across layouts.
@@ -19,6 +20,9 @@
    * Enhancement contract:
    * - Image owns SSR-safe inputs and the initial pending state.
    * - imageLoadingEnhancer owns runtime load state and fallback switching.
+   *
+   * Non-decorative images should resolve to meaningful alt text. The resolved
+   * alt may use fallbackAlt when the fallback is rendered declaratively.
    */
   type ImageFit = 'cover' | 'contain';
   type Frame = 'ratio' | 'auto' | 'clamped';
@@ -246,7 +250,8 @@
 
   $effect(() => {
     if (!decorative && resolvedAlt.trim().length === 0) {
-      console.warn(
+      warnOnce(
+        'image:missing-alt',
         '[Image] Non-decorative images should include meaningful alt text.'
       );
     }
