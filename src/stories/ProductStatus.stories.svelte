@@ -4,6 +4,9 @@
 
   const longStatusText =
     'Tracer is currently in private beta with a small group while the core timer, entry editing, and on-device data workflows are being tested.';
+  const defaultDetailText = 'Requires iPhone running iOS 26 or later.';
+  const longDetailText =
+    'Requires iPhone running iOS 26 or later while the private beta remains limited to a small testing group.';
   const longUnbrokenTokenText =
     'Tracer private beta reference: TracerPrivateBetaStatusSuperLongUnbrokenTokenThatShouldStillWrapInsideTheStatusPanelAtCompactWidthsWithoutEscapingTheCanvas.';
   const blankRuntimeText = '   ' as unknown as string;
@@ -15,23 +18,28 @@
     tags: ['autodocs'],
     parameters: {
       controls: {
-        include: ['text'],
+        include: ['text', 'detail'],
       },
       docs: {
         description: {
           component:
-            'Figma-aligned quiet product status panel for short product-page context. ProductStatus intentionally supports only `text` and `class`; use wrapper markup for demo or test hooks.',
+            'Figma-aligned quiet product status panel for short product-page context. ProductStatus intentionally supports only `text`, `detail`, and `class`; use wrapper markup for demo or test hooks.',
         },
       },
     },
     args: {
       text: 'Tracer is currently in private beta.',
+      detail: defaultDetailText,
     },
     argTypes: {
       text: {
         control: 'text',
         description:
           'Required visible status copy. Blank or non-string runtime values are guarded and render no DOM.',
+      },
+      detail: {
+        control: 'text',
+        description: 'Optional secondary status detail.',
       },
     },
   });
@@ -56,13 +64,15 @@
   name="Long Sentence"
   args={{
     text: longStatusText,
+    detail: longDetailText,
   }}
 />
 
 <Story
   name="Long Unbroken Token"
   args={{
-    text: longUnbrokenTokenText,
+    text: 'Tracer is currently in private beta.',
+    detail: longUnbrokenTokenText,
   }}
 />
 
