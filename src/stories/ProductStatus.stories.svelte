@@ -1,0 +1,115 @@
+<script module lang="ts">
+  import { defineMeta } from '@storybook/addon-svelte-csf';
+  import ProductStatus from '../components/ProductStatus.svelte';
+
+  const longStatusText =
+    'Tracer is currently in private beta with a small group while the core timer, entry editing, and on-device data workflows are being tested.';
+  const longUnbrokenTokenText =
+    'Tracer private beta reference: TracerPrivateBetaStatusSuperLongUnbrokenTokenThatShouldStillWrapInsideTheStatusPanelAtCompactWidthsWithoutEscapingTheCanvas.';
+  const blankRuntimeText = '   ' as unknown as string;
+  const nonStringRuntimeText = { text: 'Tracer is currently in private beta.' } as unknown as string;
+
+  const { Story } = defineMeta({
+    title: 'Molecules/ProductStatus',
+    component: ProductStatus,
+    tags: ['autodocs'],
+    parameters: {
+      controls: {
+        include: ['text'],
+      },
+      docs: {
+        description: {
+          component:
+            'Figma-aligned quiet product status panel for short product-page context. ProductStatus intentionally supports only `text` and `class`; use wrapper markup for demo or test hooks.',
+        },
+      },
+    },
+    args: {
+      text: 'Tracer is currently in private beta.',
+    },
+    argTypes: {
+      text: {
+        control: 'text',
+        description:
+          'Required visible status copy. Blank or non-string runtime values are guarded and render no DOM.',
+      },
+    },
+  });
+</script>
+
+<style>
+  .product-status-story__absence-check {
+    min-block-size: var(--space-1200);
+    padding: var(--space-300);
+    border: 1px dashed var(--color-outline);
+  }
+
+  .product-status-story__absence-label {
+    margin: 0 0 var(--space-300);
+    color: var(--color-on-surface-variant);
+  }
+</style>
+
+<Story name="Default" />
+
+<Story
+  name="Long Sentence"
+  args={{
+    text: longStatusText,
+  }}
+/>
+
+<Story
+  name="Long Unbroken Token"
+  args={{
+    text: longUnbrokenTokenText,
+  }}
+/>
+
+<Story
+  name="Blank Runtime Text (No DOM)"
+  args={{
+    text: blankRuntimeText,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Blank runtime text is guarded against and renders no ProductStatus DOM. This is not a supported TypeScript authoring shape.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <div class="product-status-story__absence-check" data-case="blank-text">
+      <p class="product-status-story__absence-label text-label-large">
+        Absence check: no ProductStatus DOM should render below.
+      </p>
+      <ProductStatus {...args} />
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Non-string Runtime Text (No DOM)"
+  args={{
+    text: nonStringRuntimeText,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Malformed non-string runtime text is guarded against and renders no ProductStatus DOM. This is not a supported TypeScript authoring shape.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <div class="product-status-story__absence-check" data-case="non-string-text">
+      <p class="product-status-story__absence-label text-label-large">
+        Absence check: no ProductStatus DOM should render below.
+      </p>
+      <ProductStatus {...args} />
+    </div>
+  {/snippet}
+</Story>
