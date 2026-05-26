@@ -26,7 +26,7 @@
 <script module lang="ts">
   import type { FigureMediaTreatment } from './Figure.svelte';
   import type { FigureCaptionContent } from './FigureCaption.svelte';
-  import type { HeaderImageProps } from './header/HeaderMediaSection.svelte';
+  import type { HeaderImageProps } from './internal/header/HeaderMediaSection.svelte';
   import type { PostAuthorItem } from '../lib/postAuthors';
   import type { TagLink } from '../lib/tagLinks';
 
@@ -45,10 +45,10 @@
 
 <script lang="ts">
   import DetailHeader from './DetailHeader.svelte';
-  import HeaderMediaSection from './header/HeaderMediaSection.svelte';
-  import HeaderRail from './header/HeaderRail.svelte';
-  import HeaderRoot from './header/HeaderRoot.svelte';
-  import HeaderTagSection from './header/HeaderTagSection.svelte';
+  import HeaderMediaSection from './internal/header/HeaderMediaSection.svelte';
+  import HeaderRail from './internal/header/HeaderRail.svelte';
+  import HeaderRoot from './internal/header/HeaderRoot.svelte';
+  import HeaderTagSection from './internal/header/HeaderTagSection.svelte';
   import PostAuthor from './PostAuthor.svelte';
   import PostDate from './PostDate.svelte';
   import { warnOnce } from '../lib/devWarnings';

@@ -1,6 +1,6 @@
 <script module lang="ts">
-  import type { FigureCaptionContent } from '../FigureCaption.svelte';
-  import type { FigureImageProps } from '../Figure.svelte';
+  import type { FigureCaptionContent } from '../../FigureCaption.svelte';
+  import type { FigureImageProps } from '../../Figure.svelte';
 
   export type HeaderImageProps = Omit<
     FigureImageProps,
@@ -13,9 +13,9 @@
 </script>
 
 <script lang="ts">
-  import Figure from '../Figure.svelte';
-  import type { FigureMediaTreatment } from '../Figure.svelte';
-  import { warnOnce } from '../../lib/devWarnings';
+  import Figure from '../../Figure.svelte';
+  import type { FigureMediaTreatment } from '../../Figure.svelte';
+  import { warnOnce } from '../../../lib/devWarnings';
   import HeaderRail from './HeaderRail.svelte';
 
   type RuntimeHeaderMedia = FigureCaptionContent & {

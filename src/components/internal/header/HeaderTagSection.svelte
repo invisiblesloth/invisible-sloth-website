@@ -5,8 +5,8 @@
    */
   import type { Snippet } from 'svelte';
   import HeaderRail from './HeaderRail.svelte';
-  import TagLinkGroup from '../TagLinkGroup.svelte';
-  import type { TagLink } from '../../lib/tagLinks';
+  import TagLinkGroup from '../../TagLinkGroup.svelte';
+  import type { TagLink } from '../../../lib/tagLinks';
 
   let {
     tags = [],

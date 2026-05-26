@@ -18,7 +18,7 @@
  */
 -->
 <script module lang="ts">
-  import type { HeaderMedia } from './header/HeaderMediaSection.svelte';
+  import type { HeaderMedia } from './internal/header/HeaderMediaSection.svelte';
   import type { TagLink } from '../lib/tagLinks';
 
   export type PageHeaderMedia = HeaderMedia;
@@ -27,10 +27,10 @@
 
 <script lang="ts">
   import DetailHeader from './DetailHeader.svelte';
-  import HeaderMediaSection from './header/HeaderMediaSection.svelte';
-  import HeaderRail from './header/HeaderRail.svelte';
-  import HeaderRoot from './header/HeaderRoot.svelte';
-  import HeaderTagSection from './header/HeaderTagSection.svelte';
+  import HeaderMediaSection from './internal/header/HeaderMediaSection.svelte';
+  import HeaderRail from './internal/header/HeaderRail.svelte';
+  import HeaderRoot from './internal/header/HeaderRoot.svelte';
+  import HeaderTagSection from './internal/header/HeaderTagSection.svelte';
 
   type Props = {
     title: string;
