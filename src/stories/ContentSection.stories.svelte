@@ -6,6 +6,31 @@
   // Exercises ContentSection's runtime guards for non-typed callers.
   const invalidRuntimeHeadingLevel = 'h1' as unknown as (typeof headingLevelOptions)[number];
   const invalidRuntimeVisualLevel = 'display-large' as unknown as (typeof headingLevelOptions)[number];
+  const richContentHtml = `
+    <p>
+      In the heart of the digital jungle, semantic body copy can include
+      <a href="https://invisiblesloth.com/">bare Markdown-style links</a>
+      while keeping normal responsive paragraph line-height.
+    </p>
+    <ul>
+      <li>Unordered list item one</li>
+      <li>Item 2 is long enough to demonstrate wrapping inside the section body.</li>
+      <li>List item number 3</li>
+    </ul>
+    <ol>
+      <li>Ordered list item one</li>
+      <li>Item 2 is long enough to demonstrate wrapping inside the section body.</li>
+      <li>List item number 3</li>
+    </ol>
+  `;
+  const longBareUrl =
+    'https://invisiblesloth.com/support/articles/SuperLongUnbrokenSupportReferenceThatShouldWrapInsideTheContentSectionAtCompactWidths';
+  const longBareUrlAnchorHtml = `
+    <p>
+      A bare anchor with a long URL should wrap without overflowing:
+      <a href="${longBareUrl}">${longBareUrl}</a>
+    </p>
+  `;
 
   const { Story } = defineMeta({
     title: 'Molecules/ContentSection',
@@ -51,13 +76,38 @@
 </script>
 
 <style>
-  .content-section-story {
+  :global(.content-section-story) {
     inline-size: 100%;
     padding-block: var(--space-section-block-sm);
   }
 
-  .content-section-story__rail {
+  :global(.content-section-story__rail) {
     inline-size: 100%;
+  }
+
+  :global(.content-section-story__custom-child) {
+    display: grid;
+    gap: var(--space-200);
+    inline-size: 100%;
+    max-inline-size: 32rem;
+    padding: var(--space-400);
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-container-low);
+  }
+
+  :global(.content-section-story__custom-child p) {
+    margin: 0;
+  }
+
+  :global(.content-section-story__custom-child button) {
+    justify-self: start;
+    padding: var(--space-100) var(--space-300);
+    border: 1px solid var(--color-outline);
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+    color: var(--color-on-surface);
+    font: inherit;
   }
 
   :global(.content-section-story__forwarded) {
@@ -65,24 +115,12 @@
   }
 </style>
 
-<Story name="Rich Content">
+<Story name="Rich Content" args={{ heading: 'Section Title' }}>
   {#snippet template(args)}
     <div class="content-section-story">
       <div class="rail rail--md rail--padded content-section-story__rail">
         <ContentSection {...args}>
-          <p>
-            Rich section content can include semantic paragraphs,
-            <a class="text-link" href="https://invisiblesloth.com/">inline links</a>,
-            and emphasized text.
-          </p>
-          <p>
-            The body wrapper owns responsive paragraph typography while callers keep normal
-            authoring semantics.
-          </p>
-          <ul>
-            <li>List items use the tight body line-height from the design tokens.</li>
-            <li>Marker spacing and indentation are owned by the section body.</li>
-          </ul>
+          {@html richContentHtml}
         </ContentSection>
       </div>
     </div>
@@ -94,6 +132,27 @@
     <div class="content-section-story">
       <div class="rail rail--md rail--padded content-section-story__rail">
         <ContentSection {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Slot Overrides Body"
+  args={{
+    heading: 'Slot content wins',
+    body: 'This fallback body should not render while slotted content is present.',
+  }}
+>
+  {#snippet template(args)}
+    <div class="content-section-story">
+      <div class="rail rail--md rail--padded content-section-story__rail">
+        <ContentSection {...args}>
+          <p>
+            This paragraph comes from the default slot and intentionally replaces the plain
+            body fallback.
+          </p>
+        </ContentSection>
       </div>
     </div>
   {/snippet}
@@ -152,6 +211,30 @@
 </Story>
 
 <Story
+  name="Ordered List Start And Reversed"
+  args={{
+    heading: 'Ordered list start and reversed',
+  }}
+>
+  {#snippet template(args)}
+    <div class="content-section-story">
+      <div class="rail rail--md rail--padded content-section-story__rail">
+        <ContentSection {...args}>
+          <ol start="4">
+            <li>Started ordered item four</li>
+            <li>Started ordered item five</li>
+          </ol>
+          <ol reversed start="3">
+            <li>Reversed ordered item three</li>
+            <li>Reversed ordered item two</li>
+          </ol>
+        </ContentSection>
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
   name="Nested Markdown Lists"
   args={{
     heading: 'Markdown-shaped list content',
@@ -202,6 +285,51 @@
     <div class="content-section-story">
       <div class="rail rail--md rail--padded content-section-story__rail">
         <ContentSection {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Long Bare Url Anchor"
+  args={{
+    heading: 'Long bare URL anchor wrapping',
+  }}
+>
+  {#snippet template(args)}
+    <div class="content-section-story">
+      <div class="rail rail--md rail--padded content-section-story__rail">
+        <ContentSection {...args}>
+          {@html longBareUrlAnchorHtml}
+        </ContentSection>
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Custom Child Boundary"
+  args={{
+    heading: 'Custom child boundary',
+  }}
+>
+  {#snippet template(args)}
+    <div class="content-section-story">
+      <div class="rail rail--md rail--padded content-section-story__rail">
+        <ContentSection {...args}>
+          <p>
+            Direct custom children participate in section spacing without inheriting rich-text
+            internals.
+          </p>
+          <div class="content-section-story__custom-child">
+            <p>
+              This embedded child owns its own paragraphs and
+              <a href="https://invisiblesloth.com/">unclassed internal link</a>.
+            </p>
+            <button type="button">Child-owned control</button>
+          </div>
+          <p>The next top-level body block resumes the section rhythm.</p>
+        </ContentSection>
       </div>
     </div>
   {/snippet}

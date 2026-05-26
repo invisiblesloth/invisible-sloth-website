@@ -24,7 +24,7 @@
 
   const SECTION_HEADING_LEVELS = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
 
-  type SectionHeadingLevel = 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  type SectionHeadingLevel = (typeof SECTION_HEADING_LEVELS)[number];
   type SectionAttributes = Omit<SvelteHTMLElements['section'], 'children' | 'class'>;
   const VALID_SECTION_HEADING_LEVELS = new Set<unknown>(SECTION_HEADING_LEVELS);
 
@@ -47,12 +47,14 @@
     ...restProps
   }: Props = $props();
 
-  const validatedHeading = $derived.by(() => {
-    if (String(heading ?? '').trim().length === 0) {
+  const normalizedHeading = $derived.by(() => {
+    const trimmedHeading = String(heading ?? '').trim();
+
+    if (trimmedHeading.length === 0) {
       throw new Error('ContentSection requires a non-empty heading.');
     }
 
-    return heading;
+    return trimmedHeading;
   });
 
   const normalizedBody = $derived(String(body ?? '').trim());
@@ -65,8 +67,9 @@
       : normalizeSectionHeadingLevel(visualLevel, normalizedHeadingLevel)
   );
   const hasBodyContent = $derived(Boolean(children) || normalizedBody.length > 0);
+  const normalizedClassName = $derived(String(className ?? '').trim());
   const contentSectionClasses = $derived(
-    ['content-section', className].filter(Boolean).join(' ')
+    ['content-section', normalizedClassName].filter(Boolean).join(' ')
   );
 
   function normalizeSectionHeadingLevel(
@@ -98,7 +101,7 @@
     class="content-section__heading"
     level={normalizedHeadingLevel}
     visualLevel={resolvedVisualLevel}
-    text={validatedHeading}
+    text={normalizedHeading}
   />
 
   {#if hasBodyContent}
@@ -106,7 +109,7 @@
       {#if children}
         {@render children()}
       {:else}
-        <p>{normalizedBody}</p>
+        <p class="content-section__body-fallback">{normalizedBody}</p>
       {/if}
     </div>
   {/if}
@@ -132,14 +135,21 @@
     overflow-wrap: break-word;
   }
 
-  .content-section__body > :global(:where(p, ul, ol, blockquote)) {
+  .content-section__body > :global(*) {
+    min-inline-size: 0;
+  }
+
+  .content-section__body > :global(:where(p, ul, ol)) {
     margin-block: 0;
     overflow-wrap: break-word;
   }
 
-  .content-section__body
-    > :global(:where(p, ul, ol, blockquote) + :where(p, ul, ol, blockquote)) {
-    margin-block-start: var(--space-gutter-tight);
+  .content-section__body > :global(* + *) {
+    margin-block-start: var(--space-gutter);
+  }
+
+  .content-section__body-fallback {
+    overflow-wrap: anywhere;
   }
 
   .content-section__body > :global(:where(ul, ol)) {
@@ -159,6 +169,10 @@
     line-height: var(--typography-body-medium-line-height-tight);
     padding-inline-start: var(--space-100);
     overflow-wrap: break-word;
+  }
+
+  .content-section__body > :global(:where(ul, ol) li + li) {
+    margin-block-start: var(--space-400);
   }
 
   .content-section__body > :global(:where(ul, ol) li::marker) {
@@ -197,6 +211,76 @@
 
   .content-section__body > :global(:where(ul, ol) li > p + :where(ul, ol)) {
     margin-block-start: var(--space-200);
+  }
+
+  .content-section__body > :global(p a:not([class])),
+  .content-section__body > :global(:where(ul, ol) a:not([class])) {
+    position: relative;
+    display: inline-block;
+    max-inline-size: 100%;
+    padding: 1px 6px;
+    margin: -1px -6px;
+    border-radius: var(--radius-full);
+    color: currentcolor;
+    font-weight: var(--font-weight-medium);
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: var(--text-link-underline, var(--color-link-underline-on-surface));
+    text-decoration-thickness: 0.12em;
+    text-decoration-skip-ink: none;
+    text-underline-offset: 0.125em;
+    outline: var(--focus-outline-width) solid transparent;
+    outline-offset: 0.125em;
+    overflow-wrap: anywhere;
+    transition: transform var(--animation-duration-extra-fast) var(--animation-easing-standard);
+    vertical-align: baseline;
+    will-change: transform;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .content-section__body > :global(p a:not([class]):focus-visible),
+  .content-section__body > :global(:where(ul, ol) a:not([class]):focus-visible) {
+    outline-color: var(--color-focus);
+    text-decoration: none;
+    transform: translate(0, 0);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .content-section__body > :global(p a:not([class]):where(:hover):not(:focus-visible)),
+    .content-section__body
+      > :global(:where(ul, ol) a:not([class]):where(:hover):not(:focus-visible)) {
+      text-decoration-color: currentcolor;
+    }
+
+    .content-section__body > :global(p a:not([class]):where(:active):not(:focus-visible)),
+    .content-section__body
+      > :global(:where(ul, ol) a:not([class]):where(:active):not(:focus-visible)) {
+      text-decoration-color: currentcolor;
+      transform: translateY(1px);
+    }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .content-section__body > :global(p a:not([class])),
+    .content-section__body > :global(:where(ul, ol) a:not([class])) {
+      text-decoration-color: currentcolor;
+    }
+
+    .content-section__body > :global(p a:not([class]):active:not(:focus-visible)),
+    .content-section__body > :global(:where(ul, ol) a:not([class]):active:not(:focus-visible)) {
+      transform: translateY(1px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .content-section__body > :global(p a:not([class])),
+    .content-section__body > :global(:where(ul, ol) a:not([class])),
+    .content-section__body > :global(p a:not([class]):where(:hover, :active, :focus-visible)),
+    .content-section__body
+      > :global(:where(ul, ol) a:not([class]):where(:hover, :active, :focus-visible)) {
+      transition: none;
+      transform: none;
+    }
   }
 
   @media (min-width: 1015px) {
