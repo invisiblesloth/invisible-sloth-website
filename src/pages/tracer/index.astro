@@ -1,0 +1,140 @@
+---
+import SiteChrome from "../../layouts/SiteChrome.astro";
+import Container from "../../components/Container.astro";
+import PageHeader from "../../components/PageHeader.svelte";
+import TextBlock from "../../components/TextBlock.svelte";
+import ProductStatus from "../../components/ProductStatus.svelte";
+import ContentSection from "../../components/ContentSection.svelte";
+import FeatureList from "../../components/FeatureList.svelte";
+import ProductSupport from "../../components/ProductSupport.svelte";
+import type { PageHeaderMedia } from "../../components/PageHeader.svelte";
+import type { FeatureListItem } from "../../components/FeatureList.svelte";
+import type { ProductSupportDocumentLink } from "../../components/ProductSupport.svelte";
+
+const pageTitle = "Tracer | Invisible Sloth";
+const pageDescription =
+  "Tracer is a simple, on-device time tracker for iPhone from Invisible Sloth.";
+const canonicalUrl = "https://invisiblesloth.com/tracer";
+
+const tracerPreviewMedia: PageHeaderMedia = {
+  image: {
+    src: "/assets/tracer-preview-activities-tracker-01.png",
+    srcset: [
+      "/assets/tracer-preview-activities-tracker-01-640.png 640w",
+      "/assets/tracer-preview-activities-tracker-01-1024.png 1024w",
+      "/assets/tracer-preview-activities-tracker-01-1512.png 1512w",
+      "/assets/tracer-preview-activities-tracker-01.png 3000w",
+    ].join(", "),
+    sizes:
+      "(min-width: 1176px) 1128px, (min-width: 1015px) calc(100vw - 96px), (min-width: 632px) calc(100vw - 64px), calc(100vw - 32px)",
+    alt: "Composite preview of the Tracer iPhone app activities list and running timer.",
+    width: 3000,
+    height: 2000,
+    loading: "eager",
+    fetchPriority: "high",
+  },
+  captionText: "Composite preview of Tracer; not an in-app screenshot.",
+};
+
+const tracerFeatures: FeatureListItem[] = [
+  {
+    title: "Keep everything on your iPhone.",
+    description:
+      "Your activities, entries, and notes stay on your device. Exporting or sharing is your call.",
+  },
+  {
+    title: "Run one timer at a time.",
+    description: "Starting a new activity automatically stops and saves the previous one.",
+  },
+  {
+    title: "Edit any time.",
+    description:
+      "Add notes, change start or end times, change the activity for an entry, or record time you forgot to track.",
+  },
+  {
+    title: "See totals by activity.",
+    description:
+      "Review the week or day chart, browse the log of recorded entries, and see totals for each activity over time.",
+  },
+];
+
+const supportDocuments: ProductSupportDocumentLink[] = [
+  {
+    label: "Tracer App Privacy Policy",
+    href: "/tracer/privacy",
+  },
+  {
+    label: "Tracer App Terms of Use",
+    href: "/tracer/terms",
+  },
+];
+---
+
+<SiteChrome
+  title={pageTitle}
+  description={pageDescription}
+  canonicalUrl={canonicalUrl}
+  activeHref="/tracer"
+>
+  <main class="site-main tracer-page">
+    <section class="tracer-page__section">
+      <PageHeader
+        title="Tracer"
+        excerpt="Simple, On-Device Time Tracking"
+        media={tracerPreviewMedia}
+      />
+
+      <Container size="sm" class="tracer-page__content-group">
+        <TextBlock>
+          <p>
+            Tracer is a small time tracker for iPhone. No sign-up, no account, no cloud
+            service. Create the activities you want to track, run one at a time, and edit
+            entries any time — add time you forgot, fix mistakes, or look back at how your
+            time was spent.
+          </p>
+          <p>
+            Tracer is built for people who want a straightforward record of their time
+            without joining another service or sharing their data.
+          </p>
+        </TextBlock>
+      </Container>
+
+      <ProductStatus
+        text="Tracer is currently in private beta."
+        detail="Requires iPhone running iOS 26 or later."
+      />
+
+      <Container size="sm" class="tracer-page__content-group">
+        <ContentSection heading="Features" headingLevel="h2" visualLevel="h2">
+          <FeatureList items={tracerFeatures} />
+        </ContentSection>
+      </Container>
+
+      <ProductSupport
+        id="support"
+        heading="Support"
+        emailPrompt="Have a question, found a bug, or want to send beta feedback? Email"
+        supportEmail="support@invisiblesloth.com"
+        supportDetail="Because Tracer keeps your data on your device, Invisible Sloth doesn't have access to your records. We can still help you troubleshoot and work through the options available on your phone."
+        documentsHeading="Tracer App Documents"
+        documents={supportDocuments}
+      />
+    </section>
+  </main>
+</SiteChrome>
+
+<style>
+  .tracer-page__section {
+    padding-block-start: var(--space-section-block);
+  }
+
+  :global(.tracer-page .tracer-page__content-group) {
+    padding-block-end: var(--space-section-block);
+  }
+
+  @media (min-width: 1176px) {
+    :global(.tracer-page .tracer-page__content-group) {
+      padding-inline: 0;
+    }
+  }
+</style>

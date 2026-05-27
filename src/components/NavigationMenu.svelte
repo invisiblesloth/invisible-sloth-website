@@ -11,6 +11,63 @@
     return typeof value === 'string' ? value.trim() || fallback : fallback;
   }
 
+  function normalizePathForActiveComparison(value?: string): string | undefined {
+    const href = normalizeHref(value);
+
+    if (!href || !href.startsWith('/') || href.startsWith('//')) {
+      return href;
+    }
+
+    const [pathname = ''] = href.split(/[?#]/);
+    return pathname.replace(/\/+$/, '') || '/';
+  }
+
+  function isPathHrefWithState(value: string): boolean {
+    return value.startsWith('/') && !value.startsWith('//') && /[?#]/.test(value);
+  }
+
+  function hasExactActiveNavigationItem(
+    activeValue: string | undefined,
+    menuSections: ResolvedNavigationSection[]
+  ): boolean {
+    const active = normalizeHref(activeValue);
+
+    if (!active) {
+      return false;
+    }
+
+    return menuSections.some((section) =>
+      section.items.some((item) => normalizeHref(item.href) === active)
+    );
+  }
+
+  function isActiveNavigationItem(
+    activeValue: string | undefined,
+    itemHref: string,
+    exactActiveMatchExists: boolean
+  ): boolean {
+    const active = normalizeHref(activeValue);
+    const item = normalizeHref(itemHref);
+
+    if (!active || !item) {
+      return false;
+    }
+
+    if (active === item) {
+      return true;
+    }
+
+    if (exactActiveMatchExists) {
+      return false;
+    }
+
+    if (isPathHrefWithState(item)) {
+      return false;
+    }
+
+    return normalizePathForActiveComparison(active) === normalizePathForActiveComparison(item);
+  }
+
   let {
     sections = [],
     activeHref = undefined,
@@ -34,6 +91,9 @@
 
   const resolvedSections = $derived<ResolvedNavigationSection[]>(
     resolveNavigationSections(sections)
+  );
+  const exactActiveMatchExists = $derived(
+    hasExactActiveNavigationItem(normalizedActiveHref, resolvedSections)
   );
 
   function handleNavigate(event: MouseEvent, item: ResolvedNavigationItem): void {
@@ -60,7 +120,11 @@
 
       <div class="navigation-menu__group">
         {#each section.items as item}
-          {@const isActive = normalizedActiveHref === item.href}
+          {@const isActive = isActiveNavigationItem(
+            normalizedActiveHref,
+            item.href,
+            exactActiveMatchExists
+          )}
           <a
             class="navigation-menu__item text-label-large"
             class:navigation-menu__item--active={isActive}

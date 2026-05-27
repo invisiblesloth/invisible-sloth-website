@@ -1,3 +1,44 @@
+<script module lang="ts">
+  export type ImageFit = 'cover' | 'contain';
+  export type ImageFrame = 'ratio' | 'auto' | 'clamped';
+  export type ImageAspectRatio = '3:2' | '2:3' | '1:1' | '16:9';
+  export type ImageRadius = 'none' | 'small' | 'medium' | 'large';
+  export type ImageLoadingMode = 'lazy' | 'eager';
+  export type ImageDecodingMode = 'auto' | 'sync' | 'async';
+  export type ImageFetchPriority = 'auto' | 'high' | 'low';
+  export type ImageContainSizing = 'intrinsic' | 'fill-inline';
+  export type ImageDimension = number | string;
+
+  export type ImageProps = {
+    src?: string;
+    srcset?: string;
+    sizes?: string;
+    alt?: string;
+    decorative?: boolean;
+    fit?: ImageFit;
+    frame?: ImageFrame;
+    ratio?: ImageAspectRatio;
+    minHeight?: string;
+    preferredHeight?: string;
+    maxHeight?: string;
+    objectPosition?: string;
+    radius?: ImageRadius;
+    containSizing?: ImageContainSizing;
+    loading?: ImageLoadingMode;
+    decoding?: ImageDecodingMode;
+    fetchPriority?: ImageFetchPriority;
+    width?: ImageDimension;
+    height?: ImageDimension;
+    fallbackSrc?: string;
+    fallbackSrcset?: string;
+    fallbackSizes?: string;
+    fallbackAlt?: string;
+    fallbackWidth?: ImageDimension;
+    fallbackHeight?: ImageDimension;
+    class?: string;
+  };
+</script>
+
 <script lang="ts">
   import {
     IMAGE_DECLARATIVE_MODES,
@@ -24,17 +65,7 @@
    * Non-decorative images should resolve to meaningful alt text. The resolved
    * alt may use fallbackAlt when the fallback is rendered declaratively.
    */
-  type ImageFit = 'cover' | 'contain';
-  type Frame = 'ratio' | 'auto' | 'clamped';
-  type AspectRatio = '3:2' | '2:3' | '1:1' | '16:9';
-  type Radius = 'none' | 'small' | 'medium' | 'large';
-  type LoadingMode = 'lazy' | 'eager';
-  type DecodingMode = 'auto' | 'sync' | 'async';
-  type FetchPriority = 'auto' | 'high' | 'low';
-  type ContainSizing = 'intrinsic' | 'fill-inline';
-  type ImageDimension = number | string;
-
-  const RATIO_MAP: Record<AspectRatio, string> = {
+  const RATIO_MAP: Record<ImageAspectRatio, string> = {
     '3:2': '3 / 2',
     '2:3': '2 / 3',
     '1:1': '1 / 1',
@@ -93,34 +124,7 @@
     fallbackWidth = DEFAULT_FALLBACK_WIDTH,
     fallbackHeight = DEFAULT_FALLBACK_HEIGHT,
     class: className = '',
-  }: {
-    src?: string;
-    srcset?: string;
-    sizes?: string;
-    alt?: string;
-    decorative?: boolean;
-    fit?: ImageFit;
-    frame?: Frame;
-    ratio?: AspectRatio;
-    minHeight?: string;
-    preferredHeight?: string;
-    maxHeight?: string;
-    objectPosition?: string;
-    radius?: Radius;
-    containSizing?: ContainSizing;
-    loading?: LoadingMode;
-    decoding?: DecodingMode;
-    fetchPriority?: FetchPriority;
-    width?: ImageDimension;
-    height?: ImageDimension;
-    fallbackSrc?: string;
-    fallbackSrcset?: string;
-    fallbackSizes?: string;
-    fallbackAlt?: string;
-    fallbackWidth?: ImageDimension;
-    fallbackHeight?: ImageDimension;
-    class?: string;
-  } = $props();
+  }: ImageProps = $props();
 
   const normalizedSrc = $derived(src.trim());
   const normalizedFallbackSrc = $derived(fallbackSrc.trim());

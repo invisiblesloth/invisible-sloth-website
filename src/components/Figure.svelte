@@ -18,10 +18,9 @@
  */
 -->
 <script module lang="ts">
-  import type { ComponentProps } from 'svelte';
-  import Image from './Image.svelte';
+  import Image, { type ImageProps } from './Image.svelte';
 
-  export type FigureImageProps = Omit<ComponentProps<typeof Image>, 'class'>;
+  export type FigureImageProps = Omit<ImageProps, 'class'>;
   export const FIGURE_MEDIA_TREATMENTS = [
     'default',
     'wide-contain',

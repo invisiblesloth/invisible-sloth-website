@@ -14,18 +14,101 @@ export interface Props {
   description?: string;
   canonicalUrl?: string;
   robots?: string;
+  activeHref?: string;
   navigationSections?: NavigationSection[];
 }
+
+const DEFAULT_NAVIGATION_SECTIONS: NavigationSection[] = [
+  {
+    items: [
+      { label: "Home", href: "/" },
+      { label: "Tracer", href: "/tracer" },
+    ],
+  },
+];
+const TRACER_NAVIGATION_HREF = "/tracer";
+
+const normalizeNavigationPath = (value?: string): string | undefined => {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return undefined;
+  }
+
+  let pathname = trimmed;
+
+  try {
+    pathname = new URL(trimmed, Astro.site ?? Astro.url).pathname;
+  } catch {
+    if (!trimmed.startsWith("/") || trimmed.startsWith("//")) {
+      return undefined;
+    }
+
+    pathname = trimmed;
+  }
+
+  return pathname.replace(/\/+$/, "") || "/";
+};
+
+const normalizeExplicitActiveHref = (value?: string): string | undefined => {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return undefined;
+  }
+
+  if (trimmed.startsWith("//")) {
+    return undefined;
+  }
+
+  if (trimmed.startsWith("/") && !/[?#]/.test(trimmed)) {
+    return normalizeNavigationPath(trimmed);
+  }
+
+  return trimmed;
+};
+
+const inferActiveHref = (pathname: string): string | undefined => {
+  const normalizedPathname = normalizeNavigationPath(pathname);
+
+  if (normalizedPathname === "/") {
+    return "/";
+  }
+
+  if (
+    normalizedPathname === TRACER_NAVIGATION_HREF ||
+    normalizedPathname?.startsWith(`${TRACER_NAVIGATION_HREF}/`)
+  ) {
+    return TRACER_NAVIGATION_HREF;
+  }
+
+  return undefined;
+};
 
 const {
   title,
   description,
   canonicalUrl,
   robots,
-  navigationSections = [],
+  activeHref,
+  navigationSections,
 } = Astro.props as Props;
-const resolvedNavigationSections = resolveNavigationSections(navigationSections);
+const effectiveNavigationSections =
+  navigationSections === undefined ? DEFAULT_NAVIGATION_SECTIONS : navigationSections;
+const resolvedNavigationSections = resolveNavigationSections(effectiveNavigationSections);
 const hasNavigation = resolvedNavigationSections.length > 0;
+const resolvedActiveHref =
+  activeHref === undefined
+    ? inferActiveHref(Astro.url.pathname)
+    : normalizeExplicitActiveHref(activeHref);
 ---
 
 <BaseLayout {title} {description} {canonicalUrl} {robots}>
@@ -33,6 +116,7 @@ const hasNavigation = resolvedNavigationSections.length > 0;
     hasNavigation ? (
       <SiteNavigation
         sections={resolvedNavigationSections}
+        activeHref={resolvedActiveHref}
         homeHref="/"
         client:idle
       >

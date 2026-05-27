@@ -1,8 +1,5 @@
 <script module lang="ts">
-  import type { ComponentProps } from 'svelte';
-  import Image from './Image.svelte';
-
-  type ImageProps = ComponentProps<typeof Image>;
+  import Image, { type ImageProps } from './Image.svelte';
 
   export type StandardCardImage = Pick<
     ImageProps,

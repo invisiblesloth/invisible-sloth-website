@@ -39,7 +39,6 @@
     padding-inline: var(--space-rail-inline);
   }
 
-  .header-rail--content,
   .header-rail--image {
     max-inline-size: var(--size-rail-lg);
   }
