@@ -1,0 +1,315 @@
+---
+import SiteChrome from "./SiteChrome.astro";
+import Container from "../components/Container.astro";
+
+type Frontmatter = {
+  title?: string;
+  description?: string;
+  canonicalUrl?: string;
+};
+
+const frontmatter = Astro.props.frontmatter as Frontmatter | undefined;
+const title = frontmatter?.title?.trim() || undefined;
+const description = frontmatter?.description?.trim() || undefined;
+const canonicalUrl = frontmatter?.canonicalUrl?.trim() || undefined;
+---
+
+<SiteChrome {title} {description} {canonicalUrl}>
+  <main class="site-main">
+    <section class="section">
+      <Container size="sm">
+        <article class="legal-document">
+          <slot />
+        </article>
+      </Container>
+    </section>
+  </main>
+</SiteChrome>
+
+<style>
+  .legal-document {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-gutter);
+    inline-size: 100%;
+    color: var(--color-on-background);
+    overflow-wrap: break-word;
+  }
+
+  .legal-document :global(
+    :where(
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        ul,
+        ol,
+        li,
+        blockquote,
+        hr,
+        a,
+        table,
+        th,
+        td,
+        .legal-document__table-scroll
+      )
+  ) {
+    min-inline-size: 0;
+  }
+
+  .legal-document :global(h1),
+  .legal-document :global(h2),
+  .legal-document :global(h3),
+  .legal-document :global(h4),
+  .legal-document :global(h5),
+  .legal-document :global(h6),
+  .legal-document :global(p),
+  .legal-document :global(ul),
+  .legal-document :global(ol),
+  .legal-document :global(blockquote),
+  .legal-document :global(hr),
+  .legal-document :global(.legal-document__table-scroll) {
+    inline-size: 100%;
+    margin: 0;
+  }
+
+  .legal-document :global(h1) {
+    font-family: var(--heading-h2-family);
+    font-size: var(--heading-h2-size);
+    font-weight: var(--heading-h2-weight);
+    line-height: var(--heading-h2-line-height);
+    letter-spacing: var(--heading-h2-letter-spacing);
+  }
+
+  .legal-document :global(h2) {
+    font-family: var(--heading-h4-family);
+    font-size: var(--heading-h4-size);
+    font-weight: var(--heading-h4-weight);
+    line-height: var(--heading-h4-line-height);
+    letter-spacing: var(--heading-h4-letter-spacing);
+  }
+
+  .legal-document :global(h3) {
+    font-family: var(--heading-h3-family);
+    font-size: var(--heading-h3-size);
+    font-weight: var(--heading-h3-weight);
+    line-height: var(--heading-h3-line-height);
+    letter-spacing: var(--heading-h3-letter-spacing);
+  }
+
+  .legal-document :global(h4) {
+    font-family: var(--heading-h4-family);
+    font-size: var(--heading-h4-size);
+    font-weight: var(--heading-h4-weight);
+    line-height: var(--heading-h4-line-height);
+    letter-spacing: var(--heading-h4-letter-spacing);
+  }
+
+  .legal-document :global(h5) {
+    font-family: var(--heading-h5-family);
+    font-size: var(--heading-h5-size);
+    font-weight: var(--heading-h5-weight);
+    line-height: var(--heading-h5-line-height);
+    letter-spacing: var(--heading-h5-letter-spacing);
+  }
+
+  .legal-document :global(h6) {
+    font-family: var(--heading-h6-family);
+    font-size: var(--heading-h6-size);
+    font-weight: var(--heading-h6-weight);
+    line-height: var(--heading-h6-line-height);
+    letter-spacing: var(--heading-h6-letter-spacing);
+  }
+
+  .legal-document :global(p),
+  .legal-document :global(ul),
+  .legal-document :global(ol),
+  .legal-document :global(table) {
+    font-family: var(--typography-body-medium-family);
+    font-size: var(--typography-body-medium-size);
+    font-weight: var(--typography-body-medium-weight);
+    line-height: var(--typography-body-medium-line-height);
+    letter-spacing: var(--typography-body-medium-letter-spacing);
+  }
+
+  .legal-document :global(ul),
+  .legal-document :global(ol) {
+    list-style-position: outside;
+    padding-inline-start: var(--space-600);
+  }
+
+  .legal-document :global(ul) {
+    list-style-type: disc;
+  }
+
+  .legal-document :global(ol) {
+    list-style-type: decimal;
+  }
+
+  .legal-document :global(li) {
+    padding-inline-start: var(--space-100);
+    overflow-wrap: break-word;
+  }
+
+  .legal-document :global(li + li) {
+    margin-block-start: var(--space-400);
+  }
+
+  .legal-document :global(li > p) {
+    margin-block: 0;
+  }
+
+  .legal-document :global(li > p + p),
+  .legal-document :global(li > p + ul),
+  .legal-document :global(li > p + ol),
+  .legal-document :global(li > ul),
+  .legal-document :global(li > ol) {
+    margin-block-start: var(--space-200);
+  }
+
+  .legal-document :global(li > ul),
+  .legal-document :global(li > ol) {
+    padding-inline-start: var(--space-600);
+  }
+
+  .legal-document :global(li > ul) {
+    list-style-type: circle;
+  }
+
+  .legal-document :global(li > ol) {
+    list-style-type: lower-alpha;
+  }
+
+  .legal-document :global(blockquote) {
+    padding-inline-start: var(--space-400);
+    border-inline-start: 2px solid var(--color-outline-variant);
+    color: var(--color-on-background-dim);
+  }
+
+  .legal-document :global(blockquote > :where(p, ul, ol)) {
+    margin-block: 0;
+  }
+
+  .legal-document :global(blockquote > * + *) {
+    margin-block-start: var(--space-400);
+  }
+
+  .legal-document :global(hr) {
+    border: 0;
+    border-block-start: 1px solid var(--color-outline-variant);
+    block-size: 0;
+  }
+
+  .legal-document :global(a) {
+    position: relative;
+    display: inline-block;
+    max-inline-size: 100%;
+    padding: 1px 6px;
+    margin: -1px -6px;
+    border-radius: var(--radius-full);
+    color: currentcolor;
+    font-weight: var(--font-weight-medium);
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: var(--text-link-underline, var(--color-link-underline-on-surface));
+    text-decoration-thickness: 0.12em;
+    text-decoration-skip-ink: none;
+    text-underline-offset: 0.125em;
+    outline: var(--focus-outline-width) solid transparent;
+    outline-offset: 0.125em;
+    overflow-wrap: anywhere;
+    transition: transform var(--animation-duration-extra-fast) var(--animation-easing-standard);
+    vertical-align: baseline;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .legal-document :global(a:focus-visible) {
+    outline-color: var(--color-focus);
+    text-decoration: none;
+    transform: translate(0, 0);
+  }
+
+  .legal-document :global(.legal-document__table-scroll) {
+    overflow-x: auto;
+    max-inline-size: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Markdown does not create a table wrapper; legal docs should wrap wide tables manually. */
+  .legal-document :global(table) {
+    inline-size: 100%;
+    min-inline-size: 36rem;
+    border-collapse: collapse;
+  }
+
+  .legal-document :global(thead) {
+    border-block-end: 2px solid var(--color-outline-variant);
+  }
+
+  .legal-document :global(th),
+  .legal-document :global(td) {
+    padding: var(--space-300);
+    border-block-end: 1px solid var(--color-outline-variant);
+    text-align: start;
+    vertical-align: top;
+  }
+
+  .legal-document :global(th) {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-on-background);
+  }
+
+  .legal-document :global(td) {
+    color: var(--color-on-background-dim);
+  }
+
+  .legal-document :global(tbody tr:last-child > :where(th, td)) {
+    border-block-end: 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .legal-document :global(a:where(:hover):not(:focus-visible)),
+    .legal-document :global(a:where(:active):not(:focus-visible)) {
+      text-decoration-color: currentcolor;
+    }
+
+    .legal-document :global(a:where(:active):not(:focus-visible)) {
+      transform: translateY(1px);
+    }
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .legal-document :global(a) {
+      text-decoration-color: currentcolor;
+    }
+
+    .legal-document :global(a:active:not(:focus-visible)) {
+      transform: translateY(1px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .legal-document :global(a),
+    .legal-document :global(a:where(:hover, :active, :focus-visible)) {
+      transition: none;
+      transform: none;
+    }
+  }
+
+  @media (min-width: 1015px) {
+    .legal-document :global(p),
+    .legal-document :global(ul),
+    .legal-document :global(ol),
+    .legal-document :global(table) {
+      font-family: var(--typography-body-large-family);
+      font-size: var(--typography-body-large-size);
+      font-weight: var(--typography-body-large-weight);
+      line-height: var(--typography-body-large-line-height);
+      letter-spacing: var(--typography-body-large-letter-spacing);
+    }
+  }
+</style>
