@@ -54,6 +54,22 @@
      Section headings and titles
      ========================================== */
 
+  .text-headline-extra-large {
+    font-family: var(--typography-headline-extra-large-family);
+    font-size: var(--typography-headline-extra-large-size);
+    font-weight: var(--typography-headline-extra-large-weight);
+    line-height: var(--typography-headline-extra-large-line-height);
+    letter-spacing: var(--typography-headline-extra-large-letter-spacing);
+  }
+
+  .text-headline-extra-large-prominent {
+    font-family: var(--typography-headline-extra-large-family);
+    font-size: var(--typography-headline-extra-large-size);
+    font-weight: var(--typography-headline-extra-large-weight-prominent);
+    line-height: var(--typography-headline-extra-large-line-height);
+    letter-spacing: var(--typography-headline-extra-large-letter-spacing);
+  }
+
   .text-headline-large {
     font-family: var(--typography-headline-large-family);
     font-size: var(--typography-headline-large-size);

@@ -49,6 +49,14 @@
      Section headings using Work Sans
      ========================================== */
 
+  /* Headline Extra Large */
+  --typography-headline-extra-large-family: var(--font-family-sans);
+  --typography-headline-extra-large-weight: var(--font-weight-regular);
+  --typography-headline-extra-large-weight-prominent: var(--font-weight-medium);
+  --typography-headline-extra-large-size: 38px;
+  --typography-headline-extra-large-line-height: 51px;
+  --typography-headline-extra-large-letter-spacing: -1.9px;
+
   /* Headline Large */
   --typography-headline-large-family: var(--font-family-sans);
   --typography-headline-large-weight: var(--font-weight-regular);

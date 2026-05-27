@@ -13,6 +13,7 @@ export interface Props {
   title?: string;
   description?: string;
   canonicalUrl?: string;
+  robots?: string;
   navigationSections?: NavigationSection[];
 }
 
@@ -20,13 +21,14 @@ const {
   title,
   description,
   canonicalUrl,
+  robots,
   navigationSections = [],
 } = Astro.props as Props;
 const resolvedNavigationSections = resolveNavigationSections(navigationSections);
 const hasNavigation = resolvedNavigationSections.length > 0;
 ---
 
-<BaseLayout {title} {description} {canonicalUrl}>
+<BaseLayout {title} {description} {canonicalUrl} {robots}>
   {
     hasNavigation ? (
       <SiteNavigation

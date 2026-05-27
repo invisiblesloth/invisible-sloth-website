@@ -1,0 +1,105 @@
+---
+import SiteChrome from "../layouts/SiteChrome.astro";
+import Container from "../components/Container.astro";
+import Heading from "../components/Heading.svelte";
+import Button from "../components/Button.svelte";
+
+// Astro dev/SSR contexts can emit a 404 status; static hosts must serve 404.html.
+Astro.response.status = 404;
+---
+
+<SiteChrome
+  title="Page not found | Invisible Sloth"
+  description="The page you’re looking for isn’t available."
+  robots="noindex, nofollow, noai, noimageai"
+>
+  <main class="site-main not-found">
+    <section class="section not-found__section">
+      <Container size="lg">
+        <div class="not-found__container">
+          <div class="not-found__content">
+            <p class="not-found__eyebrow text-headline-large" aria-hidden="true">404</p>
+
+            <div class="not-found__copy">
+              <Heading level="h1" text="Page not found" class="not-found__heading" />
+              <p class="not-found__body text-body-responsive">
+                The page you’re looking for isn’t available. Head back home to keep browsing
+                Invisible Sloth projects.
+              </p>
+            </div>
+
+            <div class="not-found__actions">
+              <Button href="/" label="Go home" />
+            </div>
+          </div>
+        </div>
+      </Container>
+    </section>
+  </main>
+</SiteChrome>
+
+<style>
+  .not-found {
+    display: grid;
+    place-content: center;
+  }
+
+  .not-found__section {
+    width: 100%;
+  }
+
+  .not-found__container {
+    box-sizing: border-box;
+    display: grid;
+    justify-items: center;
+    inline-size: 100%;
+  }
+
+  .not-found__content {
+    box-sizing: border-box;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-gutter);
+    inline-size: 100%;
+    text-align: center;
+  }
+
+  .not-found__eyebrow {
+    margin: 0;
+    color: var(--color-on-surface-dim);
+  }
+
+  @media (min-width: 1015px) {
+    .not-found__eyebrow {
+      font-family: var(--typography-headline-extra-large-family);
+      font-size: var(--typography-headline-extra-large-size);
+      font-weight: var(--typography-headline-extra-large-weight);
+      line-height: var(--typography-headline-extra-large-line-height);
+      letter-spacing: var(--typography-headline-extra-large-letter-spacing);
+    }
+  }
+
+  .not-found__copy {
+    display: grid;
+    gap: var(--space-gutter-tight);
+    justify-items: center;
+    inline-size: 100%;
+  }
+
+  .not-found__heading {
+    inline-size: 100%;
+    text-align: center;
+  }
+
+  .not-found__body {
+    max-inline-size: 42rem;
+    margin: 0;
+    color: var(--color-on-background-dim);
+    overflow-wrap: break-word;
+  }
+
+  .not-found__actions {
+    display: flex;
+    justify-content: center;
+  }
+</style>

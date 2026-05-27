@@ -19,6 +19,8 @@
     {
       title: 'Headline',
       items: [
+        'text-headline-extra-large',
+        'text-headline-extra-large-prominent',
         'text-headline-large',
         'text-headline-large-prominent',
         'text-headline-medium',
