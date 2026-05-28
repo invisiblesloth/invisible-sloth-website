@@ -31,7 +31,7 @@
       docs: {
         description: {
           component:
-            'Button primitive with label and icon-only shapes. Snippets are decorative glyphs only; do not pass nested interactive controls, focusable SVGs, or activation handlers. Migration note: `on:click` removed, use `onclick`.',
+            'Strict control primitive with label and icon-only shapes. Button forwards only allowlisted safe/native attributes from rest props; `class`, `style`, ARIA naming overrides, and activation-adjacent rest-event handlers are stripped. Activation is exposed through the explicit `onclick` prop, while touch and key activation handlers are component-owned or stripped. Non-activation focus/hover events may be allowlisted. Snippets are decorative glyphs only; do not pass nested interactive controls, focusable SVGs, or activation handlers. Migration note: Svelte `on:click` was removed; pass `onclick`.',
         },
       },
       controls: {
@@ -116,6 +116,14 @@
           type: { summary: 'string' },
           defaultValue: { summary: 'undefined' },
         },
+      },
+      class: {
+        control: false,
+        description: 'Not forwarded. Use Button variants and design tokens instead.',
+      },
+      style: {
+        control: false,
+        description: 'Not forwarded. Use Button variants and design tokens instead.',
       },
     },
   });
@@ -322,7 +330,7 @@
     docs: {
       description: {
         story:
-          '`id`, safe ARIA/data attributes, non-activation focus/hover events, and mode-specific native attributes are forwarded. `class`, `style`, ARIA naming overrides, and activation-adjacent events are stripped.',
+          '`id`, safe ARIA/data attributes, non-activation focus/hover events, and mode-specific native attributes are forwarded. `class`, `style`, ARIA naming overrides, and activation-adjacent rest-event handlers are stripped; activation is exposed through the explicit `onclick` prop.',
       },
     },
   }}

@@ -8,6 +8,8 @@
    *
    * The title is intentionally hardcoded to h1 for page/detail-header-level use.
    * Nested-section reuse would need a separate heading-level API.
+   * Existing broader root forwarding is part of the public root-hook contract:
+   * class and rest props land on the root <div>.
    *
    * @prop {string} title - Required visible page title text, trimmed at the boundary
    * @prop {string} excerpt - Optional supporting excerpt text
@@ -33,7 +35,7 @@
   const detailHeaderClasses = $derived(['detail-header', className].filter(Boolean).join(' '));
 </script>
 
-<div class={detailHeaderClasses} {...restProps}>
+<div {...restProps} class={detailHeaderClasses}>
   <h1 class="detail-header__title heading-h1">{validatedTitle}</h1>
 
   {#if hasExcerpt}

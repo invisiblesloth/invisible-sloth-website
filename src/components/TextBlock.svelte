@@ -7,6 +7,7 @@
  *
  * Forwarded div attributes land on the root <div>. Slotted children win over
  * the plain body fallback.
+ * Existing broader root forwarding is part of the public root-hook contract.
  *
  * @prop {string} body - Optional plain-text fallback when no children snippet is provided
  * @prop {Snippet} children - Optional rich body content; wins over body when provided

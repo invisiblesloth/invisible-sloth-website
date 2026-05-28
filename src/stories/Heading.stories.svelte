@@ -6,6 +6,17 @@
     title: 'Molecules/Heading',
     component: Heading,
     tags: ['autodocs'],
+    parameters: {
+      controls: {
+        include: ['level', 'visualLevel', 'text'],
+      },
+      docs: {
+        description: {
+          component:
+            'Native-ish heading primitive. Typed/native root attributes forward to the rendered h1-h6 element; `class` is appended for hooks/layout selectors while typography remains owned by heading utilities.',
+        },
+      },
+    },
     argTypes: {
       level: {
         control: 'select',
@@ -33,6 +44,11 @@
           type: { summary: 'string' },
           defaultValue: { summary: 'undefined' },
         },
+      },
+      class: {
+        control: false,
+        description:
+          'Optional rendered-heading class hook for layout hooks, global utilities, and global selectors.',
       },
     },
   });

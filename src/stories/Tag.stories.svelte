@@ -12,6 +12,12 @@
       controls: {
         include: ['label', 'href', 'target', 'rel', 'type', 'onclick'],
       },
+      docs: {
+        description: {
+          component:
+            'Grandfathered broad interactive primitive. Tag keeps its existing broader forwarding contract for compatibility, including root `class`, `style`, safe global/native attributes, ARIA/data attributes, and broad `on*` events while switching between `<a>` and `<button>` modes. New interactive primitives should not copy this model by default.',
+        },
+      },
     },
     argTypes: {
       onclick: { action: 'onclick called' },
@@ -38,6 +44,16 @@
         control: 'select',
         options: ['button', 'submit', 'reset'],
         description: 'Button type used when href is not provided',
+      },
+      class: {
+        control: false,
+        description:
+          'Forwarded to the root anchor/button for compatibility, but not exposed as a theming control.',
+      },
+      style: {
+        control: false,
+        description:
+          'Forwarded to the root anchor/button for compatibility, but not exposed as a theming control.',
       },
     },
     args: {

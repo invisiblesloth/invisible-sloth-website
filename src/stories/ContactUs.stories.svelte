@@ -17,7 +17,7 @@
       docs: {
         description: {
           component:
-            'Email contact CTA surface. Parent composition owns placement and width constraints; wrap standalone usage in a rail/container when needed. `text` and `email` are required, trimmed at the boundary, and fail fast when blank; blank static values can fail the production build. Required controls remain editable, so blanking them may break the story canvas. Migration note: every `<ContactUs />` usage must become `<ContactUs text="..." email="..." />`.',
+            'Email contact CTA surface. Parent composition owns placement and width constraints; wrap standalone usage in a rail/container when needed. `text` and `email` are required, trimmed at the boundary, and fail fast when blank; blank static values can fail the production build. The root `class` hook lands on the root div for layout/global selectors only. Required controls remain editable, so blanking them may break the story canvas. Migration note: every `<ContactUs />` usage must become `<ContactUs text="..." email="..." />`.',
         },
       },
       controls: {
@@ -38,9 +38,21 @@
         description:
           'Required email address used for both the visible label and mailto link. Syntax validation is out of scope.',
       },
+      class: {
+        control: false,
+        description:
+          'Optional root div class hook for layout hooks, global utilities, and global selectors.',
+      },
     },
   });
 </script>
+
+<style>
+  :global(.contact-us-story__root-hook) {
+    outline: 1px dashed var(--color-outline);
+    outline-offset: var(--space-100);
+  }
+</style>
 
 <Story name="Default">
   {#snippet template(args)}
@@ -74,6 +86,24 @@
   {#snippet template(args)}
     <div class="rail rail--md rail--padded">
       <ContactUs {...args} />
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Root Class Hook"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Marker-only coverage: the class lands on the root div for layout/global selectors and is not a theming API.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <div class="rail rail--md rail--padded">
+      <ContactUs {...args} class="contact-us-story__root-hook" />
     </div>
   {/snippet}
 </Story>

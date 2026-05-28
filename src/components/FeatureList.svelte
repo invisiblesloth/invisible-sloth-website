@@ -65,6 +65,8 @@
    *
    * Structured feature copy list for use inside ContentSection. Owns runtime
    * item validation and quiet, token-driven list presentation.
+   * Existing broader root forwarding is part of the public root-hook contract:
+   * list attributes land on the root <ul>.
    *
    * @prop {FeatureListItem[]} items - Feature entries with non-empty title and description
    * @prop {string} class - Additional classes merged onto the root list

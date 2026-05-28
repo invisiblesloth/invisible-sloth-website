@@ -50,7 +50,7 @@
       docs: {
         description: {
           component:
-            'Semantic figure composition of Image + FigureCaption. The default treatment preserves the full image with auto-height contain behavior; use featured-art for non-cropped designed media and featured-cover only for intentional photo cropping. Featured media keeps the standard Image corner radius. A Figure requires a non-empty primary imageProps.src; Image owns broken-source fallback behavior. imageProps.class is unsupported; use the root class prop for styling hooks. Parent compositions own any caption measure constraints.',
+            'Semantic figure composition of Image + FigureCaption. The default treatment preserves the full image with auto-height contain behavior; use featured-art for non-cropped designed media and featured-cover only for intentional photo cropping. Featured media keeps the standard Image corner radius. A Figure requires a non-empty primary imageProps.src; Image owns broken-source fallback behavior. imageProps.class is unsupported; use the root class prop for layout hooks, global utilities, and global selectors. Parent compositions own any caption measure constraints.',
         },
       },
     },
@@ -97,9 +97,8 @@
       },
       class: {
         control: false,
-        table: {
-          disable: true,
-        },
+        description:
+          'Optional root figure class hook for layout hooks, global utilities, and global selectors.',
       },
     },
   });

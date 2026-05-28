@@ -107,7 +107,7 @@
       docs: {
         description: {
           component:
-            'Whole-card article/summary link. `href` and `title` are required and fail fast when blank; blanking required controls may break the story canvas. Parent layouts own outer width, StandardCard owns internal text treatment, shared link helpers normalize navigation, and Image owns media rendering after StandardCard confirms a non-empty image source.',
+            'Whole-card article/summary link. `href` and `title` are required and fail fast when blank; blanking required controls may break the story canvas. Parent layouts own outer width, StandardCard owns internal text treatment, shared link helpers normalize navigation, and Image owns media rendering after StandardCard confirms a non-empty image source. The root `class` hook lands on the root article for layout/global selectors only.',
         },
       },
     },
@@ -165,6 +165,11 @@
         description:
           'Optional narrow image input. Layout treatment is card-owned; blank src removes the media block.',
       },
+      class: {
+        control: false,
+        description:
+          'Optional root article class hook for layout hooks, global utilities, and global selectors.',
+      },
     },
   });
 </script>
@@ -178,6 +183,11 @@
 
   .standard-card-story__frame {
     inline-size: min(100%, 430px);
+  }
+
+  :global(.standard-card-story__root-hook) {
+    outline: 1px dashed var(--color-outline);
+    outline-offset: var(--space-100);
   }
 </style>
 
@@ -325,6 +335,27 @@
     <div class="standard-card-story">
       <div class="standard-card-story__frame">
         <StandardCard {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Root Class Hook"
+  args={defaultArgs}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Marker-only coverage: the class lands on the root article for layout/global selectors and is not a theming API.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <div class="standard-card-story">
+      <div class="standard-card-story__frame">
+        <StandardCard {...args} class="standard-card-story__root-hook" />
       </div>
     </div>
   {/snippet}

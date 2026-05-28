@@ -4,6 +4,8 @@
    *
    * Wraps tags with consistent internal row and column gaps. Parent
    * compositions own outer vertical spacing and padding.
+   * Existing broader root forwarding is part of the public root-hook contract:
+   * class and rest props land on the root <div>.
    */
   import type { Snippet } from 'svelte';
 
@@ -20,7 +22,7 @@
   const groupClasses = $derived(['tag-group', className].filter(Boolean).join(' '));
 </script>
 
-<div class={groupClasses} {...restProps}>
+<div {...restProps} class={groupClasses}>
   {@render children?.()}
 </div>
 

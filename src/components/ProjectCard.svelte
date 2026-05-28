@@ -14,6 +14,7 @@
     badges?: ProjectBadge[];
     button?: ProjectButton;
     children?: Snippet;
+    class?: string;
   };
 </script>
 
@@ -28,6 +29,8 @@
    * - Compact and medium viewports use the base card typography.
    * - Extended viewports use larger card-specific typography.
    * Outer width and rail behavior belong to the parent layout/surface.
+   * Root-hook component: `class` is appended to the root <div> for
+   * layout hooks, global utilities, and global selectors.
    *
    * @prop {string} title - Project name/title
    * @prop {string} subhead - Project subheading
@@ -36,6 +39,7 @@
    * @prop {ProjectButton} button - Optional link CTA
    * @prop {Array} badges - Array of badge objects with variant and label
    * @prop {Snippet} children - Rich description content, usually rendered from Astro Markdown
+   * @prop {string} class - Additional classes appended to the root div
    */
   import Button from './Button.svelte';
   import BadgeGroup from './BadgeGroup.svelte';
@@ -55,6 +59,7 @@
     badges = [],
     button,
     children,
+    class: className = '',
   }: ProjectCardProps = $props();
 
   function normalizeHeadingLevel(value: unknown): HeadingLevel {
@@ -68,13 +73,17 @@
   const resolvedHeadingLevel = $derived(normalizeHeadingLevel(headingLevel));
   const headingTag = $derived(`h${resolvedHeadingLevel}` as HeadingTag);
   const showsExternalCtaIcon = $derived(Boolean(button && isExternalAbsoluteHttpUrl(button.href)));
+  const normalizedClassName = $derived(String(className ?? '').trim());
+  const projectCardClasses = $derived(
+    ['project-card', normalizedClassName].filter(Boolean).join(' ')
+  );
 </script>
 
 {#snippet externalLinkIcon()}
   <ExternalLink />
 {/snippet}
 
-<div class="project-card">
+<div class={projectCardClasses}>
   {#if hasBadges}
     <div class="project-card__badge-group">
       <BadgeGroup>

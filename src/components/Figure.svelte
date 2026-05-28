@@ -5,7 +5,7 @@
  *
  * API note:
  * - Figure v1 intentionally does not forward arbitrary root figure attributes.
- * - Use `class` for root-level styling hooks.
+ * - Use `class` for root-level layout hooks, global utilities, and global selectors.
  * - `imageProps.class` is unsupported; Figure owns Image styling internally.
  * - The default and featured-art treatments preserve the full image and rely on
  *   Image for corner radius defaults; use featured-cover only for intentional

@@ -82,7 +82,7 @@
       docs: {
         description: {
           component:
-            'Self-contained product support section with a Figma-aligned rail, support contact copy, and document links. Required strings and document links fail fast when blank or malformed. Email syntax validation is out of scope. Default heading structure is h2 then h3; callers using a different page hierarchy should set both heading levels intentionally.',
+            'Self-contained product support section with a Figma-aligned rail, support contact copy, and document links. Required strings and document links fail fast when blank or malformed. Email syntax validation is out of scope. Existing broader root forwarding is public: section attributes land on the root section. Default heading structure is h2 then h3; callers using a different page hierarchy should set both heading levels intentionally.',
         },
       },
     },
@@ -125,6 +125,11 @@
         options: documentsHeadingLevelOptions,
         description:
           'Semantic heading level for the documents heading. Defaults independently to h3.',
+      },
+      class: {
+        control: false,
+        description:
+          'Optional root section class hook; existing broader section attributes also forward to the root.',
       },
     },
   });

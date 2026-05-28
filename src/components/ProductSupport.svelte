@@ -64,6 +64,7 @@
    * Self-contained product support section with a Figma-aligned rail, support
    * contact copy, and document links. Required primary content fails fast.
    * Forwarded section attributes land on the root <section>.
+   * Existing broader root forwarding is part of the public root-hook contract.
    *
    * Default heading structure is h2 then h3. Callers using a different page
    * hierarchy should set both heading levels intentionally.

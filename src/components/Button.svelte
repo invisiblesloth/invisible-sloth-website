@@ -68,6 +68,13 @@
   /**
    * Button component with lift-and-reveal hover effect
    *
+   * Strict control escape hatch: only allowlisted safe/native attributes from
+   * rest props are forwarded. Button does not forward `class`, `style`, ARIA
+   * naming overrides, or activation-adjacent rest-event handlers. Activation is
+   * exposed through the explicit `onclick` prop, while touch and key activation
+   * handlers are component-owned or stripped. Non-activation focus/hover events
+   * may be allowlisted.
+   *
    * @prop {string} variant - Button style variant (default: 'filled-primary')
    * @prop {string} shape - Button shape (default: 'label'); use 'icon' for icon-only controls
    * @prop {string} type - HTML button type (default: 'button')

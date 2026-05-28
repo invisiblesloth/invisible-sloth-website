@@ -2,6 +2,16 @@
   import { warnOnce } from '../lib/devWarnings';
   import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
 
+  /**
+   * Grandfathered broad interactive primitive.
+   *
+   * Tag keeps its existing broader forwarding contract for compatibility:
+   * root `class`, `style`, safe global/native attributes, ARIA/data attributes,
+   * and broad `on*` events may forward while Tag switches between `<a>` and
+   * `<button>` rendering. New interactive primitives should not copy this model by
+   * default.
+   */
+
   type TagMode = 'link' | 'button';
 
   type Props = {

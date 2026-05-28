@@ -90,7 +90,7 @@
       docs: {
         description: {
           component:
-            'Structured feature copy list. FeatureList validates item data, renders valid title/description pairs as semantic list items, and owns quiet list styling for use inside ContentSection.',
+            'Structured feature copy list. FeatureList validates item data, renders valid title/description pairs as semantic list items, owns quiet list styling for use inside ContentSection, and keeps existing broader root forwarding to the root ul.',
         },
       },
     },
@@ -102,6 +102,11 @@
         control: 'object',
         description:
           'Feature entries. Runtime values are guarded so malformed Storybook controls or untyped callers render harmlessly.',
+      },
+      class: {
+        control: false,
+        description:
+          'Optional root ul class hook; existing broader list attributes also forward to the root.',
       },
     },
   });

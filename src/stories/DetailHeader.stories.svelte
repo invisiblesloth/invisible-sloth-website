@@ -14,7 +14,7 @@
       docs: {
         description: {
           component:
-            'Content-only page/post detail header block with responsive title and excerpt typography. `title` is required, trimmed at the boundary, and fails fast when blank; blanking the required control may break the story canvas.',
+            'Content-only page/post detail header block with responsive title and excerpt typography. `title` is required, trimmed at the boundary, and fails fast when blank; blanking the required control may break the story canvas. Existing broader root forwarding is public: class and rest props land on the root div.',
         },
       },
     },
@@ -33,9 +33,8 @@
       },
       class: {
         control: false,
-        table: {
-          disable: true,
-        },
+        description:
+          'Optional root div class hook; existing rest props also forward to the root.',
       },
     },
   });

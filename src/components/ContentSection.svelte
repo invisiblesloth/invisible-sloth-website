@@ -7,6 +7,7 @@
  *
  * Forwarded section attributes land on the root <section>. The heading and
  * body wrappers intentionally receive only component-owned attributes.
+ * Existing broader root forwarding is part of the public root-hook contract.
  *
  * @prop {string} heading - Required visible section heading text, trimmed at the boundary
  * @prop {string} body - Optional plain-text fallback when no children snippet is provided

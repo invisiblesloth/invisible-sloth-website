@@ -36,6 +36,12 @@
       controls: {
         include: ['title', 'subhead', 'description', 'headingLevel', 'badges', 'button'],
       },
+      docs: {
+        description: {
+          component:
+            'Featured project card. Parent layouts own outer width and rail behavior; the root `class` hook lands on the root div for layout/global selectors only.',
+        },
+      },
     },
     args: {
       title: 'Project Name',
@@ -70,6 +76,11 @@
       button: {
         control: 'object',
         description: 'Optional project CTA button',
+      },
+      class: {
+        control: false,
+        description:
+          'Optional root div class hook for layout hooks, global utilities, and global selectors.',
       },
     },
   });
@@ -151,9 +162,30 @@
   {/snippet}
 </Story>
 
+<Story
+  name="Root Class Hook"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Marker-only coverage: the class lands on the root div for layout/global selectors and is not a theming API.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <ProjectCard {...args} class="project-card-story__root-hook" />
+  {/snippet}
+</Story>
+
 <style>
   .project-card-story-stack {
     display: grid;
     gap: var(--space-gutter-loose);
+  }
+
+  :global(.project-card-story__root-hook) {
+    outline: 1px dashed var(--color-outline);
+    outline-offset: var(--space-100);
   }
 </style>

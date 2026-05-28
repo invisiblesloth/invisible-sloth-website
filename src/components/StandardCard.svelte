@@ -31,6 +31,8 @@
    *
    * Whole-card navigation is required. Parent layouts own outer width and
    * placement; this component owns only its internal card presentation.
+   * Root-hook component: `class` is appended to the root <article> for
+   * layout hooks, global utilities, and global selectors.
    *
    * @prop {string} href - Required non-empty card link URL, normalized through shared link helpers
    * @prop {string} title - Required non-empty card title/headline, trimmed at the boundary
@@ -44,6 +46,7 @@
    * @prop {string} dateTime - Optional machine-readable datetime value
    * @prop {string} author - Optional author name rendered as plain text
    * @prop {StandardCardImage} image - Optional image input rendered through Image
+   * @prop {string} class - Additional classes appended to the root article
    */
   import { requireNonEmptyString } from '../lib/componentValidation';
   import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
@@ -61,6 +64,7 @@
     dateTime?: string;
     author?: string;
     image?: StandardCardImage;
+    class?: string;
   };
 
   const VALID_HEADING_LEVELS = new Set([1, 2, 3, 4, 5, 6]);
@@ -78,6 +82,7 @@
     dateTime = '',
     author = '',
     image,
+    class: className = '',
   }: Props = $props();
 
   function normalizeOptionalString(value: unknown): string {
@@ -125,6 +130,10 @@
   const hasDate = $derived(normalizedDate.length > 0);
   const hasAuthor = $derived(normalizedAuthor.length > 0);
   const hasFooter = $derived(hasDate || hasAuthor);
+  const normalizedClassName = $derived(String(className ?? '').trim());
+  const standardCardClasses = $derived(
+    ['standard-card', normalizedClassName].filter(Boolean).join(' ')
+  );
 
   const normalizedImageSrc = $derived.by(() => {
     return normalizeNonEmptyString(image?.src);
@@ -164,7 +173,7 @@
   });
 </script>
 
-<article class="standard-card">
+<article class={standardCardClasses}>
   <a
     href={normalizedHref}
     target={normalizedTarget}

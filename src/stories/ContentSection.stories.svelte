@@ -43,7 +43,7 @@
       docs: {
         description: {
           component:
-            'Below-page content section with responsive body typography. `heading` is required, trimmed at the boundary, and fails fast when blank; blanking the required control may break the story canvas. Attributes forward to the root section; parent compositions own rails, placement, and section spacing.',
+            'Below-page content section with responsive body typography. `heading` is required, trimmed at the boundary, and fails fast when blank; blanking the required control may break the story canvas. Existing broader root forwarding is public: section attributes land on the root section, while parent compositions own rails, placement, and section spacing.',
         },
       },
     },
@@ -70,6 +70,11 @@
         control: { type: 'select' },
         options: headingLevelOptions,
         description: 'Optional visual heading scale. Defaults to headingLevel.',
+      },
+      class: {
+        control: false,
+        description:
+          'Optional root section class hook; existing broader section attributes also forward to the root.',
       },
     },
   });

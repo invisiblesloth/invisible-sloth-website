@@ -6,6 +6,8 @@
  * Renders one h1-h6 element with the matching .heading-h* utility.
  * Global heading utilities own responsive typography scale; callers own
  * layout, width, padding, spacing, and contextual color.
+ * Native-ish primitive: typed/native root attributes forward to the rendered
+ * heading element, and `class` is appended for hooks/layout selectors.
  *
  * @prop {string} level - Semantic heading level (h1-h6)
  * @prop {string} visualLevel - Optional visual heading scale (defaults to level)

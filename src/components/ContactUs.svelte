@@ -2,6 +2,7 @@
   export type ContactUsProps = {
     text: string;
     email: string;
+    class?: string;
   };
 </script>
 
@@ -12,11 +13,17 @@
    * Email contact CTA surface.
    * Parent composition owns placement and width constraints.
    * Blank text or email values fail fast during SSR/build/render.
+   * Root-hook component: `class` is appended to the root <div> for
+   * layout hooks, global utilities, and global selectors.
    *
    * Migration note: every `<ContactUs />` usage must become
    * `<ContactUs text="..." email="..." />`.
    */
-  let { text, email }: ContactUsProps = $props();
+  let {
+    text,
+    email,
+    class: className = '',
+  }: ContactUsProps = $props();
 
   const normalizedText = $derived(
     requireNonEmptyString(text, { componentName: 'ContactUs', propName: 'text' })
@@ -25,9 +32,13 @@
     requireNonEmptyString(email, { componentName: 'ContactUs', propName: 'email' })
   );
   const emailHref = $derived(`mailto:${normalizedEmail}`);
+  const normalizedClassName = $derived(String(className ?? '').trim());
+  const contactUsClasses = $derived(
+    ['contact-us', normalizedClassName].filter(Boolean).join(' ')
+  );
 </script>
 
-<div class="contact-us">
+<div class={contactUsClasses}>
   <p class="contact-us__text text-body-large">
     {normalizedText}
     <a href={emailHref} class="contact-us__link text-link">

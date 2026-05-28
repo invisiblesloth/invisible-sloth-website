@@ -11,8 +11,18 @@
       docs: {
         description: {
           component:
-            'Layout-only wrapper for consistent internal tag row and column gaps. Parent compositions own data mapping, validation, outer vertical spacing, and padding.',
+            'Layout-only wrapper for consistent internal tag row and column gaps. Parent compositions own data mapping, validation, outer vertical spacing, and padding. Existing broader root forwarding is public: class and rest props land on the root div.',
         },
+      },
+      controls: {
+        include: [],
+      },
+    },
+    argTypes: {
+      class: {
+        control: false,
+        description:
+          'Optional root div class hook; existing rest props also forward to the root.',
       },
     },
   });

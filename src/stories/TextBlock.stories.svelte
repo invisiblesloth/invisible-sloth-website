@@ -28,7 +28,7 @@
       docs: {
         description: {
           component:
-            'Headingless responsive body-copy block. TextBlock uses direct child paragraphs for local rhythm, forwards attributes to the root div, and renders no DOM when no children and no usable body are provided.',
+            'Headingless responsive body-copy block. TextBlock uses direct child paragraphs for local rhythm, keeps existing broader root forwarding to the root div, and renders no DOM when no children and no usable body are provided.',
         },
       },
     },
@@ -40,6 +40,11 @@
         control: 'text',
         description:
           'Plain-text fallback rendered only when no children snippet is provided. Blank or non-string runtime values render no DOM.',
+      },
+      class: {
+        control: false,
+        description:
+          'Optional root div class hook; existing broader div attributes also forward to the root.',
       },
     },
   });

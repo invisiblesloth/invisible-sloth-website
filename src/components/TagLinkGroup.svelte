@@ -7,6 +7,7 @@
    * class and passthrough attributes land on the internal TagGroup. The
    * optional wrapper receives a renderable TagGroup snippet and owns only
    * outer placement.
+   * Data composition contract: renders no DOM when there are no valid tags.
    */
   import type { Snippet } from 'svelte';
   import { warnOnce } from '../lib/devWarnings';
@@ -58,7 +59,7 @@
 </script>
 
 {#snippet group()}
-  <TagGroup class={className} {...restProps}>
+  <TagGroup {...restProps} class={className}>
     {#each normalizedTags as tag (tag.href + ':' + tag.index)}
       <Tag
         label={tag.label}

@@ -23,7 +23,7 @@
       docs: {
         description: {
           component:
-            'Figma-aligned quiet product status panel for short product-page context. ProductStatus intentionally supports only `text`, `detail`, and `class`; use wrapper markup for demo or test hooks.',
+            'Figma-aligned quiet product status panel for short product-page context. ProductStatus intentionally supports only `text`, `detail`, and a root `class` for layout hooks, global utilities, and global selectors; use wrapper markup for demo structure.',
         },
       },
     },

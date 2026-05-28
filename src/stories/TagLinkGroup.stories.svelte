@@ -39,7 +39,7 @@
       docs: {
         description: {
           component:
-            'Data-owning linked tag group. TagLinkGroup validates linked tag data and renders valid tags through the layout-only TagGroup wrapper.',
+            'Data-owning linked tag group. TagLinkGroup validates linked tag data, renders valid tags through the layout-only TagGroup wrapper, passes class and rest props through to that internal TagGroup, and renders no DOM when there are no valid tags.',
         },
       },
       controls: {
@@ -59,6 +59,11 @@
       warningNamespace: {
         control: 'text',
         description: 'Namespace used for deduplicating dev-only runtime warnings.',
+      },
+      class: {
+        control: false,
+        description:
+          'Passed through to the internal TagGroup root div; not exposed as a theming control.',
       },
     },
     args: {
@@ -188,14 +193,16 @@
 />
 
 <Story name="Passthrough Attributes">
-  <div class="tag-link-group-story">
-    <TagLinkGroup
-      tags={defaultTags}
-      class="tag-link-group-story__forwarded"
-      data-story-kind="forwarded"
-      aria-label="Forwarded linked tag group"
-    />
-  </div>
+  {#snippet template()}
+    <div class="tag-link-group-story">
+      <TagLinkGroup
+        tags={defaultTags}
+        class="tag-link-group-story__forwarded"
+        data-story-kind="forwarded"
+        aria-label="Forwarded linked tag group"
+      />
+    </div>
+  {/snippet}
 </Story>
 
 <Story
@@ -209,21 +216,23 @@
     },
   }}
 >
-  <div class="tag-link-group-story tag-link-group-story__stack">
-    <div class="tag-link-group-story__absence-check" data-case="valid-wrapper">
-      <TagLinkGroup
-        tags={defaultTags}
-        wrapper={storyWrapper}
-      />
-    </div>
+  {#snippet template()}
+    <div class="tag-link-group-story tag-link-group-story__stack">
+      <div class="tag-link-group-story__absence-check" data-case="valid-wrapper">
+        <TagLinkGroup
+          tags={defaultTags}
+          wrapper={storyWrapper}
+        />
+      </div>
 
-    <div class="tag-link-group-story__absence-check" data-case="invalid-wrapper">
-      <TagLinkGroup
-        tags={invalidOnlyTags}
-        componentLabel="[TagLinkGroup]"
-        warningNamespace="tag-link-group-story-wrapper-invalid"
-        wrapper={storyWrapper}
-      />
+      <div class="tag-link-group-story__absence-check" data-case="invalid-wrapper">
+        <TagLinkGroup
+          tags={invalidOnlyTags}
+          componentLabel="[TagLinkGroup]"
+          warningNamespace="tag-link-group-story-wrapper-invalid"
+          wrapper={storyWrapper}
+        />
+      </div>
     </div>
-  </div>
+  {/snippet}
 </Story>
