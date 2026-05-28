@@ -22,7 +22,7 @@
    * ProjectCard component for displaying project information
    *
    * Featured project card with badges, name, subhead, slotted description, and CTA button.
-   * Component-scoped typography responds to viewport size for optimal readability.
+   * Shared semantic typography responds to viewport size for optimal readability.
    *
    * Responsive behavior:
    * - Compact and medium viewports use the base card typography.
@@ -86,11 +86,14 @@
   {/if}
 
   <div class="project-card__content">
-    <svelte:element this={headingTag} class="project-card__title text-display-extra-small">
+    <svelte:element
+      this={headingTag}
+      class="project-card__title text-display-card-title-responsive"
+    >
       {title}
     </svelte:element>
     {#if subhead}
-      <p class="project-card__subhead text-headline-small">{subhead}</p>
+      <p class="project-card__subhead text-supporting-heading-responsive">{subhead}</p>
     {/if}
     {#if children}
       <div class="project-card__description text-body-responsive">
@@ -140,31 +143,9 @@
     width: 100%;
   }
 
-  /* Card-specific h2 treatment; page/section heading scale remains in .heading-h*. */
-  @media (min-width: 1015px) {
-    .project-card__title {
-      font-family: var(--typography-display-small-family);
-      font-size: var(--typography-display-small-size);
-      font-weight: var(--typography-display-small-weight);
-      line-height: var(--typography-display-small-line-height);
-      letter-spacing: var(--typography-display-small-letter-spacing);
-    }
-  }
-
   .project-card__subhead {
     margin: 0;
     width: 100%;
-  }
-
-  /* Card-specific subhead treatment. */
-  @media (min-width: 1015px) {
-    .project-card__subhead {
-      font-family: var(--typography-headline-medium-family);
-      font-size: var(--typography-headline-medium-size);
-      font-weight: var(--typography-headline-medium-weight);
-      line-height: var(--typography-headline-medium-line-height);
-      letter-spacing: var(--typography-headline-medium-letter-spacing);
-    }
   }
 
   .project-card__description {

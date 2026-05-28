@@ -102,7 +102,7 @@
     {/if}
 
     <div class="post-author__content">
-      <p class="post-author__name">
+      <p class="post-author__name text-byline-author-responsive">
         {#each normalizedAuthors as author, index (author.key)}{#if index > 0}<span class="post-author__separator">{getAuthorSeparator(index, normalizedAuthors.length)}</span>{/if}{#if author.href}<a
               class="post-author__link text-link"
               href={author.href}
@@ -126,7 +126,6 @@
 
   .post-author__link {
     color: inherit;
-    font-weight: inherit;
   }
 
   .post-author__link:visited {
@@ -164,26 +163,12 @@
     margin: 0;
     inline-size: 100%;
     overflow-wrap: anywhere;
-    /* Metadata label treatment; not part of page/section heading scale. */
-    font-family: var(--typography-label-large-family);
-    font-size: var(--typography-label-large-size);
-    font-weight: var(--typography-label-large-weight);
-    line-height: var(--typography-label-large-line-height);
-    letter-spacing: var(--typography-label-large-letter-spacing);
   }
 
   @media (min-width: 1015px) {
     .post-author__avatar {
       inline-size: var(--space-1600);
       block-size: var(--space-1600);
-    }
-
-    .post-author__name {
-      font-family: var(--typography-label-extra-large-family);
-      font-size: var(--typography-label-extra-large-size);
-      font-weight: var(--typography-label-extra-large-weight);
-      line-height: var(--typography-label-extra-large-line-height);
-      letter-spacing: var(--typography-label-extra-large-letter-spacing);
     }
   }
 </style>

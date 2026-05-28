@@ -32,7 +32,9 @@
     return value.length > 0 ? value : undefined;
   });
 
-  const postDateClasses = $derived(['post-date', className].filter(Boolean).join(' '));
+  const postDateClasses = $derived(
+    ['post-date', 'text-metadata-date-responsive', className].filter(Boolean).join(' ')
+  );
 </script>
 
 <time class={postDateClasses} datetime={normalizedDateTime}>
@@ -46,21 +48,5 @@
     margin: 0;
     color: var(--color-on-surface);
     text-align: start;
-    /* Metadata text treatment; not part of page/section heading scale. */
-    font-family: var(--typography-title-medium-family);
-    font-size: var(--typography-title-medium-size);
-    font-weight: var(--typography-title-medium-weight);
-    line-height: var(--typography-title-medium-line-height);
-    letter-spacing: var(--typography-title-medium-letter-spacing);
-  }
-
-  @media (min-width: 1015px) {
-    .post-date {
-      font-family: var(--typography-title-large-family);
-      font-size: var(--typography-title-large-size);
-      font-weight: var(--typography-title-large-weight);
-      line-height: var(--typography-title-large-line-height);
-      letter-spacing: var(--typography-title-large-letter-spacing);
-    }
   }
 </style>

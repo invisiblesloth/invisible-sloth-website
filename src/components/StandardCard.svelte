@@ -182,33 +182,38 @@
 
     <div class="standard-card__content">
       {#if hasKicker}
-        <p class="standard-card__kicker text-title-medium">{normalizedKicker}</p>
+        <p class="standard-card__kicker text-summary-card-kicker">{normalizedKicker}</p>
       {/if}
 
-      <svelte:element this={headingTag} class="standard-card__title text-display-extra-small">
+      <svelte:element this={headingTag} class="standard-card__title text-summary-card-title">
         {normalizedTitle}
       </svelte:element>
 
       {#if hasDescription}
-        <p class="standard-card__description text-body-small">{normalizedDescription}</p>
+        <p class="standard-card__description text-summary-card-description">
+          {normalizedDescription}
+        </p>
       {/if}
 
       {#if hasFooter}
         <div class="standard-card__footer">
           {#if hasDate}
             {#if normalizedDateTime}
-              <time class="standard-card__date text-label-large" datetime={normalizedDateTime}>
+              <time
+                class="standard-card__date text-summary-card-date"
+                datetime={normalizedDateTime}
+              >
                 {normalizedDate}
               </time>
             {:else}
-              <span class="standard-card__date text-label-large">
+              <span class="standard-card__date text-summary-card-date">
                 {normalizedDate}
               </span>
             {/if}
           {/if}
 
           {#if hasAuthor}
-            <p class="standard-card__author text-title-small">{normalizedAuthor}</p>
+            <p class="standard-card__author text-summary-card-author">{normalizedAuthor}</p>
           {/if}
         </div>
       {/if}
@@ -227,7 +232,7 @@
     position: relative;
     inline-size: 100%;
     container-type: inline-size;
-    container-name: card;
+    container-name: summary-card;
   }
 
   /* ========================================================================= */
@@ -288,14 +293,13 @@
   }
 
   /* ========================================================================= */
-  /* Typography - Responsive via Container Queries                             */
+  /* Text Elements                                                             */
   /* ========================================================================= */
 
   .standard-card__kicker {
     margin: 0;
     inline-size: 100%;
     color: var(--color-on-surface-dim);
-    line-height: 1;
   }
 
   .standard-card__title {
@@ -329,55 +333,6 @@
     margin: 0;
     inline-size: 100%;
     color: var(--color-on-surface-dim);
-  }
-
-  /* ========================================================================= */
-  /* Container Query: Larger Cards (360px+)                                    */
-  /* ========================================================================= */
-
-  @container card (min-width: 360px) {
-    .standard-card__kicker {
-      /* title-large */
-      font-family: var(--typography-title-large-family);
-      font-size: var(--typography-title-large-size);
-      font-weight: var(--typography-title-large-weight);
-      line-height: var(--typography-title-large-line-height);
-      letter-spacing: var(--typography-title-large-letter-spacing);
-    }
-
-    .standard-card__title {
-      /* display-small */
-      font-family: var(--typography-display-small-family);
-      font-size: var(--typography-display-small-size);
-      line-height: var(--typography-display-small-line-height);
-      letter-spacing: var(--typography-display-small-letter-spacing);
-    }
-
-    .standard-card__description {
-      /* body-medium */
-      font-family: var(--typography-body-medium-family);
-      font-size: var(--typography-body-medium-size);
-      line-height: var(--typography-body-medium-line-height);
-      letter-spacing: var(--typography-body-medium-letter-spacing);
-    }
-
-    .standard-card__date {
-      /* label-extra-large */
-      font-family: var(--typography-label-extra-large-family);
-      font-size: var(--typography-label-extra-large-size);
-      font-weight: var(--typography-label-extra-large-weight);
-      line-height: var(--typography-label-extra-large-line-height);
-      letter-spacing: var(--typography-label-extra-large-letter-spacing);
-    }
-
-    .standard-card__author {
-      /* title-medium */
-      font-family: var(--typography-title-medium-family);
-      font-size: var(--typography-title-medium-size);
-      font-weight: var(--typography-title-medium-weight);
-      line-height: var(--typography-title-medium-line-height);
-      letter-spacing: var(--typography-title-medium-letter-spacing);
-    }
   }
 
   /* ========================================================================= */

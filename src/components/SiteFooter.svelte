@@ -59,7 +59,7 @@
 
     <!-- Tagline Section -->
     <div class="site-footer__tagline">
-      <p class="site-footer__tagline-text text-headline-small">{tagline}</p>
+      <p class="site-footer__tagline-text text-supporting-heading-responsive">{tagline}</p>
     </div>
     
     {#if hasContent && children}
@@ -134,17 +134,6 @@
     margin: 0;
     text-align: center;
     width: 100%;
-  }
-
-  /* Brand/footer tagline treatment; keep visually stable outside .heading-h* scale. */
-  @media (min-width: 1015px) {
-    .site-footer__tagline-text {
-      font-family: var(--typography-headline-medium-family);
-      font-size: var(--typography-headline-medium-size);
-      font-weight: var(--typography-headline-medium-weight);
-      line-height: var(--typography-headline-medium-line-height);
-      letter-spacing: var(--typography-headline-medium-letter-spacing);
-    }
   }
 
   /* Large breakpoint (1176px+) */

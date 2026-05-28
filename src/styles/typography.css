@@ -380,6 +380,169 @@
   }
 
   /* ==========================================
+     SEMANTIC TEXT UTILITIES
+     Public responsive text roles for repeated component patterns
+     ========================================== */
+
+  .text-display-card-title-responsive {
+    font-family: var(--typography-display-extra-small-family);
+    font-size: var(--typography-display-extra-small-size);
+    font-weight: var(--typography-display-extra-small-weight);
+    line-height: var(--typography-display-extra-small-line-height);
+    letter-spacing: var(--typography-display-extra-small-letter-spacing);
+  }
+
+  .text-supporting-heading-responsive {
+    font-family: var(--typography-headline-small-family);
+    font-size: var(--typography-headline-small-size);
+    font-weight: var(--typography-headline-small-weight);
+    line-height: var(--typography-headline-small-line-height);
+    letter-spacing: var(--typography-headline-small-letter-spacing);
+  }
+
+  .text-metadata-date-responsive {
+    font-family: var(--typography-title-medium-family);
+    font-size: var(--typography-title-medium-size);
+    font-weight: var(--typography-title-medium-weight);
+    line-height: var(--typography-title-medium-line-height);
+    letter-spacing: var(--typography-title-medium-letter-spacing);
+  }
+
+  .text-byline-author-responsive {
+    font-family: var(--typography-label-large-family);
+    font-size: var(--typography-label-large-size);
+    font-weight: var(--typography-label-large-weight);
+    line-height: var(--typography-label-large-line-height);
+    letter-spacing: var(--typography-label-large-letter-spacing);
+  }
+
+  /* Keep linked bylines on the same weight as plain byline names. */
+  .text-byline-author-responsive .text-link {
+    font-weight: inherit;
+  }
+
+  @media (min-width: 1015px) {
+    .text-display-card-title-responsive {
+      font-family: var(--typography-display-small-family);
+      font-size: var(--typography-display-small-size);
+      font-weight: var(--typography-display-small-weight);
+      line-height: var(--typography-display-small-line-height);
+      letter-spacing: var(--typography-display-small-letter-spacing);
+    }
+
+    .text-supporting-heading-responsive {
+      font-family: var(--typography-headline-medium-family);
+      font-size: var(--typography-headline-medium-size);
+      font-weight: var(--typography-headline-medium-weight);
+      line-height: var(--typography-headline-medium-line-height);
+      letter-spacing: var(--typography-headline-medium-letter-spacing);
+    }
+
+    .text-metadata-date-responsive {
+      font-family: var(--typography-title-large-family);
+      font-size: var(--typography-title-large-size);
+      font-weight: var(--typography-title-large-weight);
+      line-height: var(--typography-title-large-line-height);
+      letter-spacing: var(--typography-title-large-letter-spacing);
+    }
+
+    .text-byline-author-responsive {
+      font-family: var(--typography-label-extra-large-family);
+      font-size: var(--typography-label-extra-large-size);
+      font-weight: var(--typography-label-extra-large-weight);
+      line-height: var(--typography-label-extra-large-line-height);
+      letter-spacing: var(--typography-label-extra-large-letter-spacing);
+    }
+  }
+
+  /*
+     Summary-card utilities require an ancestor with:
+     container-type: inline-size;
+     container-name: summary-card;
+  */
+  .text-summary-card-kicker {
+    font-family: var(--typography-title-medium-family);
+    font-size: var(--typography-title-medium-size);
+    font-weight: var(--typography-title-medium-weight);
+    line-height: 1;
+    letter-spacing: var(--typography-title-medium-letter-spacing);
+  }
+
+  .text-summary-card-title {
+    font-family: var(--typography-display-extra-small-family);
+    font-size: var(--typography-display-extra-small-size);
+    font-weight: var(--typography-display-extra-small-weight);
+    line-height: var(--typography-display-extra-small-line-height);
+    letter-spacing: var(--typography-display-extra-small-letter-spacing);
+  }
+
+  .text-summary-card-description {
+    font-family: var(--typography-body-small-family);
+    font-size: var(--typography-body-small-size);
+    font-weight: var(--typography-body-small-weight);
+    line-height: var(--typography-body-small-line-height);
+    letter-spacing: var(--typography-body-small-letter-spacing);
+  }
+
+  .text-summary-card-date {
+    font-family: var(--typography-label-large-family);
+    font-size: var(--typography-label-large-size);
+    font-weight: var(--typography-label-large-weight);
+    line-height: var(--typography-label-large-line-height);
+    letter-spacing: var(--typography-label-large-letter-spacing);
+  }
+
+  .text-summary-card-author {
+    font-family: var(--typography-title-small-family);
+    font-size: var(--typography-title-small-size);
+    font-weight: var(--typography-title-small-weight);
+    line-height: var(--typography-title-small-line-height);
+    letter-spacing: var(--typography-title-small-letter-spacing);
+  }
+
+  @container summary-card (min-width: 360px) {
+    .text-summary-card-kicker {
+      font-family: var(--typography-title-large-family);
+      font-size: var(--typography-title-large-size);
+      font-weight: var(--typography-title-large-weight);
+      line-height: var(--typography-title-large-line-height);
+      letter-spacing: var(--typography-title-large-letter-spacing);
+    }
+
+    .text-summary-card-title {
+      font-family: var(--typography-display-small-family);
+      font-size: var(--typography-display-small-size);
+      font-weight: var(--typography-display-small-weight);
+      line-height: var(--typography-display-small-line-height);
+      letter-spacing: var(--typography-display-small-letter-spacing);
+    }
+
+    .text-summary-card-description {
+      font-family: var(--typography-body-medium-family);
+      font-size: var(--typography-body-medium-size);
+      font-weight: var(--typography-body-medium-weight);
+      line-height: var(--typography-body-medium-line-height);
+      letter-spacing: var(--typography-body-medium-letter-spacing);
+    }
+
+    .text-summary-card-date {
+      font-family: var(--typography-label-extra-large-family);
+      font-size: var(--typography-label-extra-large-size);
+      font-weight: var(--typography-label-extra-large-weight);
+      line-height: var(--typography-label-extra-large-line-height);
+      letter-spacing: var(--typography-label-extra-large-letter-spacing);
+    }
+
+    .text-summary-card-author {
+      font-family: var(--typography-title-medium-family);
+      font-size: var(--typography-title-medium-size);
+      font-weight: var(--typography-title-medium-weight);
+      line-height: var(--typography-title-medium-line-height);
+      letter-spacing: var(--typography-title-medium-letter-spacing);
+    }
+  }
+
+  /* ==========================================
      SEMANTIC HEADING UTILITIES
      Responsive heading classes for semantic HTML elements
 
