@@ -1,9 +1,9 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import NavigationMenu from '../components/NavigationMenu.svelte';
-  import type { NavigationSection } from '../lib/navigation';
+  import type { NavigationMenuProps } from '../components/NavigationMenu.svelte';
 
-  const storySections: NavigationSection[] = [
+  const storySections: NonNullable<NavigationMenuProps['sections']> = [
     {
       items: [
         { label: 'Home', href: '#home' },
@@ -48,7 +48,7 @@
       heading: 'Missing items',
     },
     null,
-  ] as unknown as NavigationSection[];
+  ] as unknown as NonNullable<NavigationMenuProps['sections']>;
 
   const { Story } = defineMeta({
     title: 'Organisms/NavigationMenu',

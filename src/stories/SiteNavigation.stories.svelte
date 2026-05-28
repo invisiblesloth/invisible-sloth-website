@@ -1,10 +1,10 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import SiteNavigation from '../components/SiteNavigation.svelte';
+  import type { SiteNavigationProps } from '../components/SiteNavigation.svelte';
   import {
     resolveNavigationSections,
     type NavigationSection,
-    type ResolvedNavigationSection,
   } from '../lib/navigation';
 
   const rawStorySections: NavigationSection[] = [
@@ -39,7 +39,7 @@
       ],
     },
   ];
-  const storySections: ResolvedNavigationSection[] =
+  const storySections: NonNullable<SiteNavigationProps['sections']> =
     resolveNavigationSections(rawStorySections);
 
   const pageAnchors = ['home', 'blog', 'about', 'roxy', 'privacy-policy', 'terms'];

@@ -1,14 +1,19 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import ProjectCard from '../components/ProjectCard.svelte';
+  import type { ProjectCardProps } from '../components/ProjectCard.svelte';
   import type { ProjectBadge, ProjectButton } from '../types/project';
 
   const fallbackDescription =
     'In the heart of the digital jungle, there lived an invisible sloth named Sloth-Luc.';
 
-  const headingLevelOptions = [1, 2, 3, 4, 5, 6] as const;
+  const headingLevelOptions = [1, 2, 3, 4, 5, 6] as const satisfies readonly NonNullable<
+    ProjectCardProps['headingLevel']
+  >[];
   // Exercises ProjectCard's runtime guard for non-typed callers.
-  const invalidRuntimeHeadingLevel = 0 as unknown as (typeof headingLevelOptions)[number];
+  const invalidRuntimeHeadingLevel = 0 as unknown as NonNullable<
+    ProjectCardProps['headingLevel']
+  >;
 
   const defaultButton: ProjectButton = {
     label: 'Call to Action',

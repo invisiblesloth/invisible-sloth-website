@@ -1,9 +1,9 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import NavigationDrawer from '../components/NavigationDrawer.svelte';
-  import type { NavigationSection } from '../lib/navigation';
+  import type { NavigationDrawerProps } from '../components/NavigationDrawer.svelte';
 
-  const storySections: NavigationSection[] = [
+  const storySections: NonNullable<NavigationDrawerProps['sections']> = [
     {
       items: [
         { label: 'Home', href: '#home' },

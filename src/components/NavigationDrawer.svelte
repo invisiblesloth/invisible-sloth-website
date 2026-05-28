@@ -1,12 +1,31 @@
-<script lang="ts">
-  import Close from '../icons/Close.svelte';
+<script module lang="ts">
   import type {
     NavigationCloseCallback,
     NavigationCloseEvent,
     NavigationCloseReason,
+    NavigationNavigateCallback,
     NavigationSection,
     ResolvedNavigationItem,
   } from '../lib/navigation';
+
+  export type NavigationDrawerProps = {
+    id?: string;
+    open?: boolean;
+    sections?: NavigationSection[];
+    activeHref?: string;
+    dialogLabel?: string;
+    navigationLabel?: string;
+    closeButtonLabel?: string;
+    onclose?: NavigationCloseCallback;
+    onClose?: NavigationCloseCallback;
+    onnavigate?: NavigationNavigateCallback;
+    onNavigate?: NavigationNavigateCallback;
+    class?: string;
+  };
+</script>
+
+<script lang="ts">
+  import Close from '../icons/Close.svelte';
   import NavigationMenu from './NavigationMenu.svelte';
 
   const FOCUSABLE_SELECTOR = [
@@ -31,20 +50,7 @@
     onnavigate = undefined,
     onNavigate = undefined,
     class: className = '',
-  }: {
-    id?: string;
-    open?: boolean;
-    sections?: NavigationSection[];
-    activeHref?: string;
-    dialogLabel?: string;
-    navigationLabel?: string;
-    closeButtonLabel?: string;
-    onclose?: NavigationCloseCallback;
-    onClose?: NavigationCloseCallback;
-    onnavigate?: (event: MouseEvent, item: ResolvedNavigationItem) => void;
-    onNavigate?: (event: MouseEvent, item: ResolvedNavigationItem) => void;
-    class?: string;
-  } = $props();
+  }: NavigationDrawerProps = $props();
 
   let drawerElement = $state<HTMLDivElement | undefined>();
   let closeButtonElement = $state<HTMLButtonElement | undefined>();

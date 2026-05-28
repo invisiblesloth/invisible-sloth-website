@@ -23,6 +23,14 @@
 
   export type PageHeaderMedia = HeaderMedia;
   export type PageHeaderTag = TagLink;
+
+  export type PageHeaderProps = {
+    title: string;
+    excerpt?: string;
+    tags?: PageHeaderTag[];
+    media?: PageHeaderMedia;
+    class?: string;
+  };
 </script>
 
 <script lang="ts">
@@ -32,21 +40,13 @@
   import HeaderRoot from './internal/header/HeaderRoot.svelte';
   import HeaderTagSection from './internal/header/HeaderTagSection.svelte';
 
-  type Props = {
-    title: string;
-    excerpt?: string;
-    tags?: PageHeaderTag[];
-    media?: PageHeaderMedia;
-    class?: string;
-  };
-
   let {
     title,
     excerpt = '',
     tags = [],
     media = undefined,
     class: className = '',
-  }: Props = $props();
+  }: PageHeaderProps = $props();
 
   const pageHeaderClasses = $derived(['page-header', className].filter(Boolean).join(' '));
 </script>

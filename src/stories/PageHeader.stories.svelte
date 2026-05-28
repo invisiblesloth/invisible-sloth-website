@@ -1,9 +1,7 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import type { ComponentProps } from 'svelte';
   import PageHeader from '../components/PageHeader.svelte';
-
-  type PageHeaderProps = ComponentProps<typeof PageHeader>;
+  import type { PageHeaderProps } from '../components/PageHeader.svelte';
 
   const defaultMedia: NonNullable<PageHeaderProps['media']> = {
     image: {

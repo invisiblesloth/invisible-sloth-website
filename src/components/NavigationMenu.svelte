@@ -1,11 +1,24 @@
+<script module lang="ts">
+  import type {
+    NavigationNavigateCallback,
+    NavigationSection,
+    ResolvedNavigationItem,
+    ResolvedNavigationSection,
+  } from '../lib/navigation';
+
+  export type NavigationMenuProps = {
+    sections?: NavigationSection[];
+    activeHref?: string;
+    ariaLabel?: string;
+    onnavigate?: NavigationNavigateCallback;
+    onNavigate?: NavigationNavigateCallback;
+    class?: string;
+  };
+</script>
+
 <script lang="ts">
   import { normalizeHref } from '../lib/linkBehavior';
-  import {
-    resolveNavigationSections,
-    type NavigationSection,
-    type ResolvedNavigationItem,
-    type ResolvedNavigationSection,
-  } from '../lib/navigation';
+  import { resolveNavigationSections } from '../lib/navigation';
 
   function normalizeLabel(value: unknown, fallback: string): string {
     return typeof value === 'string' ? value.trim() || fallback : fallback;
@@ -75,14 +88,7 @@
     onnavigate = undefined,
     onNavigate = undefined,
     class: className = '',
-  }: {
-    sections?: NavigationSection[];
-    activeHref?: string;
-    ariaLabel?: string;
-    onnavigate?: (event: MouseEvent, item: ResolvedNavigationItem) => void;
-    onNavigate?: (event: MouseEvent, item: ResolvedNavigationItem) => void;
-    class?: string;
-  } = $props();
+  }: NavigationMenuProps = $props();
 
   const normalizedActiveHref = $derived(normalizeHref(activeHref));
   const normalizedAriaLabel = $derived(normalizeLabel(ariaLabel, 'Site navigation'));

@@ -1,3 +1,10 @@
+<script module lang="ts">
+  export type ContactUsProps = {
+    text: string;
+    email: string;
+  };
+</script>
+
 <script lang="ts">
   import { requireNonEmptyString } from '../lib/componentValidation';
 
@@ -9,12 +16,7 @@
    * Migration note: every `<ContactUs />` usage must become
    * `<ContactUs text="..." email="..." />`.
    */
-  type Props = {
-    text: string;
-    email: string;
-  };
-
-  let { text, email }: Props = $props();
+  let { text, email }: ContactUsProps = $props();
 
   const normalizedText = $derived(
     requireNonEmptyString(text, { componentName: 'ContactUs', propName: 'text' })

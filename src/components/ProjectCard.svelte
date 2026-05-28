@@ -1,3 +1,22 @@
+<script module lang="ts">
+  import type { Snippet } from 'svelte';
+  import type { ProjectBadge, ProjectButton } from '../types/project';
+
+  const PROJECT_CARD_HEADING_LEVELS = [1, 2, 3, 4, 5, 6] as const;
+
+  type HeadingLevel = (typeof PROJECT_CARD_HEADING_LEVELS)[number];
+
+  export type ProjectCardProps = {
+    title?: string;
+    subhead?: string;
+    description?: string;
+    headingLevel?: HeadingLevel;
+    badges?: ProjectBadge[];
+    button?: ProjectButton;
+    children?: Snippet;
+  };
+</script>
+
 <script lang="ts">
   /**
    * ProjectCard component for displaying project information
@@ -18,18 +37,15 @@
    * @prop {Array} badges - Array of badge objects with variant and label
    * @prop {Snippet} children - Rich description content, usually rendered from Astro Markdown
    */
-  import type { Snippet } from 'svelte';
   import Button from './Button.svelte';
   import BadgeGroup from './BadgeGroup.svelte';
   import Badge from './Badge.svelte';
   import ExternalLink from '../icons/ExternalLink.svelte';
   import { isExternalAbsoluteHttpUrl } from '../lib/siteLinks';
-  import type { ProjectBadge, ProjectButton } from '../types/project';
 
-  type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
   type HeadingTag = `h${HeadingLevel}`;
 
-  const VALID_HEADING_LEVELS = new Set([1, 2, 3, 4, 5, 6]);
+  const VALID_HEADING_LEVELS = new Set<number>(PROJECT_CARD_HEADING_LEVELS);
 
   let {
     title = 'Project Name',
@@ -39,15 +55,7 @@
     badges = [],
     button,
     children,
-  }: {
-    title?: string;
-    subhead?: string;
-    description?: string;
-    headingLevel?: HeadingLevel;
-    badges?: ProjectBadge[];
-    button?: ProjectButton;
-    children?: Snippet;
-  } = $props();
+  }: ProjectCardProps = $props();
 
   function normalizeHeadingLevel(value: unknown): HeadingLevel {
     return typeof value === 'number' && VALID_HEADING_LEVELS.has(value)

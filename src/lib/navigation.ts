@@ -36,6 +36,11 @@ export type NavigationCloseCallback = {
   bivarianceHack(event?: NavigationCloseEvent, reason?: NavigationCloseReason): void;
 }['bivarianceHack'];
 
+export type NavigationNavigateCallback = (
+  event: MouseEvent,
+  item: ResolvedNavigationItem
+) => void;
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }

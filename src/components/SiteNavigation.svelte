@@ -1,12 +1,35 @@
-<script lang="ts">
+<script module lang="ts">
   import type { Snippet } from 'svelte';
-  import { normalizeTarget } from '../lib/linkBehavior';
-  import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
   import type {
     NavigationCloseReason,
+    NavigationNavigateCallback,
     ResolvedNavigationItem,
     ResolvedNavigationSection,
   } from '../lib/navigation';
+
+  type SiteNavigationCloseCallback = (reason: NavigationCloseReason) => void;
+
+  export type SiteNavigationProps = {
+    sections?: ResolvedNavigationSection[];
+    activeHref?: string;
+    drawerId?: string;
+    homeHref?: string;
+    homeLabel?: string;
+    logoAlt?: string;
+    menuButtonLabel?: string;
+    closeButtonLabel?: string;
+    dialogLabel?: string;
+    navigationLabel?: string;
+    onClose?: SiteNavigationCloseCallback;
+    onNavigate?: NavigationNavigateCallback;
+    children?: Snippet;
+    class?: string;
+  };
+</script>
+
+<script lang="ts">
+  import { normalizeTarget } from '../lib/linkBehavior';
+  import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
   import Menu from '../icons/Menu.svelte';
   import Button from './Button.svelte';
   import NavigationDrawer from './NavigationDrawer.svelte';
@@ -27,22 +50,7 @@
     onNavigate = undefined,
     children = undefined,
     class: className = '',
-  }: {
-    sections?: ResolvedNavigationSection[];
-    activeHref?: string;
-    drawerId?: string;
-    homeHref?: string;
-    homeLabel?: string;
-    logoAlt?: string;
-    menuButtonLabel?: string;
-    closeButtonLabel?: string;
-    dialogLabel?: string;
-    navigationLabel?: string;
-    onClose?: (reason: NavigationCloseReason) => void;
-    onNavigate?: (event: MouseEvent, item: ResolvedNavigationItem) => void;
-    children?: Snippet;
-    class?: string;
-  } = $props();
+  }: SiteNavigationProps = $props();
 
   let drawerOpen = $state(false);
 

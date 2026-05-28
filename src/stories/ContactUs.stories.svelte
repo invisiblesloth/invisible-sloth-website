@@ -1,10 +1,12 @@
-<script module>
+<script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import ContactUs from '../components/ContactUs.svelte';
+  import type { ContactUsProps } from '../components/ContactUs.svelte';
 
-  const contactText = 'For questions, support, or just to say hi, email us at';
-  const contactEmail = 'hello@invisiblesloth.com';
-  const longContactText =
+  const contactText: ContactUsProps['text'] =
+    'For questions, support, or just to say hi, email us at';
+  const contactEmail: ContactUsProps['email'] = 'hello@invisiblesloth.com';
+  const longContactText: ContactUsProps['text'] =
     'For partnership conversations, support questions, press notes, project follow-ups, and anything else that needs a careful human response, email us at';
 
   const { Story } = defineMeta({

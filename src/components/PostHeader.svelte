@@ -41,6 +41,19 @@
   };
   export type PostHeaderAuthor = PostAuthorItem;
   export type PostHeaderTag = TagLink;
+
+  export type PostHeaderProps = {
+    title: string;
+    excerpt?: string;
+    date?: string;
+    dateTime?: string;
+    authorImageSrc?: string;
+    authorImageAlt?: string;
+    authors?: PostHeaderAuthor[];
+    tags?: PostHeaderTag[];
+    media?: PostHeaderMedia;
+    class?: string;
+  };
 </script>
 
 <script lang="ts">
@@ -74,19 +87,6 @@
     return !(POST_HEADER_MEDIA_TREATMENTS as readonly unknown[]).includes(media.treatment);
   };
 
-  type Props = {
-    title: string;
-    excerpt?: string;
-    date?: string;
-    dateTime?: string;
-    authorImageSrc?: string;
-    authorImageAlt?: string;
-    authors?: PostHeaderAuthor[];
-    tags?: PostHeaderTag[];
-    media?: PostHeaderMedia;
-    class?: string;
-  };
-
   let {
     title,
     excerpt = '',
@@ -98,7 +98,7 @@
     tags = [],
     media = undefined,
     class: className = '',
-  }: Props = $props();
+  }: PostHeaderProps = $props();
 
   const postHeaderClasses = $derived(['post-header', className].filter(Boolean).join(' '));
   const normalizedDate = $derived(String(date ?? '').trim());

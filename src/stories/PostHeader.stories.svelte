@@ -1,9 +1,7 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import type { ComponentProps } from 'svelte';
   import PostHeader from '../components/PostHeader.svelte';
-
-  type PostHeaderProps = ComponentProps<typeof PostHeader>;
+  import type { PostHeaderProps } from '../components/PostHeader.svelte';
 
   const defaultMedia: NonNullable<PostHeaderProps['media']> = {
     image: {
