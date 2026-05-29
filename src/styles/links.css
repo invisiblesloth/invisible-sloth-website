@@ -4,8 +4,27 @@
    ========================================== */
 
 @layer components {
-  /* Base raised inline link */
-  .text-link {
+  /* Keep .text-link outside :is() so rich-text specificity does not leak into global link hooks. */
+  .text-link,
+  :is(
+    .rich-text
+      > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+      a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+        .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+      ),
+    .rich-text
+      > :where(
+        ul:not([class]),
+        ul[class^='s-']:not([class*=' ']),
+        ul[class^='svelte-']:not([class*=' ']),
+        ol:not([class]),
+        ol[class^='s-']:not([class*=' ']),
+        ol[class^='svelte-']:not([class*=' '])
+      )
+      a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+        .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+      )
+  ) {
     position: relative;
     display: inline-block;
 
@@ -17,7 +36,7 @@
     text-decoration-thickness: 0.12em;
     text-underline-offset: 0.125em;
     text-decoration-skip-ink: none;
-  
+
     border-radius: var(--radius-full);
     padding: 1px 6px;
     margin: -1px -6px;
@@ -26,65 +45,280 @@
     transition: transform var(--animation-duration-extra-fast) var(--animation-easing-standard);
     will-change: transform;
     -webkit-tap-highlight-color: transparent;
-  
+
     background-color: transparent;
     box-shadow: none;
   }
-  
+
+  :is(
+    .rich-text
+      > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+      a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+        .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+      ),
+    .rich-text
+      > :where(
+        ul:not([class]),
+        ul[class^='s-']:not([class*=' ']),
+        ul[class^='svelte-']:not([class*=' ']),
+        ol:not([class]),
+        ol[class^='s-']:not([class*=' ']),
+        ol[class^='svelte-']:not([class*=' '])
+      )
+      a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+        .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+      )
+  ) {
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
+    vertical-align: baseline;
+  }
+
   /* Desktop hover/press (pointer: fine) */
   @media (hover: hover) and (pointer: fine) {
-    .text-link:where(:hover):not(:focus-visible) {
+    .text-link:where(:hover):not(:focus-visible),
+    :is(
+      .rich-text
+        > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        ),
+      .rich-text
+        > :where(
+          ul:not([class]),
+          ul[class^='s-']:not([class*=' ']),
+          ul[class^='svelte-']:not([class*=' ']),
+          ol:not([class]),
+          ol[class^='s-']:not([class*=' ']),
+          ol[class^='svelte-']:not([class*=' '])
+        )
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        )
+    ):where(:hover):not(:focus-visible) {
       text-decoration-color: currentcolor;
     }
-  
-    .text-link:where(:active):not(:focus-visible) {
+
+    .text-link:where(:active):not(:focus-visible),
+    :is(
+      .rich-text
+        > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        ),
+      .rich-text
+        > :where(
+          ul:not([class]),
+          ul[class^='s-']:not([class*=' ']),
+          ul[class^='svelte-']:not([class*=' ']),
+          ol:not([class]),
+          ol[class^='s-']:not([class*=' ']),
+          ol[class^='svelte-']:not([class*=' '])
+        )
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        )
+    ):where(:active):not(:focus-visible) {
       background-color: transparent;
       text-decoration-color: currentcolor;
       transform: translateY(1px);
       box-shadow: none;
     }
   }
-  
+
   /* Touch adjustments (pointer: coarse) */
   @media (hover: none) and (pointer: coarse) {
-    .text-link {
+    .text-link,
+    :is(
+      .rich-text
+        > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        ),
+      .rich-text
+        > :where(
+          ul:not([class]),
+          ul[class^='s-']:not([class*=' ']),
+          ul[class^='svelte-']:not([class*=' ']),
+          ol:not([class]),
+          ol[class^='s-']:not([class*=' ']),
+          ol[class^='svelte-']:not([class*=' '])
+        )
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        )
+    ) {
       text-decoration-color: currentcolor;
     }
-  
+
     .text-link,
-    .text-link:hover {
+    .text-link:hover,
+    :is(
+      .rich-text
+        > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        ),
+      .rich-text
+        > :where(
+          ul:not([class]),
+          ul[class^='s-']:not([class*=' ']),
+          ul[class^='svelte-']:not([class*=' ']),
+          ol:not([class]),
+          ol[class^='s-']:not([class*=' ']),
+          ol[class^='svelte-']:not([class*=' '])
+        )
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        )
+    ),
+    :is(
+      .rich-text
+        > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        ),
+      .rich-text
+        > :where(
+          ul:not([class]),
+          ul[class^='s-']:not([class*=' ']),
+          ul[class^='svelte-']:not([class*=' ']),
+          ol:not([class]),
+          ol[class^='s-']:not([class*=' ']),
+          ol[class^='svelte-']:not([class*=' '])
+        )
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        )
+    ):hover {
       transform: translate(0, 0);
     }
-  
-    .text-link:active:not(:focus-visible) {
+
+    .text-link:active:not(:focus-visible),
+    :is(
+      .rich-text
+        > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        ),
+      .rich-text
+        > :where(
+          ul:not([class]),
+          ul[class^='s-']:not([class*=' ']),
+          ul[class^='svelte-']:not([class*=' ']),
+          ol:not([class]),
+          ol[class^='s-']:not([class*=' ']),
+          ol[class^='svelte-']:not([class*=' '])
+        )
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        )
+    ):active:not(:focus-visible) {
       transform: translateY(1px);
     }
   }
-  
+
   /* Keyboard focus */
-  .text-link:focus-visible {
+  .text-link:focus-visible,
+  :is(
+    .rich-text
+      > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+      a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+        .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+      ),
+    .rich-text
+      > :where(
+        ul:not([class]),
+        ul[class^='s-']:not([class*=' ']),
+        ul[class^='svelte-']:not([class*=' ']),
+        ol:not([class]),
+        ol[class^='s-']:not([class*=' ']),
+        ol[class^='svelte-']:not([class*=' '])
+      )
+      a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+        .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+      )
+  ):focus-visible {
     outline-color: var(--color-focus);
     text-decoration: none;
     transform: translate(0, 0);
     background-color: transparent;
     box-shadow: none;
   }
-  
+
   /* Reduced motion: remove animation and lift */
   @media (prefers-reduced-motion: reduce) {
-    .text-link {
+    .text-link,
+    :is(
+      .rich-text
+        > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        ),
+      .rich-text
+        > :where(
+          ul:not([class]),
+          ul[class^='s-']:not([class*=' ']),
+          ul[class^='svelte-']:not([class*=' ']),
+          ol:not([class]),
+          ol[class^='s-']:not([class*=' ']),
+          ol[class^='svelte-']:not([class*=' '])
+        )
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        )
+    ) {
       transition: none;
       transform: none;
     }
+
     .text-link:hover,
     .text-link:active,
-    .text-link:focus-visible {
+    .text-link:focus-visible,
+    :is(
+      .rich-text
+        > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        ),
+      .rich-text
+        > :where(
+          ul:not([class]),
+          ul[class^='s-']:not([class*=' ']),
+          ul[class^='svelte-']:not([class*=' ']),
+          ol:not([class]),
+          ol[class^='s-']:not([class*=' ']),
+          ol[class^='svelte-']:not([class*=' '])
+        )
+        a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+          .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+        )
+    ):where(:hover, :active, :focus-visible) {
       transform: none;
     }
-  
+
     /* Touch devices stay flat even on press */
     @media (hover: none) and (pointer: coarse) {
-      .text-link:active:not(:focus-visible) {
+      .text-link:active:not(:focus-visible),
+      :is(
+        .rich-text
+          > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+          a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+            .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+          ),
+        .rich-text
+          > :where(
+            ul:not([class]),
+            ul[class^='s-']:not([class*=' ']),
+            ul[class^='svelte-']:not([class*=' ']),
+            ol:not([class]),
+            ol[class^='s-']:not([class*=' ']),
+            ol[class^='svelte-']:not([class*=' '])
+          )
+          a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+            .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+          )
+      ):active:not(:focus-visible) {
         transform: none;
       }
     }

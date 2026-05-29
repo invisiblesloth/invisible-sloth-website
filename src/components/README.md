@@ -35,9 +35,11 @@ override power. These components should not broadly forward arbitrary attributes
 unless that behavior is already public.
 
 This pass adds root `class` only to `ContactUs`, `ProjectCard`,
-`StandardCard`, and `BadgeGroup`. `ContentSection`, `TextBlock`, `FeatureList`,
-`TagGroup`, `DetailHeader`, and `ProductSupport` already forward root
-attributes and keep that broader public contract.
+`StandardCard`, and `BadgeGroup`. `ContentSection`, `TextBlock`,
+`RichTextBlock`, `FeatureList`, `TagGroup`, `DetailHeader`, and
+`ProductSupport` already forward root attributes and keep that broader public
+contract. `RichTextBlock` styles already-rendered prose-shaped markup; it does
+not parse Markdown or HTML.
 
 ### Native-ish Primitives
 

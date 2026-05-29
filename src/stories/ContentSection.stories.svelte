@@ -6,6 +6,9 @@
   // Exercises ContentSection's runtime guards for non-typed callers.
   const invalidRuntimeHeadingLevel = 'h1' as unknown as (typeof headingLevelOptions)[number];
   const invalidRuntimeVisualLevel = 'display-large' as unknown as (typeof headingLevelOptions)[number];
+  const malformedRuntimeBody = {
+    body: 'This object should be ignored as malformed runtime input.',
+  } as unknown as string;
   const richContentHtml = `
     <p>
       In the heart of the digital jungle, semantic body copy can include
@@ -43,7 +46,7 @@
       docs: {
         description: {
           component:
-            'Below-page content section with responsive body typography. `heading` is required, trimmed at the boundary, and fails fast when blank; blanking the required control may break the story canvas. Existing broader root forwarding is public: section attributes land on the root section, while parent compositions own rails, placement, and section spacing.',
+            'Below-page content section with responsive prose body styling delegated to RichTextBlock. `heading` is required, trimmed at the boundary, and fails fast when blank; blanking the required control may break the story canvas. Existing broader root forwarding is public: section attributes land on the root section, while parent compositions own rails, placement, and section spacing.',
         },
       },
     },
@@ -59,7 +62,7 @@
       },
       body: {
         control: 'text',
-        description: 'Plain-text fallback rendered only when no children snippet is provided.',
+        description: 'Plain escaped fallback rendered only when no children snippet is provided.',
       },
       headingLevel: {
         control: { type: 'select' },
@@ -186,6 +189,22 @@
   args={{
     heading: 'Heading without body copy',
     body: '   ',
+  }}
+>
+  {#snippet template(args)}
+    <div class="content-section-story">
+      <div class="rail rail--md rail--padded content-section-story__rail">
+        <ContentSection {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Malformed Body Omitted"
+  args={{
+    heading: 'Heading without usable body copy',
+    body: malformedRuntimeBody,
   }}
 >
   {#snippet template(args)}

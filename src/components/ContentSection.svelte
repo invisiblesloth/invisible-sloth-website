@@ -2,8 +2,9 @@
 /**
  * ContentSection
  *
- * Reusable below-page content section with responsive heading and body typography.
- * Parent composition owns page rails, placement, and section spacing.
+ * Reusable below-page content section with responsive heading and prose body.
+ * Parent composition owns page rails, placement, and section spacing. RichTextBlock
+ * owns already-rendered prose-shaped body styling.
  *
  * Forwarded section attributes land on the root <section>. The heading and
  * body wrappers intentionally receive only component-owned attributes.
@@ -23,6 +24,7 @@
   import { requireNonEmptyString } from '../lib/componentValidation';
   import { warnOnce } from '../lib/devWarnings';
   import Heading from './Heading.svelte';
+  import RichTextBlock from './RichTextBlock.svelte';
 
   const SECTION_HEADING_LEVELS = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
 
@@ -53,7 +55,6 @@
     requireNonEmptyString(heading, { componentName: 'ContentSection', propName: 'heading' })
   );
 
-  const normalizedBody = $derived(String(body ?? '').trim());
   const normalizedHeadingLevel = $derived(
     normalizeSectionHeadingLevel(headingLevel, 'h2')
   );
@@ -62,7 +63,6 @@
       ? normalizedHeadingLevel
       : normalizeSectionHeadingLevel(visualLevel, normalizedHeadingLevel)
   );
-  const hasBodyContent = $derived(Boolean(children) || normalizedBody.length > 0);
   const normalizedClassName = $derived(String(className ?? '').trim());
   const contentSectionClasses = $derived(
     ['content-section', normalizedClassName].filter(Boolean).join(' ')
@@ -100,14 +100,12 @@
     text={normalizedHeading}
   />
 
-  {#if hasBodyContent}
-    <div class="content-section__body text-body-responsive">
-      {#if children}
-        {@render children()}
-      {:else}
-        <p class="content-section__body-fallback">{normalizedBody}</p>
-      {/if}
-    </div>
+  {#if children}
+    <RichTextBlock class="content-section__body">
+      {@render children()}
+    </RichTextBlock>
+  {:else}
+    <RichTextBlock {body} class="content-section__body" />
   {/if}
 </section>
 
@@ -125,163 +123,5 @@
   .content-section__body {
     inline-size: 100%;
     min-inline-size: 0;
-  }
-
-  .content-section__body {
-    overflow-wrap: break-word;
-  }
-
-  .content-section__body > :global(*) {
-    min-inline-size: 0;
-  }
-
-  .content-section__body > :global(:where(p, ul, ol)) {
-    margin-block: 0;
-    overflow-wrap: break-word;
-  }
-
-  .content-section__body > :global(* + *) {
-    margin-block-start: var(--space-gutter);
-  }
-
-  .content-section__body-fallback {
-    overflow-wrap: anywhere;
-  }
-
-  .content-section__body > :global(:where(ul, ol)) {
-    list-style-position: outside;
-    padding-inline-start: var(--space-600);
-  }
-
-  .content-section__body > :global(ul) {
-    list-style-type: disc;
-  }
-
-  .content-section__body > :global(ol) {
-    list-style-type: decimal;
-  }
-
-  .content-section__body > :global(:where(ul, ol) li) {
-    line-height: var(--typography-body-medium-line-height-tight);
-    padding-inline-start: var(--space-100);
-    overflow-wrap: break-word;
-  }
-
-  .content-section__body > :global(:where(ul, ol) li + li) {
-    margin-block-start: var(--space-400);
-  }
-
-  .content-section__body > :global(:where(ul, ol) li::marker) {
-    color: currentcolor;
-  }
-
-  .content-section__body > :global(:where(ul, ol) li > p) {
-    margin-block: 0;
-    overflow-wrap: break-word;
-  }
-
-  .content-section__body > :global(:where(ul, ol) li > p + p) {
-    margin-block-start: var(--space-200);
-  }
-
-  .content-section__body > :global(:where(ul, ol) li > :where(ul, ol)) {
-    margin-block-start: var(--space-200);
-    padding-inline-start: var(--space-600);
-  }
-
-  .content-section__body > :global(:where(ul, ol) li > ul) {
-    list-style-type: circle;
-  }
-
-  .content-section__body > :global(:where(ul, ol) li > ol) {
-    list-style-type: lower-alpha;
-  }
-
-  .content-section__body > :global(:where(ul, ol) li > :where(ul, ol) li > ul) {
-    list-style-type: square;
-  }
-
-  .content-section__body > :global(:where(ul, ol) li > :where(ul, ol) li > ol) {
-    list-style-type: lower-roman;
-  }
-
-  .content-section__body > :global(:where(ul, ol) li > p + :where(ul, ol)) {
-    margin-block-start: var(--space-200);
-  }
-
-  .content-section__body > :global(p a:not([class])),
-  .content-section__body > :global(:where(ul, ol) a:not([class])) {
-    position: relative;
-    display: inline-block;
-    max-inline-size: 100%;
-    padding: 1px 6px;
-    margin: -1px -6px;
-    border-radius: var(--radius-full);
-    color: currentcolor;
-    font-weight: var(--font-weight-medium);
-    text-decoration-line: underline;
-    text-decoration-style: solid;
-    text-decoration-color: var(--text-link-underline, var(--color-link-underline-on-surface));
-    text-decoration-thickness: 0.12em;
-    text-decoration-skip-ink: none;
-    text-underline-offset: 0.125em;
-    outline: var(--focus-outline-width) solid transparent;
-    outline-offset: 0.125em;
-    overflow-wrap: anywhere;
-    transition: transform var(--animation-duration-extra-fast) var(--animation-easing-standard);
-    vertical-align: baseline;
-    will-change: transform;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .content-section__body > :global(p a:not([class]):focus-visible),
-  .content-section__body > :global(:where(ul, ol) a:not([class]):focus-visible) {
-    outline-color: var(--color-focus);
-    text-decoration: none;
-    transform: translate(0, 0);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .content-section__body > :global(p a:not([class]):where(:hover):not(:focus-visible)),
-    .content-section__body
-      > :global(:where(ul, ol) a:not([class]):where(:hover):not(:focus-visible)) {
-      text-decoration-color: currentcolor;
-    }
-
-    .content-section__body > :global(p a:not([class]):where(:active):not(:focus-visible)),
-    .content-section__body
-      > :global(:where(ul, ol) a:not([class]):where(:active):not(:focus-visible)) {
-      text-decoration-color: currentcolor;
-      transform: translateY(1px);
-    }
-  }
-
-  @media (hover: none) and (pointer: coarse) {
-    .content-section__body > :global(p a:not([class])),
-    .content-section__body > :global(:where(ul, ol) a:not([class])) {
-      text-decoration-color: currentcolor;
-    }
-
-    .content-section__body > :global(p a:not([class]):active:not(:focus-visible)),
-    .content-section__body > :global(:where(ul, ol) a:not([class]):active:not(:focus-visible)) {
-      transform: translateY(1px);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .content-section__body > :global(p a:not([class])),
-    .content-section__body > :global(:where(ul, ol) a:not([class])),
-    .content-section__body > :global(p a:not([class]):where(:hover, :active, :focus-visible)),
-    .content-section__body
-      > :global(:where(ul, ol) a:not([class]):where(:hover, :active, :focus-visible)) {
-      transition: none;
-      transform: none;
-    }
-  }
-
-  @media (min-width: 1015px) {
-    .content-section__body > :global(:where(ul, ol) li) {
-      line-height: var(--typography-body-large-line-height-tight);
-    }
   }
 </style>
