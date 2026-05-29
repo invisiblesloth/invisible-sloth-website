@@ -1,70 +1,13 @@
 <script module lang="ts">
-  export type FeatureListItem = {
-    title: string;
-    description: string;
-  };
-
-  type ResolvedFeatureListItem = FeatureListItem & {
-    index: number;
-  };
-
-  type FeatureListResolution = {
-    inputWasArray: boolean;
-    items: ResolvedFeatureListItem[];
-    invalidIndexes: number[];
-  };
-
-  function isRecord(value: unknown): value is Record<string, unknown> {
-    return typeof value === 'object' && value !== null;
-  }
-
-  function resolveFeatureListItems(input: unknown): FeatureListResolution {
-    if (!Array.isArray(input)) {
-      return {
-        inputWasArray: false,
-        items: [],
-        invalidIndexes: [],
-      };
-    }
-
-    const items: ResolvedFeatureListItem[] = [];
-    const invalidIndexes: number[] = [];
-
-    input.forEach((feature, index) => {
-      if (!isRecord(feature)) {
-        invalidIndexes.push(index);
-        return;
-      }
-
-      const title = String(feature.title ?? '').trim();
-      const description = String(feature.description ?? '').trim();
-
-      if (!title || !description) {
-        invalidIndexes.push(index);
-        return;
-      }
-
-      items.push({
-        index,
-        title,
-        description,
-      });
-    });
-
-    return {
-      inputWasArray: true,
-      items,
-      invalidIndexes,
-    };
-  }
+  export type { FeatureListItem } from '../lib/featureListItems';
 </script>
 
 <script lang="ts">
   /**
    * FeatureList
    *
-   * Structured feature copy list for use inside ContentSection. Owns runtime
-   * item validation and quiet, token-driven list presentation.
+   * Structured feature copy list for use inside structured ContentSection bodies.
+   * Owns runtime item validation and quiet, token-driven list presentation.
    * Existing broader root forwarding is part of the public root-hook contract:
    * list attributes land on the root <ul>.
    *
@@ -73,6 +16,8 @@
    */
   import type { SvelteHTMLElements } from 'svelte/elements';
   import { warnOnce } from '../lib/devWarnings';
+  import { resolveFeatureListItems } from '../lib/featureListItems';
+  import type { FeatureListItem } from '../lib/featureListItems';
 
   type ListAttributes = Omit<SvelteHTMLElements['ul'], 'children' | 'class'>;
 

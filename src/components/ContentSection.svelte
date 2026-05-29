@@ -2,9 +2,10 @@
 /**
  * ContentSection
  *
- * Reusable below-page content section with responsive heading and prose body.
+ * Reusable below-page content section with responsive heading and body content.
  * Parent composition owns page rails, placement, and section spacing. RichTextBlock
- * owns already-rendered prose-shaped body styling.
+ * owns prose-shaped body styling; structured children own their own typography,
+ * spacing, and semantics.
  *
  * Forwarded section attributes land on the root <section>. The heading and
  * body wrappers intentionally receive only component-owned attributes.
@@ -14,7 +15,8 @@
  * @prop {string} body - Optional plain-text fallback when no children snippet is provided
  * @prop {string} headingLevel - Semantic section heading level, h2-h6
  * @prop {string} visualLevel - Optional visual heading scale, h2-h6
- * @prop {Snippet} children - Optional rich body content; wins over body when provided
+ * @prop {string} bodyMode - How children are wrapped: prose or structured; does not affect body fallback rendering
+ * @prop {Snippet} children - Optional body content; wins over body when provided
  * @prop {string} class - Additional classes merged onto the root section
  */
 -->
@@ -27,16 +29,21 @@
   import RichTextBlock from './RichTextBlock.svelte';
 
   const SECTION_HEADING_LEVELS = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
+  const SECTION_BODY_MODES = ['prose', 'structured'] as const;
 
   type SectionHeadingLevel = (typeof SECTION_HEADING_LEVELS)[number];
+  type SectionBodyMode = (typeof SECTION_BODY_MODES)[number];
   type SectionAttributes = Omit<SvelteHTMLElements['section'], 'children' | 'class'>;
+  const DEFAULT_SECTION_BODY_MODE: SectionBodyMode = 'prose';
   const VALID_SECTION_HEADING_LEVELS = new Set<unknown>(SECTION_HEADING_LEVELS);
+  const VALID_SECTION_BODY_MODES = new Set<unknown>(SECTION_BODY_MODES);
 
   type Props = SectionAttributes & {
     heading: string;
     body?: string;
     headingLevel?: SectionHeadingLevel;
     visualLevel?: SectionHeadingLevel;
+    bodyMode?: SectionBodyMode;
     children?: Snippet;
     class?: string;
   };
@@ -46,6 +53,7 @@
     body = '',
     headingLevel = 'h2',
     visualLevel,
+    bodyMode = DEFAULT_SECTION_BODY_MODE,
     children,
     class: className = '',
     ...restProps
@@ -63,6 +71,8 @@
       ? normalizedHeadingLevel
       : normalizeSectionHeadingLevel(visualLevel, normalizedHeadingLevel)
   );
+  const normalizedBodyMode = $derived(normalizeSectionBodyMode(bodyMode));
+  const hasInvalidBodyMode = $derived(bodyMode !== normalizedBodyMode);
   const normalizedClassName = $derived(String(className ?? '').trim());
   const contentSectionClasses = $derived(
     ['content-section', normalizedClassName].filter(Boolean).join(' ')
@@ -73,6 +83,12 @@
     fallback: SectionHeadingLevel
   ): SectionHeadingLevel {
     return VALID_SECTION_HEADING_LEVELS.has(value) ? (value as SectionHeadingLevel) : fallback;
+  }
+
+  function normalizeSectionBodyMode(value: unknown): SectionBodyMode {
+    return VALID_SECTION_BODY_MODES.has(value)
+      ? (value as SectionBodyMode)
+      : DEFAULT_SECTION_BODY_MODE;
   }
 
   $effect(() => {
@@ -89,6 +105,13 @@
         '[ContentSection] `visualLevel` must be one of h2, h3, h4, h5, h6. Falling back to the resolved heading level.'
       );
     }
+
+    if (hasInvalidBodyMode) {
+      warnOnce(
+        'content-section:invalid-body-mode',
+        '[ContentSection] `bodyMode` must be either prose or structured. Falling back to prose.'
+      );
+    }
   });
 </script>
 
@@ -101,9 +124,15 @@
   />
 
   {#if children}
-    <RichTextBlock class="content-section__body">
-      {@render children()}
-    </RichTextBlock>
+    {#if normalizedBodyMode === 'structured'}
+      <div class="content-section__body">
+        {@render children()}
+      </div>
+    {:else}
+      <RichTextBlock class="content-section__body">
+        {@render children()}
+      </RichTextBlock>
+    {/if}
   {:else}
     <RichTextBlock {body} class="content-section__body" />
   {/if}

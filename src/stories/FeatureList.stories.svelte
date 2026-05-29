@@ -90,7 +90,7 @@
       docs: {
         description: {
           component:
-            'Structured feature copy list. FeatureList validates item data, renders valid title/description pairs as semantic list items, owns quiet list styling for use inside ContentSection, and keeps existing broader root forwarding to the root ul.',
+            'Structured feature copy list. FeatureList validates item data, renders valid title/description pairs as semantic list items, owns quiet list styling for use inside structured ContentSection bodies, and keeps existing broader root forwarding to the root ul.',
         },
       },
     },
@@ -256,7 +256,7 @@
   {#snippet template(args)}
     <div class="feature-list-story">
       <div class="rail rail--md rail--padded feature-list-story__rail">
-        <ContentSection heading="What You Might Like">
+        <ContentSection heading="What You Might Like" bodyMode="structured">
           <FeatureList {...args} />
         </ContentSection>
       </div>

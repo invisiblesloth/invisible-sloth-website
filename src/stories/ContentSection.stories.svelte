@@ -1,14 +1,30 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import ContentSection from '../components/ContentSection.svelte';
+  import FeatureList from '../components/FeatureList.svelte';
+  import type { FeatureListItem } from '../components/FeatureList.svelte';
 
   const headingLevelOptions = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
+  const bodyModeOptions = ['prose', 'structured'] as const;
   // Exercises ContentSection's runtime guards for non-typed callers.
   const invalidRuntimeHeadingLevel = 'h1' as unknown as (typeof headingLevelOptions)[number];
   const invalidRuntimeVisualLevel = 'display-large' as unknown as (typeof headingLevelOptions)[number];
+  const invalidRuntimeBodyMode = 'layout' as unknown as (typeof bodyModeOptions)[number];
   const malformedRuntimeBody = {
     body: 'This object should be ignored as malformed runtime input.',
   } as unknown as string;
+  const structuredFeatureItems: FeatureListItem[] = [
+    {
+      title: 'Structured child owns its title style.',
+      description:
+        'ContentSection provides only the section heading and body wrapper boundary.',
+    },
+    {
+      title: 'No prose wrapper is applied.',
+      description:
+        'FeatureList keeps its list semantics, rhythm, and responsive typography.',
+    },
+  ];
   const richContentHtml = `
     <p>
       In the heart of the digital jungle, semantic body copy can include
@@ -41,12 +57,12 @@
     tags: ['autodocs'],
     parameters: {
       controls: {
-        include: ['heading', 'body', 'headingLevel', 'visualLevel'],
+        include: ['heading', 'body', 'headingLevel', 'visualLevel', 'bodyMode'],
       },
       docs: {
         description: {
           component:
-            'Below-page content section with responsive prose body styling delegated to RichTextBlock. `heading` is required, trimmed at the boundary, and fails fast when blank; blanking the required control may break the story canvas. Existing broader root forwarding is public: section attributes land on the root section, while parent compositions own rails, placement, and section spacing.',
+            'Below-page content section with prose body styling delegated to RichTextBlock by default. `bodyMode="structured"` gives slotted children a neutral body wrapper so they own their own typography, rhythm, and semantics. Children win over `body`; `bodyMode` only changes child wrapping. `heading` is required, trimmed at the boundary, and fails fast when blank; blanking the required control may break the story canvas. Existing broader root forwarding is public: section attributes land on the root section, while parent compositions own rails, placement, and section spacing.',
         },
       },
     },
@@ -54,6 +70,7 @@
       heading: 'Content section heading',
       body: 'Body copy uses responsive typography: Body Medium below the Extended breakpoint and Body Large at 1015px and wider.',
       headingLevel: 'h2',
+      bodyMode: 'prose',
     },
     argTypes: {
       heading: {
@@ -73,6 +90,12 @@
         control: { type: 'select' },
         options: headingLevelOptions,
         description: 'Optional visual heading scale. Defaults to headingLevel.',
+      },
+      bodyMode: {
+        control: { type: 'select' },
+        options: bodyModeOptions,
+        description:
+          'Controls how slotted children are wrapped. Children win over body; plain body copy always renders through RichTextBlock.',
       },
       class: {
         control: false,
@@ -167,6 +190,33 @@
 </Story>
 
 <Story
+  name="Structured Children"
+  args={{
+    heading: 'Structured child content',
+    body: 'This fallback body should not render while children are present.',
+    bodyMode: 'structured',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Structured mode wraps children in only the neutral body boundary; the child component owns internal typography, spacing, and semantics.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <div class="content-section-story">
+      <div class="rail rail--md rail--padded content-section-story__rail">
+        <ContentSection {...args}>
+          <FeatureList items={structuredFeatureItems} />
+        </ContentSection>
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
   name="Heading Visual Split"
   args={{
     heading: 'Semantic H3 with H2 visual scale',
@@ -189,6 +239,31 @@
   args={{
     heading: 'Heading without body copy',
     body: '   ',
+  }}
+>
+  {#snippet template(args)}
+    <div class="content-section-story">
+      <div class="rail rail--md rail--padded content-section-story__rail">
+        <ContentSection {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Structured Empty Body Omitted"
+  args={{
+    heading: 'Structured mode without child content',
+    body: '   ',
+    bodyMode: 'structured',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Structured mode only applies when children are present. Without children, the plain body fallback still delegates to RichTextBlock and empty body content renders no body DOM.',
+      },
+    },
   }}
 >
   {#snippet template(args)}
@@ -229,6 +304,28 @@
     <div class="content-section-story">
       <div class="rail rail--md rail--padded content-section-story__rail">
         <ContentSection {...args} />
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Invalid Body Mode Fallback"
+  args={{
+    heading: 'Invalid body mode fallback',
+    body: 'Malformed bodyMode values fall back to prose wrapping.',
+    bodyMode: invalidRuntimeBodyMode,
+  }}
+>
+  {#snippet template(args)}
+    <div class="content-section-story">
+      <div class="rail rail--md rail--padded content-section-story__rail">
+        <ContentSection {...args}>
+          <p>
+            This slotted paragraph should still receive default prose wrapping after the
+            malformed bodyMode falls back.
+          </p>
+        </ContentSection>
       </div>
     </div>
   {/snippet}

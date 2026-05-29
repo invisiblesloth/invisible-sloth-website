@@ -41,6 +41,14 @@ This pass adds root `class` only to `ContactUs`, `ProjectCard`,
 contract. `RichTextBlock` styles already-rendered prose-shaped markup; it does
 not parse Markdown or HTML.
 
+`ContentSection` forwards root section attributes and owns section heading/body
+placement. Slotted children default to prose mode and render through
+`RichTextBlock`; set `bodyMode="structured"` when a child component owns its own
+typography, rhythm, semantics, and internal spacing. Children still win over the
+plain `body` prop, and plain `body` always remains prose-shaped fallback content.
+`FeatureList` keeps its existing broad root `<ul>` forwarding surface for
+compatibility; new components should not copy that breadth by default.
+
 ### Native-ish Primitives
 
 Native-ish primitives mostly wrap one semantic element and may forward their
@@ -53,7 +61,8 @@ native-attribute forwarder because it switches rendered element by orientation.
 Data compositions prefer typed data props, callbacks, snippets, and controlled
 extension points over arbitrary flexibility. `TagLinkGroup` passes `class` and
 rest props through to its internal `TagGroup`, and renders no DOM when there are
-no valid tags.
+no valid tags. `FeatureList` owns structured feature list rendering and warning
+behavior, while pure item normalization lives in `src/lib`.
 
 ### Grandfathered Broad Interactive Primitive
 
