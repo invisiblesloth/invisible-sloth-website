@@ -46,6 +46,8 @@ placement. Slotted children default to prose mode and render through
 `RichTextBlock`; set `bodyMode="structured"` when a child component owns its own
 typography, rhythm, semantics, and internal spacing. Children still win over the
 plain `body` prop, and plain `body` always remains prose-shaped fallback content.
+`ProductStatus` exposes only a root `class` on its panel surface; parent
+composition owns rails, placement, and section rhythm.
 `FeatureList` keeps its existing broad root `<ul>` forwarding surface for
 compatibility; new components should not copy that breadth by default.
 

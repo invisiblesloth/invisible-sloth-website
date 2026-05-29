@@ -9,21 +9,20 @@
     'Requires iPhone running iOS 26 or later while the private beta remains limited to a small testing group.';
   const longUnbrokenTokenText =
     'Tracer private beta reference: TracerPrivateBetaStatusSuperLongUnbrokenTokenThatShouldStillWrapInsideTheStatusPanelAtCompactWidthsWithoutEscapingTheCanvas.';
-  const blankRuntimeText = '   ' as unknown as string;
-  const nonStringRuntimeText = { text: 'Tracer is currently in private beta.' } as unknown as string;
 
   const { Story } = defineMeta({
     title: 'Molecules/ProductStatus',
     component: ProductStatus,
     tags: ['autodocs'],
     parameters: {
+      layout: 'fullscreen',
       controls: {
-        include: ['text', 'detail'],
+        include: ['text', 'detail', 'class'],
       },
       docs: {
         description: {
           component:
-            'Figma-aligned quiet product status panel for short product-page context. ProductStatus intentionally supports only `text`, `detail`, and a root `class` for layout hooks, global utilities, and global selectors; use wrapper markup for demo structure.',
+            'Figma-aligned quiet product status panel for short product-page context. ProductStatus intentionally supports only `text`, `detail`, and a root `class`; `class` lands on the `.product-status` root panel as a styling hook. Parent composition owns rails, placement, and section rhythm; these stories use preview-only wrapper markup for realistic rail width.',
         },
       },
     },
@@ -35,30 +34,49 @@
       text: {
         control: 'text',
         description:
-          'Required visible status copy. Blank or non-string runtime values are guarded and render no DOM.',
+          'Required visible status copy. Blank or non-string runtime values throw during render.',
       },
       detail: {
         control: 'text',
-        description: 'Optional secondary status detail.',
+        description: 'Optional secondary status detail, trimmed before rendering.',
+      },
+      class: {
+        control: 'text',
+        description:
+          'Optional string classes appended to the `.product-status` root panel as a styling hook.',
       },
     },
   });
 </script>
 
 <style>
-  .product-status-story__absence-check {
-    min-block-size: var(--space-1200);
-    padding: var(--space-300);
-    border: 1px dashed var(--color-outline);
+  .product-status-story__preview-rail {
+    box-sizing: border-box;
+    inline-size: 100%;
+    margin-inline: auto;
+    padding-inline: var(--space-rail-inline);
   }
 
-  .product-status-story__absence-label {
-    margin: 0 0 var(--space-300);
-    color: var(--color-on-surface-variant);
+  :global(.product-status-story__panel-hook) {
+    outline: 2px solid var(--color-outline);
+    outline-offset: -4px;
+  }
+
+  @media (min-width: 1176px) {
+    .product-status-story__preview-rail {
+      max-inline-size: var(--size-rail-md);
+      padding-inline: 0;
+    }
   }
 </style>
 
-<Story name="Default" />
+<Story name="Default">
+  {#snippet template(args)}
+    <div class="product-status-story__preview-rail" data-preview-layout="story-owned">
+      <ProductStatus {...args} />
+    </div>
+  {/snippet}
+</Story>
 
 <Story
   name="Long Sentence"
@@ -66,7 +84,13 @@
     text: longStatusText,
     detail: longDetailText,
   }}
-/>
+>
+  {#snippet template(args)}
+    <div class="product-status-story__preview-rail" data-preview-layout="story-owned">
+      <ProductStatus {...args} />
+    </div>
+  {/snippet}
+</Story>
 
 <Story
   name="Long Unbroken Token"
@@ -74,51 +98,22 @@
     text: 'Tracer is currently in private beta.',
     detail: longUnbrokenTokenText,
   }}
-/>
-
-<Story
-  name="Blank Runtime Text (No DOM)"
-  args={{
-    text: blankRuntimeText,
-  }}
-  parameters={{
-    docs: {
-      description: {
-        story:
-          'Blank runtime text is guarded against and renders no ProductStatus DOM. This is not a supported TypeScript authoring shape.',
-      },
-    },
-  }}
 >
   {#snippet template(args)}
-    <div class="product-status-story__absence-check" data-case="blank-text">
-      <p class="product-status-story__absence-label text-label-large">
-        Absence check: no ProductStatus DOM should render below.
-      </p>
+    <div class="product-status-story__preview-rail" data-preview-layout="story-owned">
       <ProductStatus {...args} />
     </div>
   {/snippet}
 </Story>
 
 <Story
-  name="Non-string Runtime Text (No DOM)"
+  name="Panel Class Hook"
   args={{
-    text: nonStringRuntimeText,
-  }}
-  parameters={{
-    docs: {
-      description: {
-        story:
-          'Malformed non-string runtime text is guarded against and renders no ProductStatus DOM. This is not a supported TypeScript authoring shape.',
-      },
-    },
+    class: 'product-status-story__panel-hook',
   }}
 >
   {#snippet template(args)}
-    <div class="product-status-story__absence-check" data-case="non-string-text">
-      <p class="product-status-story__absence-label text-label-large">
-        Absence check: no ProductStatus DOM should render below.
-      </p>
+    <div class="product-status-story__preview-rail" data-preview-layout="story-owned">
       <ProductStatus {...args} />
     </div>
   {/snippet}

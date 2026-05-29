@@ -2,15 +2,16 @@
   /**
    * ProductStatus
    *
-   * Quiet product-page status panel for short explanatory status copy.
-   * The public API is intentionally narrow: only visible copy and a root class
-   * hook are supported.
+   * Quiet product-page status panel for short explanatory status copy. Parent
+   * composition owns rails, placement, and section rhythm.
+   * The public API is intentionally narrow: only visible copy and a root/panel
+   * styling hook are supported.
    *
    * @prop {string} text - Required visible status text, trimmed at the boundary
    * @prop {string} detail - Optional secondary status detail, trimmed at the boundary
-   * @prop {string} class - Additional CSS classes for the root wrapper
+   * @prop {string} class - Additional string classes for the root panel
    */
-  import { warnOnce } from '../lib/devWarnings';
+  import { requireNonEmptyString } from '../lib/componentValidation';
 
   let {
     text,
@@ -22,57 +23,28 @@
     class?: string;
   } = $props();
 
-  const normalizedText = $derived(typeof text === 'string' ? text.trim() : '');
+  const normalizedText = $derived(
+    requireNonEmptyString(text, { componentName: 'ProductStatus', propName: 'text' })
+  );
   const normalizedDetail = $derived(typeof detail === 'string' ? detail.trim() : '');
-  const hasText = $derived(normalizedText.length > 0);
   const hasDetail = $derived(normalizedDetail.length > 0);
-  const normalizedClassName = $derived(String(className ?? '').trim());
+  const normalizedClassName = $derived(typeof className === 'string' ? className.trim() : '');
   const productStatusClasses = $derived(
     ['product-status', normalizedClassName].filter(Boolean).join(' ')
   );
-
-  $effect(() => {
-    if (!hasText) {
-      warnOnce(
-        'product-status:blank-text',
-        '[ProductStatus] `text` must be a non-empty string after trimming. Rendering nothing.'
-      );
-    }
-  });
 </script>
 
-{#if hasText}
-  <div class={productStatusClasses}>
-    <div class="product-status__rail">
-      <div class="product-status__panel">
-        <p class="product-status__text text-body-responsive">
-          <strong class="product-status__headline">{normalizedText}</strong>
-          {#if hasDetail}
-            <span class="product-status__detail">{normalizedDetail}</span>
-          {/if}
-        </p>
-      </div>
-    </div>
-  </div>
-{/if}
+<div class={productStatusClasses}>
+  <p class="product-status__text text-body-responsive">
+    <strong class="product-status__headline">{normalizedText}</strong>
+    {#if hasDetail}
+      <span class="product-status__detail">{normalizedDetail}</span>
+    {/if}
+  </p>
+</div>
 
 <style>
   .product-status {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    inline-size: 100%;
-    padding-block-end: var(--space-section-block);
-  }
-
-  .product-status__rail {
-    box-sizing: border-box;
-    inline-size: 100%;
-    margin-inline: auto;
-    padding-inline: var(--space-rail-inline);
-  }
-
-  .product-status__panel {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -102,12 +74,5 @@
 
   .product-status__headline {
     font-weight: var(--typography-body-medium-weight-prominent);
-  }
-
-  @media (min-width: 1176px) {
-    .product-status__rail {
-      max-inline-size: var(--size-rail-md);
-      padding-inline: 0;
-    }
   }
 </style>
