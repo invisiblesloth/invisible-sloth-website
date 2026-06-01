@@ -120,9 +120,12 @@ const supportDocuments: ProductSupportDocumentLink[] = [
       <ProductSupport
         id="support"
         heading="Support"
-        emailPrompt="Have a question, found a bug, or want to send beta feedback? Email"
+        emailPrompt="For feedback, bug reports, or questions, email"
         supportEmail="support@invisiblesloth.com"
-        supportDetail="Because Tracer keeps your data on your device, Invisible Sloth doesn't have access to your records. We can still help you troubleshoot and work through the options available on your phone."
+        supportDetails={[
+          "Tracer stores data on your device, so Invisible Sloth does not have access to your activities, entries, notes, or backups unless you choose to send them.",
+          "We are a small team, so we may not be able to reply to every email, but we do our best to read them all. Thank you for understanding.",
+        ]}
         documentsHeading="Tracer App Documents"
         documents={supportDocuments}
       />

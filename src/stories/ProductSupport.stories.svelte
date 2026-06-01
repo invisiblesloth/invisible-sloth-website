@@ -13,11 +13,11 @@
   const defaultDocuments: ProductSupportDocumentLink[] = [
     {
       label: 'Tracer App Privacy Policy',
-      href: '#tracer-app-privacy-policy',
+      href: '/tracer/privacy',
     },
     {
       label: 'Tracer App Terms of Use',
-      href: '#tracer-app-terms-of-use',
+      href: '/tracer/terms',
     },
   ];
 
@@ -52,11 +52,13 @@
 
   const defaultArgs = {
     heading: 'Support',
-    emailPrompt: 'Have a question, found a bug, or want to send beta feedback? Email',
-    supportEmail: 'tracer@invisiblesloth.com',
-    supportDetail:
-      "Because Tracer keeps your data on your device, Invisible Sloth doesn't have access to your records. We can still help you troubleshoot and work through the options available on your phone.",
-    documentsHeading: 'Tracer app documents',
+    emailPrompt: 'For feedback, bug reports, or questions, email',
+    supportEmail: 'support@invisiblesloth.com',
+    supportDetails: [
+      'Tracer stores data on your device, so Invisible Sloth does not have access to your activities, entries, notes, or backups unless you choose to send them.',
+      'We are a small team, so we may not be able to reply to every email, but we do our best to read them all. Thank you for understanding.',
+    ],
+    documentsHeading: 'Tracer App Documents',
     documents: defaultDocuments,
     headingLevel: 'h2',
     documentsHeadingLevel: 'h3',
@@ -72,7 +74,7 @@
           'heading',
           'emailPrompt',
           'supportEmail',
-          'supportDetail',
+          'supportDetails',
           'documentsHeading',
           'documents',
           'headingLevel',
@@ -82,7 +84,7 @@
       docs: {
         description: {
           component:
-            'Self-contained product support section with a Figma-aligned rail, support contact copy, and document links. Required strings and document links fail fast when blank or malformed. Email syntax validation is out of scope. Existing broader root forwarding is public: section attributes land on the root section. Default heading structure is h2 then h3; callers using a different page hierarchy should set both heading levels intentionally.',
+            'Self-contained product support section with a Figma-aligned rail, support contact copy, and document links. Pass exactly one support-copy prop: preferred multi-paragraph supportDetails or legacy single-paragraph supportDetail. Required strings and document links fail fast when blank or malformed. Email syntax validation is out of scope. Existing broader root forwarding is public: section attributes land on the root section. Default heading structure is h2 then h3; callers using a different page hierarchy should set both heading levels intentionally.',
         },
       },
     },
@@ -103,8 +105,14 @@
           'Required email address used for the visible link label and mailto target. Syntax validation is out of scope.',
       },
       supportDetail: {
-        control: 'text',
-        description: 'Required explanatory support copy.',
+        control: false,
+        description:
+          'Legacy single-paragraph support copy. Pass exactly one of supportDetail or supportDetails.',
+      },
+      supportDetails: {
+        control: 'object',
+        description:
+          'Preferred multi-paragraph support copy. Pass exactly one of supportDetails or supportDetail.',
       },
       documentsHeading: {
         control: 'text',
@@ -142,8 +150,10 @@
   args={{
     emailPrompt:
       'Have a long support question, found a subtle bug, want to send beta feedback, or need help understanding how Tracer records time on your iPhone? Email',
-    supportDetail:
-      'Because Tracer keeps every activity, entry, note, and timer record on your device, Invisible Sloth cannot inspect your records remotely. We can still help you troubleshoot settings, exports, editing questions, and the options available directly on your phone.',
+    supportDetails: [
+      'Because Tracer keeps every activity, entry, note, and timer record on your device, Invisible Sloth cannot inspect your records remotely.',
+      'We can still help you troubleshoot settings, exports, editing questions, and the options available directly on your phone.',
+    ],
     documents: longDocuments,
   }}
 />
@@ -159,19 +169,21 @@
   name="Whitespace Trim"
   args={{
     heading: '  Support  ',
-    emailPrompt: '  Have a question, found a bug, or want to send beta feedback? Email  ',
-    supportEmail: '  tracer@invisiblesloth.com  ',
-    supportDetail:
-      "  Because Tracer keeps your data on your device, Invisible Sloth doesn't have access to your records. We can still help you troubleshoot and work through the options available on your phone.  ",
-    documentsHeading: '  Tracer app documents  ',
+    emailPrompt: '  For feedback, bug reports, or questions, email  ',
+    supportEmail: '  support@invisiblesloth.com  ',
+    supportDetails: [
+      '  Tracer stores data on your device, so Invisible Sloth does not have access to your activities, entries, notes, or backups unless you choose to send them.  ',
+      '  We are a small team, so we may not be able to reply to every email, but we do our best to read them all. Thank you for understanding.  ',
+    ],
+    documentsHeading: '  Tracer App Documents  ',
     documents: [
       {
         label: '  Tracer App Privacy Policy  ',
-        href: '  #tracer-app-privacy-policy  ',
+        href: '  /tracer/privacy  ',
       },
       {
         label: '  Tracer App Terms of Use  ',
-        href: '  #tracer-app-terms-of-use  ',
+        href: '  /tracer/terms  ',
       },
     ],
   }}

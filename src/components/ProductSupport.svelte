@@ -10,6 +10,55 @@
     index: number;
   };
 
+  function requireSupportDetailsItem(value: unknown, index: number): string {
+    const normalizedValue = typeof value === 'string' ? value.trim() : '';
+
+    if (normalizedValue.length === 0) {
+      throw new Error(
+        `[ProductSupport] \`supportDetails.${index}\` must resolve to a non-empty string after trimming.`
+      );
+    }
+
+    return normalizedValue;
+  }
+
+  function resolveProductSupportDetails(
+    supportDetail: unknown,
+    supportDetails: unknown
+  ): string[] {
+    const hasSupportDetail = supportDetail !== undefined;
+    const hasSupportDetails = supportDetails !== undefined;
+
+    if (hasSupportDetail && hasSupportDetails) {
+      throw new Error(
+        '[ProductSupport] Pass exactly one of `supportDetail` or `supportDetails`; both were provided.'
+      );
+    }
+
+    if (!hasSupportDetail && !hasSupportDetails) {
+      throw new Error(
+        '[ProductSupport] Pass exactly one of `supportDetail` or `supportDetails`; neither was provided.'
+      );
+    }
+
+    if (hasSupportDetails) {
+      if (!Array.isArray(supportDetails) || supportDetails.length === 0) {
+        throw new Error('[ProductSupport] `supportDetails` must be a non-empty array.');
+      }
+
+      return Array.from(supportDetails, (supportDetailItem, index) =>
+        requireSupportDetailsItem(supportDetailItem, index)
+      );
+    }
+
+    return [
+      requireNonEmptyString(supportDetail, {
+        componentName: 'ProductSupport',
+        propName: 'supportDetail',
+      }),
+    ];
+  }
+
   function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
   }
@@ -38,7 +87,7 @@
       throw new Error('[ProductSupport] `documents` must be a non-empty array.');
     }
 
-    return documents.map((documentLink, index) => {
+    return Array.from(documents, (documentLink, index) => {
       if (!isRecord(documentLink)) {
         throw new Error(
           `[ProductSupport] \`documents.${index}\` must include non-empty string label and href values.`
@@ -72,7 +121,8 @@
    * @prop {string} heading - Required visible section heading, trimmed at the boundary
    * @prop {string} emailPrompt - Required copy before the support email link
    * @prop {string} supportEmail - Required visible email and mailto target; syntax validation is out of scope
-   * @prop {string} supportDetail - Required explanatory support copy
+   * @prop {string} supportDetail - Legacy single-paragraph support copy; pass exactly one of supportDetail or supportDetails
+   * @prop {string[]} supportDetails - Preferred multi-paragraph support copy; pass exactly one of supportDetail or supportDetails
    * @prop {string} documentsHeading - Required visible heading for document links
    * @prop {ProductSupportDocumentLink[]} documents - Required non-empty document link list
    * @prop {string} headingLevel - Semantic heading level for heading, h2-h6
@@ -91,12 +141,20 @@
   type SupportHeadingLevel = (typeof SUPPORT_HEADING_LEVELS)[number];
   type DocumentsHeadingLevel = (typeof DOCUMENTS_HEADING_LEVELS)[number];
   type SectionAttributes = Omit<SvelteHTMLElements['section'], 'children' | 'class'>;
+  type SupportCopyProps =
+    | {
+        supportDetail: string;
+        supportDetails?: never;
+      }
+    | {
+        supportDetail?: never;
+        supportDetails: string[];
+      };
 
-  type Props = SectionAttributes & {
+  type BaseProps = SectionAttributes & {
     heading: string;
     emailPrompt: string;
     supportEmail: string;
-    supportDetail: string;
     documentsHeading: string;
     documents: ProductSupportDocumentLink[];
     headingLevel?: SupportHeadingLevel;
@@ -104,11 +162,14 @@
     class?: string;
   };
 
+  type Props = BaseProps & SupportCopyProps;
+
   let {
     heading,
     emailPrompt,
     supportEmail,
     supportDetail,
+    supportDetails,
     documentsHeading,
     documents,
     headingLevel = 'h2',
@@ -135,11 +196,8 @@
       propName: 'supportEmail',
     })
   );
-  const normalizedSupportDetail = $derived(
-    requireNonEmptyString(supportDetail, {
-      componentName: 'ProductSupport',
-      propName: 'supportDetail',
-    })
+  const normalizedSupportDetails = $derived(
+    resolveProductSupportDetails(supportDetail, supportDetails)
   );
   const normalizedDocumentsHeading = $derived(
     requireNonEmptyString(documentsHeading, {
@@ -193,7 +251,9 @@
             {normalizedEmailPrompt}{' '}
             <a href={emailHref} class="product-support__link text-link">{normalizedSupportEmail}</a>.
           </p>
-          <p>{normalizedSupportDetail}</p>
+          {#each normalizedSupportDetails as normalizedSupportDetail}
+            <p>{normalizedSupportDetail}</p>
+          {/each}
         </div>
       </div>
 
