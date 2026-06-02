@@ -36,10 +36,11 @@ unless that behavior is already public.
 
 This pass adds root `class` only to `ContactUs`, `ProjectCard`,
 `StandardCard`, and `BadgeGroup`. `ContentSection`, `TextBlock`,
-`RichTextBlock`, `FeatureList`, `TagGroup`, `DetailHeader`, and
-`ProductSupport` already forward root attributes and keep that broader public
-contract. `RichTextBlock` styles already-rendered prose-shaped markup; it does
-not parse Markdown or HTML.
+`RichTextBlock`, `FeatureList`, `TagGroup`, and `DetailHeader` already forward
+root attributes and keep that broader public contract. `ProductSupport`
+forwards root panel attributes/classes, while parent composition owns rails,
+placement, section semantics, anchors, and section rhythm. `RichTextBlock`
+styles already-rendered prose-shaped markup; it does not parse Markdown or HTML.
 
 `ContentSection` forwards root section attributes and owns section heading/body
 placement. Slotted children default to prose mode and render through

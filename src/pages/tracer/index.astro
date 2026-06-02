@@ -117,18 +117,21 @@ const supportDocuments: ProductSupportDocumentLink[] = [
         </ContentSection>
       </Container>
 
-      <ProductSupport
-        id="support"
-        heading="Support"
-        emailPrompt="For feedback, bug reports, or questions, email"
-        supportEmail="support@invisiblesloth.com"
-        supportDetails={[
-          "Tracer stores data on your device, so Invisible Sloth does not have access to your activities, entries, notes, or backups unless you choose to send them.",
-          "We are a small team, so we may not be able to reply to every email, but we do our best to read them all. Thank you for understanding.",
-        ]}
-        documentsHeading="Tracer App Documents"
-        documents={supportDocuments}
-      />
+      <section id="support" class="tracer-page__support">
+        <div class="tracer-page__support-rail">
+          <ProductSupport
+            heading="Support"
+            emailPrompt="For feedback, bug reports, or questions, email"
+            supportEmail="support@invisiblesloth.com"
+            supportDetails={[
+              "Tracer stores data on your device, so Invisible Sloth does not have access to your activities, entries, notes, or backups unless you choose to send them.",
+              "We are a small team, so we may not be able to reply to every email, but we do our best to read them all. Thank you for understanding.",
+            ]}
+            documentsHeading="Tracer App Documents"
+            documents={supportDocuments}
+          />
+        </div>
+      </section>
     </section>
   </main>
 </SiteChrome>
@@ -142,8 +145,29 @@ const supportDocuments: ProductSupportDocumentLink[] = [
     padding-block-end: var(--space-section-block);
   }
 
+  .tracer-page__support {
+    padding-block-end: var(--space-section-block);
+  }
+
+  .tracer-page__support-rail {
+    box-sizing: border-box;
+    inline-size: 100%;
+    margin-inline: auto;
+  }
+
+  @media (min-width: 632px) {
+    .tracer-page__support-rail {
+      padding-inline: var(--space-rail-inline);
+    }
+  }
+
   @media (min-width: 1176px) {
     :global(.tracer-page .tracer-page__content-group) {
+      padding-inline: 0;
+    }
+
+    .tracer-page__support-rail {
+      max-inline-size: var(--size-rail-md);
       padding-inline: 0;
     }
   }

@@ -110,24 +110,25 @@
   /**
    * ProductSupport
    *
-   * Self-contained product support section with a Figma-aligned rail, support
-   * contact copy, and document links. Required primary content fails fast.
-   * Forwarded section attributes land on the root <section>.
-   * Existing broader root forwarding is part of the public root-hook contract.
+   * Product support panel with support contact copy and document links.
+   * Required primary content fails fast. Parent composition owns section
+   * semantics, anchors, rails, placement, and section rhythm.
+   * Forwarded div attributes land on the root panel <div>.
    *
-   * Default heading structure is h2 then h3. Callers using a different page
-   * hierarchy should set both heading levels intentionally.
+   * Default heading structure is h2 then derived document heading level.
+   * Callers using a different page hierarchy may set both heading levels
+   * intentionally.
    *
    * @prop {string} heading - Required visible section heading, trimmed at the boundary
    * @prop {string} emailPrompt - Required copy before the support email link
    * @prop {string} supportEmail - Required visible email and mailto target; syntax validation is out of scope
-   * @prop {string} supportDetail - Legacy single-paragraph support copy; pass exactly one of supportDetail or supportDetails
+   * @prop {string} supportDetail - Deprecated legacy single-paragraph support copy; pass exactly one of supportDetail or supportDetails
    * @prop {string[]} supportDetails - Preferred multi-paragraph support copy; pass exactly one of supportDetail or supportDetails
    * @prop {string} documentsHeading - Required visible heading for document links
    * @prop {ProductSupportDocumentLink[]} documents - Required non-empty document link list
    * @prop {string} headingLevel - Semantic heading level for heading, h2-h6
-   * @prop {string} documentsHeadingLevel - Semantic heading level for documentsHeading, h3-h6
-   * @prop {string} class - Additional classes merged onto the root section
+   * @prop {string} documentsHeadingLevel - Optional semantic heading level for documentsHeading, h3-h6; derives from headingLevel when omitted
+   * @prop {string} class - Additional classes merged onto the root panel
    */
   import type { SvelteHTMLElements } from 'svelte/elements';
   import { warnOnce } from '../lib/devWarnings';
@@ -140,9 +141,10 @@
 
   type SupportHeadingLevel = (typeof SUPPORT_HEADING_LEVELS)[number];
   type DocumentsHeadingLevel = (typeof DOCUMENTS_HEADING_LEVELS)[number];
-  type SectionAttributes = Omit<SvelteHTMLElements['section'], 'children' | 'class'>;
+  type PanelAttributes = Omit<SvelteHTMLElements['div'], 'children' | 'class'>;
   type SupportCopyProps =
     | {
+        /** @deprecated Use supportDetails for support copy. */
         supportDetail: string;
         supportDetails?: never;
       }
@@ -151,7 +153,7 @@
         supportDetails: string[];
       };
 
-  type BaseProps = SectionAttributes & {
+  type BaseProps = PanelAttributes & {
     heading: string;
     emailPrompt: string;
     supportEmail: string;
@@ -163,6 +165,13 @@
   };
 
   type Props = BaseProps & SupportCopyProps;
+  const DERIVED_DOCUMENTS_HEADING_LEVELS: Record<SupportHeadingLevel, DocumentsHeadingLevel> = {
+    h2: 'h3',
+    h3: 'h4',
+    h4: 'h5',
+    h5: 'h6',
+    h6: 'h6',
+  };
 
   let {
     heading,
@@ -173,10 +182,25 @@
     documentsHeading,
     documents,
     headingLevel = 'h2',
-    documentsHeadingLevel = 'h3',
+    documentsHeadingLevel,
     class: className = '',
     ...restProps
   }: Props = $props();
+
+  function normalizeSupportHeadingLevel(value: unknown): SupportHeadingLevel {
+    return VALID_SUPPORT_HEADING_LEVELS.has(value) ? (value as SupportHeadingLevel) : 'h2';
+  }
+
+  function resolveDocumentsHeadingLevel(
+    value: unknown,
+    derivedHeadingLevel: SupportHeadingLevel
+  ): DocumentsHeadingLevel {
+    if (value === undefined) {
+      return DERIVED_DOCUMENTS_HEADING_LEVELS[derivedHeadingLevel];
+    }
+
+    return VALID_DOCUMENTS_HEADING_LEVELS.has(value) ? (value as DocumentsHeadingLevel) : 'h3';
+  }
 
   const normalizedHeading = $derived(
     requireNonEmptyString(heading, {
@@ -207,11 +231,9 @@
   );
   const normalizedDocuments = $derived(resolveProductSupportDocuments(documents));
   const emailHref = $derived(`mailto:${normalizedSupportEmail}`);
-  const normalizedHeadingLevel = $derived(
-    VALID_SUPPORT_HEADING_LEVELS.has(headingLevel) ? headingLevel : 'h2'
-  );
+  const normalizedHeadingLevel = $derived(normalizeSupportHeadingLevel(headingLevel));
   const normalizedDocumentsHeadingLevel = $derived(
-    VALID_DOCUMENTS_HEADING_LEVELS.has(documentsHeadingLevel) ? documentsHeadingLevel : 'h3'
+    resolveDocumentsHeadingLevel(documentsHeadingLevel, normalizedHeadingLevel)
   );
   const normalizedClassName = $derived(String(className ?? '').trim());
   const productSupportClasses = $derived(
@@ -226,7 +248,10 @@
       );
     }
 
-    if (!VALID_DOCUMENTS_HEADING_LEVELS.has(documentsHeadingLevel)) {
+    if (
+      documentsHeadingLevel !== undefined &&
+      !VALID_DOCUMENTS_HEADING_LEVELS.has(documentsHeadingLevel)
+    ) {
       warnOnce(
         'product-support:invalid-documents-heading-level',
         '[ProductSupport] `documentsHeadingLevel` must be one of h3, h4, h5, h6. Falling back to h3.'
@@ -235,68 +260,50 @@
   });
 </script>
 
-<section {...restProps} class={productSupportClasses}>
-  <div class="product-support__rail">
-    <div class="product-support__surface">
-      <div class="product-support__content">
-        <Heading
-          level={normalizedHeadingLevel}
-          visualLevel="h3"
-          text={normalizedHeading}
-          class="product-support__heading"
-        />
+<div {...restProps} class={productSupportClasses}>
+  <div class="product-support__content">
+    <Heading
+      level={normalizedHeadingLevel}
+      visualLevel="h3"
+      text={normalizedHeading}
+      class="product-support__heading"
+    />
 
-        <div class="product-support__body text-body-responsive-tight">
-          <p>
-            {normalizedEmailPrompt}{' '}
-            <a href={emailHref} class="product-support__link text-link">{normalizedSupportEmail}</a>.
-          </p>
-          {#each normalizedSupportDetails as normalizedSupportDetail}
-            <p>{normalizedSupportDetail}</p>
-          {/each}
-        </div>
-      </div>
-
-      <div class="product-support__divider" aria-hidden="true"></div>
-
-      <div class="product-support__content">
-        <Heading
-          level={normalizedDocumentsHeadingLevel}
-          visualLevel="h4"
-          text={normalizedDocumentsHeading}
-          class="product-support__documents-heading"
-        />
-
-        <ul class="product-support__documents text-body-responsive-tight">
-          {#each normalizedDocuments as documentLink (documentLink.index)}
-            <li class="product-support__document">
-              <a href={documentLink.href} class="product-support__link text-link">
-                {documentLink.label}
-              </a>
-            </li>
-          {/each}
-        </ul>
-      </div>
+    <div class="product-support__body text-body-responsive-tight">
+      <p>
+        {normalizedEmailPrompt}{' '}
+        <a href={emailHref} class="product-support__link text-link">{normalizedSupportEmail}</a>.
+      </p>
+      {#each normalizedSupportDetails as normalizedSupportDetail}
+        <p>{normalizedSupportDetail}</p>
+      {/each}
     </div>
   </div>
-</section>
+
+  <div class="product-support__divider" aria-hidden="true"></div>
+
+  <div class="product-support__content">
+    <Heading
+      level={normalizedDocumentsHeadingLevel}
+      visualLevel="h4"
+      text={normalizedDocumentsHeading}
+      class="product-support__documents-heading"
+    />
+
+    <ul class="product-support__documents text-body-responsive-tight">
+      {#each normalizedDocuments as documentLink (documentLink.index)}
+        <li class="product-support__document">
+          <a href={documentLink.href} class="product-support__link text-link">
+            {documentLink.label}
+          </a>
+        </li>
+      {/each}
+    </ul>
+  </div>
+</div>
 
 <style>
   .product-support {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    inline-size: 100%;
-    padding-block-end: var(--space-section-block);
-  }
-
-  .product-support__rail {
-    box-sizing: border-box;
-    inline-size: 100%;
-    margin-inline: auto;
-  }
-
-  .product-support__surface {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -369,23 +376,14 @@
   }
 
   @media (min-width: 632px) {
-    .product-support__rail {
-      padding-inline: var(--space-rail-inline);
-    }
-
-    .product-support__surface {
-      padding-inline: var(--space-rail-inline-sm);
+    .product-support {
       border-radius: var(--radius-xl);
+      padding-inline: var(--space-rail-inline-sm);
     }
   }
 
   @media (min-width: 1176px) {
-    .product-support__rail {
-      max-inline-size: var(--size-rail-md);
-      padding-inline: 0;
-    }
-
-    .product-support__surface {
+    .product-support {
       padding-inline: var(--space-rail-inline);
     }
   }

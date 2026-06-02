@@ -61,14 +61,14 @@
     documentsHeading: 'Tracer App Documents',
     documents: defaultDocuments,
     headingLevel: 'h2',
-    documentsHeadingLevel: 'h3',
   };
 
   const { Story } = defineMeta({
-    title: 'Molecules/ProductSupport',
+    title: 'Organisms/ProductSupport',
     component: ProductSupport,
     tags: ['autodocs'],
     parameters: {
+      layout: 'fullscreen',
       controls: {
         include: [
           'heading',
@@ -84,7 +84,7 @@
       docs: {
         description: {
           component:
-            'Self-contained product support section with a Figma-aligned rail, support contact copy, and document links. Pass exactly one support-copy prop: preferred multi-paragraph supportDetails or legacy single-paragraph supportDetail. Required strings and document links fail fast when blank or malformed. Email syntax validation is out of scope. Existing broader root forwarding is public: section attributes land on the root section. Default heading structure is h2 then h3; callers using a different page hierarchy should set both heading levels intentionally.',
+            'Product support panel with support contact copy and document links. Parent composition owns section semantics, anchors, rails, placement, and section rhythm; these stories use preview-only wrapper markup for realistic rail width. Pass exactly one support-copy prop: preferred multi-paragraph supportDetails or deprecated legacy single-paragraph supportDetail. Required strings and document links fail fast when blank or malformed. Email syntax validation is out of scope. Root panel attributes land on the root div. Default documents heading level derives from the resolved support heading level unless documentsHeadingLevel is provided.',
         },
       },
     },
@@ -107,7 +107,7 @@
       supportDetail: {
         control: false,
         description:
-          'Legacy single-paragraph support copy. Pass exactly one of supportDetail or supportDetails.',
+          'Deprecated legacy single-paragraph support copy. Pass exactly one of supportDetail or supportDetails.',
       },
       supportDetails: {
         control: 'object',
@@ -132,18 +132,52 @@
         control: { type: 'select' },
         options: documentsHeadingLevelOptions,
         description:
-          'Semantic heading level for the documents heading. Defaults independently to h3.',
+          'Optional semantic heading level for the documents heading. When omitted, derives from headingLevel as h2 to h3, h3 to h4, h4 to h5, h5 to h6, and h6 to h6.',
       },
       class: {
         control: false,
         description:
-          'Optional root section class hook; existing broader section attributes also forward to the root.',
+          'Optional root panel class hook; root div attributes also forward to the panel.',
       },
     },
   });
 </script>
 
-<Story name="Default" />
+<style>
+  .product-support-story__preview-section {
+    inline-size: 100%;
+    padding-block-end: var(--space-section-block);
+  }
+
+  .product-support-story__preview-rail {
+    box-sizing: border-box;
+    inline-size: 100%;
+    margin-inline: auto;
+  }
+
+  @media (min-width: 632px) {
+    .product-support-story__preview-rail {
+      padding-inline: var(--space-rail-inline);
+    }
+  }
+
+  @media (min-width: 1176px) {
+    .product-support-story__preview-rail {
+      max-inline-size: var(--size-rail-md);
+      padding-inline: 0;
+    }
+  }
+</style>
+
+<Story name="Default">
+  {#snippet template(args)}
+    <section class="product-support-story__preview-section" data-preview-layout="story-owned">
+      <div class="product-support-story__preview-rail">
+        <ProductSupport {...args} />
+      </div>
+    </section>
+  {/snippet}
+</Story>
 
 <Story
   name="Long Content"
@@ -156,14 +190,30 @@
     ],
     documents: longDocuments,
   }}
-/>
+>
+  {#snippet template(args)}
+    <section class="product-support-story__preview-section" data-preview-layout="story-owned">
+      <div class="product-support-story__preview-rail">
+        <ProductSupport {...args} />
+      </div>
+    </section>
+  {/snippet}
+</Story>
 
 <Story
   name="Many Documents"
   args={{
     documents: manyDocuments,
   }}
-/>
+>
+  {#snippet template(args)}
+    <section class="product-support-story__preview-section" data-preview-layout="story-owned">
+      <div class="product-support-story__preview-rail">
+        <ProductSupport {...args} />
+      </div>
+    </section>
+  {/snippet}
+</Story>
 
 <Story
   name="Whitespace Trim"
@@ -187,7 +237,38 @@
       },
     ],
   }}
-/>
+>
+  {#snippet template(args)}
+    <section class="product-support-story__preview-section" data-preview-layout="story-owned">
+      <div class="product-support-story__preview-rail">
+        <ProductSupport {...args} />
+      </div>
+    </section>
+  {/snippet}
+</Story>
+
+<Story
+  name="Derived H6 Documents Heading"
+  args={{
+    headingLevel: 'h6',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Omitting documentsHeadingLevel with headingLevel h6 derives an h6 documents heading instead of exceeding the heading range.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <section class="product-support-story__preview-section" data-preview-layout="story-owned">
+      <div class="product-support-story__preview-rail">
+        <ProductSupport {...args} />
+      </div>
+    </section>
+  {/snippet}
+</Story>
 
 <Story
   name="Invalid Heading Level Fallback"
@@ -199,8 +280,16 @@
     docs: {
       description: {
         story:
-          'Malformed semantic heading levels fall back to h2 and h3. This is not a supported TypeScript authoring shape.',
+          'Malformed explicit semantic heading levels fall back to h2 and h3. This is not a supported TypeScript authoring shape.',
       },
     },
   }}
-/>
+>
+  {#snippet template(args)}
+    <section class="product-support-story__preview-section" data-preview-layout="story-owned">
+      <div class="product-support-story__preview-rail">
+        <ProductSupport {...args} />
+      </div>
+    </section>
+  {/snippet}
+</Story>
