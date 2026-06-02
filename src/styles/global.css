@@ -9,9 +9,11 @@
    4. Theme routing (system fallback + manual data-theme)
    5. Base element styles
    6. Typography utilities
-   7. Visual effects (elevation, glow)
-   8. Layout utilities (page containers, sections, grid, stack)
-   9. Storybook integration
+   7. Inline link utilities
+   8. Rich text prose contract
+   9. Visual effects (elevation, glow)
+   10. Layout utilities (page containers, sections, grid, stack)
+   11. Storybook integration
    ========================================== */
 
 /* Tailwind CSS base */
@@ -34,6 +36,9 @@
 
 /* Inline link utilities */
 @import "./links.css";
+
+/* Rich text prose contract */
+@import "./rich-text.css";
 
 /* Visual effects (elevation, glow) */
 @import "./effects.css";

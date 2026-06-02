@@ -1,0 +1,872 @@
+/* ==========================================
+   RICH TEXT PROSE
+   Unlayered prose contract emitted by RichTextBlock
+   ========================================== */
+
+.rich-text {
+  display: grid;
+  gap: var(--space-gutter);
+  inline-size: 100%;
+  min-inline-size: 0;
+  color: inherit;
+  overflow-wrap: break-word;
+}
+
+.rich-text > * {
+  min-inline-size: 0;
+}
+
+/* Svelte scope classes are compiler hooks, not caller-owned component boundaries. */
+.rich-text
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' '])),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  ),
+.rich-text__body-fallback {
+  margin-block: 0;
+  overflow-wrap: break-word;
+}
+
+.rich-text__body-fallback {
+  overflow-wrap: anywhere;
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  ) {
+  list-style-position: outside;
+  padding-inline-start: var(--space-600);
+}
+
+.rich-text
+  > :where(ul:not([class]), ul[class^='s-']:not([class*=' ']), ul[class^='svelte-']:not([class*=' '])) {
+  list-style-type: disc;
+}
+
+.rich-text
+  > :where(ol:not([class]), ol[class^='s-']:not([class*=' ']), ol[class^='svelte-']:not([class*=' '])) {
+  list-style-type: decimal;
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])) {
+  line-height: var(--typography-body-medium-line-height-tight);
+  padding-inline-start: var(--space-100);
+  overflow-wrap: break-word;
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  + li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  + li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  + li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])) {
+  margin-block-start: var(--space-400);
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))::marker,
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))::marker,
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))::marker {
+  color: currentcolor;
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' '])),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' '])),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' '])) {
+  margin-block: 0;
+  overflow-wrap: break-word;
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+  + :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' '])),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+  + :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' '])),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+  + :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' '])) {
+  margin-block-start: var(--space-200);
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  ),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  ) {
+  margin-block-start: var(--space-200);
+  padding-inline-start: var(--space-600);
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(ul:not([class]), ul[class^='s-']:not([class*=' ']), ul[class^='svelte-']:not([class*=' '])) {
+  list-style-type: circle;
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(ol:not([class]), ol[class^='s-']:not([class*=' ']), ol[class^='svelte-']:not([class*=' '])) {
+  list-style-type: lower-alpha;
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(ul:not([class]), ul[class^='s-']:not([class*=' ']), ul[class^='svelte-']:not([class*=' '])) {
+  list-style-type: square;
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(ol:not([class]), ol[class^='s-']:not([class*=' ']), ol[class^='svelte-']:not([class*=' '])) {
+  list-style-type: lower-roman;
+}
+
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+  + :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  ),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+  + :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  ) {
+  margin-block-start: var(--space-200);
+}
+
+/* Keep visual declarations aligned with the public .text-link utility in links.css. */
+.rich-text
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+  a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+    .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+  ),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+    .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+  ) {
+  position: relative;
+  display: inline-block;
+
+  font-weight: var(--font-weight-medium);
+  color: currentColor;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-color: var(--text-link-underline, var(--color-link-underline-on-surface));
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.125em;
+  text-decoration-skip-ink: none;
+
+  border-radius: var(--radius-full);
+  padding: 1px 6px;
+  margin: -1px -6px;
+  outline: var(--focus-outline-width) solid transparent;
+  outline-offset: 0.125em;
+  transition: transform var(--animation-duration-extra-fast) var(--animation-easing-standard);
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.rich-text
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+  a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+    .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+  ),
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+    .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+  ) {
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  vertical-align: baseline;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .rich-text
+    > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ):where(:hover):not(:focus-visible),
+  .rich-text
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ):where(:hover):not(:focus-visible) {
+    text-decoration-color: currentcolor;
+  }
+
+  .rich-text
+    > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ):where(:active):not(:focus-visible),
+  .rich-text
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ):where(:active):not(:focus-visible) {
+    background-color: transparent;
+    text-decoration-color: currentcolor;
+    transform: translateY(1px);
+    box-shadow: none;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .rich-text
+    > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ),
+  .rich-text
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ) {
+    text-decoration-color: currentcolor;
+  }
+
+  .rich-text
+    > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ):hover,
+  .rich-text
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ):hover {
+    transform: translate(0, 0);
+  }
+
+  .rich-text
+    > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ):active:not(:focus-visible),
+  .rich-text
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ):active:not(:focus-visible) {
+    transform: translateY(1px);
+  }
+}
+
+.rich-text
+  > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+  a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+    .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+  ):focus-visible,
+.rich-text
+  > :where(
+    ul:not([class]),
+    ul[class^='s-']:not([class*=' ']),
+    ul[class^='svelte-']:not([class*=' ']),
+    ol:not([class]),
+    ol[class^='s-']:not([class*=' ']),
+    ol[class^='svelte-']:not([class*=' '])
+  )
+  a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+    .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+  ):focus-visible {
+  outline-color: var(--color-focus);
+  text-decoration: none;
+  transform: translate(0, 0);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rich-text
+    > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ),
+  .rich-text
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ) {
+    transition: none;
+    transform: none;
+  }
+
+  .rich-text
+    > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ):where(:hover, :active, :focus-visible),
+  .rich-text
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+      .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+    ):where(:hover, :active, :focus-visible) {
+    transform: none;
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .rich-text
+      > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
+      a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+        .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+      ):active:not(:focus-visible),
+    .rich-text
+      > :where(
+        ul:not([class]),
+        ul[class^='s-']:not([class*=' ']),
+        ul[class^='svelte-']:not([class*=' ']),
+        ol:not([class]),
+        ol[class^='s-']:not([class*=' ']),
+        ol[class^='svelte-']:not([class*=' '])
+      )
+      a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
+        .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
+      ):active:not(:focus-visible) {
+      transform: none;
+    }
+  }
+}
+
+@media (min-width: 1015px) {
+  .rich-text
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])),
+  .rich-text
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])),
+  .rich-text
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' ']))
+    > :where(
+      ul:not([class]),
+      ul[class^='s-']:not([class*=' ']),
+      ul[class^='svelte-']:not([class*=' ']),
+      ol:not([class]),
+      ol[class^='s-']:not([class*=' ']),
+      ol[class^='svelte-']:not([class*=' '])
+    )
+    > li:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])) {
+    line-height: var(--typography-body-large-line-height-tight);
+  }
+}

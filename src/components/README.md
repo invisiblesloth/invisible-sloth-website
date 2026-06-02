@@ -40,7 +40,8 @@ This pass adds root `class` only to `ContactUs`, `ProjectCard`,
 root attributes and keep that broader public contract. `ProductSupport`
 forwards root panel attributes/classes, while parent composition owns rails,
 placement, section semantics, anchors, and section rhythm. `RichTextBlock`
-styles already-rendered prose-shaped markup; it does not parse Markdown or HTML.
+styles already-rendered prose-shaped children; its `body` prop remains escaped
+plain-text fallback content and does not parse Markdown or HTML.
 
 `ContentSection` forwards root section attributes and owns section heading/body
 placement. Slotted children default to prose mode and render through

@@ -22,7 +22,7 @@
       docs: {
         description: {
           component:
-            'Responsive prose primitive for already-rendered prose-shaped markup. Children win over the plain escaped body fallback. Prose internals target unclassed paragraph and list markup without crossing into classed child component boundaries.',
+            'Responsive prose primitive for already-rendered prose-shaped child markup. Children win over the plain escaped body fallback, and body text does not parse Markdown or HTML. Prose internals target unclassed paragraph and list markup without crossing into classed child component boundaries.',
         },
       },
     },
