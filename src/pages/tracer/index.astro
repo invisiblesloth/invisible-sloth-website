@@ -2,7 +2,7 @@
 import SiteChrome from "../../layouts/SiteChrome.astro";
 import Container from "../../components/Container.astro";
 import PageHeader from "../../components/PageHeader.svelte";
-import TextBlock from "../../components/TextBlock.svelte";
+import RichTextBlock from "../../components/RichTextBlock.svelte";
 import ProductStatus from "../../components/ProductStatus.svelte";
 import ContentSection from "../../components/ContentSection.svelte";
 import FeatureList from "../../components/FeatureList.svelte";
@@ -85,7 +85,7 @@ const supportDocuments: ProductSupportDocumentLink[] = [
       />
 
       <Container size="sm" class="tracer-page__content-group">
-        <TextBlock>
+        <RichTextBlock>
           <p>
             Tracer is a small time tracker for iPhone. No sign-up, no account, no cloud
             service. Create the activities you want to track, run one at a time, and edit
@@ -96,7 +96,7 @@ const supportDocuments: ProductSupportDocumentLink[] = [
             Tracer is built for people who want a straightforward record of their time
             without joining another service or sharing their data.
           </p>
-        </TextBlock>
+        </RichTextBlock>
       </Container>
 
       <Container size="md" class="tracer-page__content-group">

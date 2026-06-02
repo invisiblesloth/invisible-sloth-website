@@ -6,6 +6,8 @@
     'Body copy uses responsive typography: Body Medium below the Extended breakpoint and Body Large at 1015px and wider.';
   const longBareUrl =
     'https://invisiblesloth.com/support/articles/SuperLongUnbrokenSupportReferenceThatShouldWrapInsideTheRichTextBlockAtCompactWidthsWithoutEscapingTheCanvas';
+  const longUnlinkedToken =
+    'SuperLongUnlinkedSupportReferenceThatShouldWrapInsideTheRichTextBlockAtCompactWidthsWithoutEscapingTheCanvasAndWithoutDependingOnAnchorStyles';
   const blankRuntimeBody = '   ';
   const malformedRuntimeBody = {
     body: 'This object should be ignored as malformed runtime input.',
@@ -252,6 +254,21 @@
           <p>
             A bare anchor with a long URL should wrap without overflowing:
             <a href={longBareUrl}>{longBareUrl}</a>
+          </p>
+        </RichTextBlock>
+      </div>
+    </div>
+  {/snippet}
+</Story>
+
+<Story name="Long Unlinked Token" args={{ body: '' }}>
+  {#snippet template(args)}
+    <div class="rich-text-block-story">
+      <div class="rail rail--md rail--padded rich-text-block-story__rail">
+        <RichTextBlock {...args}>
+          <p>
+            A long unlinked token should stay inside the prose rail at compact widths:
+            {longUnlinkedToken}
           </p>
         </RichTextBlock>
       </div>

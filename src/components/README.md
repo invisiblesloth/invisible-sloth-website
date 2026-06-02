@@ -35,13 +35,14 @@ override power. These components should not broadly forward arbitrary attributes
 unless that behavior is already public.
 
 This pass adds root `class` only to `ContactUs`, `ProjectCard`,
-`StandardCard`, and `BadgeGroup`. `ContentSection`, `TextBlock`,
-`RichTextBlock`, `FeatureList`, `TagGroup`, and `DetailHeader` already forward
-root attributes and keep that broader public contract. `ProductSupport`
+`StandardCard`, and `BadgeGroup`. `ContentSection`, `RichTextBlock`,
+`FeatureList`, `TagGroup`, and `DetailHeader` already forward root attributes
+and keep that broader public contract. `ProductSupport`
 forwards root panel attributes/classes, while parent composition owns rails,
 placement, section semantics, anchors, and section rhythm. `RichTextBlock`
-styles already-rendered prose-shaped children; its `body` prop remains escaped
-plain-text fallback content and does not parse Markdown or HTML.
+is the prose/body primitive: it styles already-rendered prose-shaped children;
+its `body` prop remains escaped plain-text fallback content and does not parse
+Markdown or HTML.
 
 `ContentSection` forwards root section attributes and owns section heading/body
 placement. Slotted children default to prose mode and render through
