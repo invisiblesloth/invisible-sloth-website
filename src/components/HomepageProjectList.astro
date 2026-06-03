@@ -5,11 +5,13 @@ import ProjectCard from './ProjectCard.svelte';
 import Divider from './Divider.svelte';
 import type { HomepageProjectEntry } from '../lib/projectContent';
 
-type Props = {
+export type HomepageProjectListProps = {
   projects: HomepageProjectEntry[];
 };
 
-const { projects } = Astro.props;
+type Props = HomepageProjectListProps;
+
+const { projects }: Props = Astro.props;
 
 if (projects.length === 0) {
   throw new Error('[HomepageProjectList] Expected at least one homepage project.');

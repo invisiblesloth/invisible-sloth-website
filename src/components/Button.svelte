@@ -1,22 +1,8 @@
-<script lang="ts">
+<script module lang="ts">
   import type { Snippet } from 'svelte';
-  import {
-    DEFAULT_BUTTON_SHAPE,
-    DEFAULT_BUTTON_TYPE,
-    DEFAULT_BUTTON_VARIANT,
-    normalizeButtonShape,
-    normalizeButtonType,
-    normalizeButtonVariant,
-    type ButtonShape,
-    type ButtonType,
-    type ButtonVariant,
-  } from '../lib/button';
-  import { warnOnce } from '../lib/devWarnings';
-  import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
+  import type { ButtonShape, ButtonType, ButtonVariant } from '../lib/button';
 
-  type ButtonMode = 'link' | 'button';
-
-  type Props = {
+  export type ButtonProps = {
     variant?: ButtonVariant;
     shape?: ButtonShape;
     type?: ButtonType;
@@ -31,6 +17,21 @@
     trailingIcon?: Snippet;
     [key: string]: unknown;
   };
+</script>
+
+<script lang="ts">
+  import {
+    DEFAULT_BUTTON_SHAPE,
+    DEFAULT_BUTTON_TYPE,
+    DEFAULT_BUTTON_VARIANT,
+    normalizeButtonShape,
+    normalizeButtonType,
+    normalizeButtonVariant,
+  } from '../lib/button';
+  import { warnOnce } from '../lib/devWarnings';
+  import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
+
+  type ButtonMode = 'link' | 'button';
 
   const BASE_ATTRIBUTES = new Set(['id', 'title', 'lang', 'dir', 'accesskey']);
   const BLOCKED_ARIA_ATTRIBUTES = new Set([
@@ -105,7 +106,7 @@
     leadingIcon = undefined,
     trailingIcon = undefined,
     ...restProps
-  }: Props = $props();
+  }: ButtonProps = $props();
 
   let pressed = $state(false);
 

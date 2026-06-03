@@ -1,3 +1,17 @@
+<script module lang="ts">
+  import type { Snippet } from 'svelte';
+
+  export type SiteFooterProps = {
+    homeHref?: string;
+    homeLabel?: string;
+    logoAlt?: string;
+    tagline?: string;
+    copyrightText?: string;
+    children?: Snippet;
+    class?: string;
+  };
+</script>
+
 <script lang="ts">
   /**
    * Site Footer Component
@@ -18,7 +32,6 @@
    * @prop {string} copyrightText - Copyright text (default: '© Invisible Sloth, LLC')
    * @slot default - Optional page-owned content between tagline and copyright
    */
-  import type { Snippet } from 'svelte';
   import BrandHomeMark from './internal/BrandHomeMark.svelte';
   import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
 
@@ -30,15 +43,7 @@
     copyrightText = '© Invisible Sloth, LLC',
     children,
     class: className = '',
-  }: {
-    homeHref?: string;
-    homeLabel?: string;
-    logoAlt?: string;
-    tagline?: string;
-    copyrightText?: string;
-    children?: Snippet;
-    class?: string;
-  } = $props();
+  }: SiteFooterProps = $props();
 
   const hasContent = $derived(Boolean(children));
   const footerClasses = $derived(['site-footer', className].filter(Boolean).join(' '));

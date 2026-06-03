@@ -1,10 +1,9 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import type { ComponentProps } from 'svelte';
   import StandardCard from '../components/StandardCard.svelte';
-  import type { StandardCardImage } from '../components/StandardCard.svelte';
+  import type { StandardCardImage, StandardCardProps } from '../components/StandardCard.svelte';
 
-  type StandardCardArgs = ComponentProps<typeof StandardCard>;
+  type StandardCardArgs = StandardCardProps;
 
   const imageSrc = '/assets/note-thanun-86_8M5BckfA-unsplash-1024.webp';
   const defaultImageAlt =

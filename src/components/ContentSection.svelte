@@ -20,13 +20,9 @@
  * @prop {string} class - Additional classes merged onto the root section
  */
 -->
-<script lang="ts">
+<script module lang="ts">
   import type { Snippet } from 'svelte';
   import type { SvelteHTMLElements } from 'svelte/elements';
-  import { requireNonEmptyString } from '../lib/componentValidation';
-  import { warnOnce } from '../lib/devWarnings';
-  import Heading from './Heading.svelte';
-  import RichTextBlock from './RichTextBlock.svelte';
 
   const SECTION_HEADING_LEVELS = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
   const SECTION_BODY_MODES = ['prose', 'structured'] as const;
@@ -34,11 +30,8 @@
   type SectionHeadingLevel = (typeof SECTION_HEADING_LEVELS)[number];
   type SectionBodyMode = (typeof SECTION_BODY_MODES)[number];
   type SectionAttributes = Omit<SvelteHTMLElements['section'], 'children' | 'class'>;
-  const DEFAULT_SECTION_BODY_MODE: SectionBodyMode = 'prose';
-  const VALID_SECTION_HEADING_LEVELS = new Set<unknown>(SECTION_HEADING_LEVELS);
-  const VALID_SECTION_BODY_MODES = new Set<unknown>(SECTION_BODY_MODES);
 
-  type Props = SectionAttributes & {
+  export type ContentSectionProps = SectionAttributes & {
     heading: string;
     body?: string;
     headingLevel?: SectionHeadingLevel;
@@ -47,6 +40,17 @@
     children?: Snippet;
     class?: string;
   };
+</script>
+
+<script lang="ts">
+  import { requireNonEmptyString } from '../lib/componentValidation';
+  import { warnOnce } from '../lib/devWarnings';
+  import Heading from './Heading.svelte';
+  import RichTextBlock from './RichTextBlock.svelte';
+
+  const DEFAULT_SECTION_BODY_MODE: SectionBodyMode = 'prose';
+  const VALID_SECTION_HEADING_LEVELS = new Set<unknown>(SECTION_HEADING_LEVELS);
+  const VALID_SECTION_BODY_MODES = new Set<unknown>(SECTION_BODY_MODES);
 
   let {
     heading,
@@ -57,7 +61,7 @@
     children,
     class: className = '',
     ...restProps
-  }: Props = $props();
+  }: ContentSectionProps = $props();
 
   const normalizedHeading = $derived(
     requireNonEmptyString(heading, { componentName: 'ContentSection', propName: 'heading' })

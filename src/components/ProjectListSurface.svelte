@@ -1,3 +1,12 @@
+<script module lang="ts">
+  import type { Snippet } from 'svelte';
+
+  export type ProjectListSurfaceProps = {
+    children?: Snippet;
+    class?: string;
+  };
+</script>
+
 <script lang="ts">
   /**
    * ProjectListSurface visual shell for displaying project cards in a single-column stack.
@@ -7,15 +16,10 @@
    *
    * @prop {Snippet} children - Composed project cards and separators
    */
-  import type { Snippet } from 'svelte';
-
   let {
     children,
     class: className = '',
-  }: {
-    children?: Snippet;
-    class?: string;
-  } = $props();
+  }: ProjectListSurfaceProps = $props();
 </script>
 
 <div class={`project-list ${className}`}>

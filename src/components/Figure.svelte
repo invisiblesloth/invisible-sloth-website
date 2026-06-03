@@ -19,6 +19,7 @@
 -->
 <script module lang="ts">
   import Image, { type ImageProps } from './Image.svelte';
+  import type { FigureCaptionContent } from './FigureCaption.svelte';
 
   export type FigureImageProps = Omit<ImageProps, 'class'>;
   export const FIGURE_MEDIA_TREATMENTS = [
@@ -28,19 +29,19 @@
     'featured-cover',
   ] as const;
   export type FigureMediaTreatment = (typeof FIGURE_MEDIA_TREATMENTS)[number];
-</script>
 
-<script lang="ts">
-  import FigureCaption from './FigureCaption.svelte';
-  import type { FigureCaptionContent } from './FigureCaption.svelte';
-  import { warnOnce } from '../lib/devWarnings';
-
-  type RuntimeFigureImageProps = Partial<FigureImageProps> & { class?: string };
-  type Props = FigureCaptionContent & {
+  export type FigureProps = FigureCaptionContent & {
     imageProps: FigureImageProps;
     mediaTreatment?: FigureMediaTreatment;
     class?: string;
   };
+</script>
+
+<script lang="ts">
+  import FigureCaption from './FigureCaption.svelte';
+  import { warnOnce } from '../lib/devWarnings';
+
+  type RuntimeFigureImageProps = Partial<FigureImageProps> & { class?: string };
 
   const getRuntimeImageProps = (value: unknown): RuntimeFigureImageProps => {
     if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -62,7 +63,7 @@
     credit,
     mediaTreatment: requestedMediaTreatment = 'default',
     class: className = '',
-  }: Props = $props();
+  }: FigureProps = $props();
 
   const sanitizedImageProps = $derived.by((): FigureImageProps => {
     const runtimeImageProps = getRuntimeImageProps(imageProps);

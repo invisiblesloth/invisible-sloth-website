@@ -1,5 +1,17 @@
-<script lang="ts">
+<script module lang="ts">
   import type { Snippet } from 'svelte';
+
+  export type SiteHeaderProps = {
+    homeHref?: string;
+    homeLabel?: string;
+    logoAlt?: string;
+    leading?: Snippet;
+    trailing?: Snippet;
+    class?: string;
+  };
+</script>
+
+<script lang="ts">
   import BrandHomeMark from './internal/BrandHomeMark.svelte';
   import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
 
@@ -31,14 +43,7 @@
     leading = undefined,
     trailing = undefined,
     class: className = '',
-  }: {
-    homeHref?: string;
-    homeLabel?: string;
-    logoAlt?: string;
-    leading?: Snippet;
-    trailing?: Snippet;
-    class?: string;
-  } = $props();
+  }: SiteHeaderProps = $props();
 
   const hasSideRegions = $derived(Boolean(leading || trailing));
   const headerClasses = $derived(

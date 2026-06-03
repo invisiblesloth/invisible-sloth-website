@@ -23,6 +23,22 @@
 
   type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
   type HeadingTag = `h${HeadingLevel}`;
+
+  export type StandardCardProps = {
+    href: string;
+    title: string;
+    target?: string;
+    rel?: string;
+    linkLabel?: string;
+    headingLevel?: HeadingLevel;
+    kicker?: string;
+    description?: string;
+    date?: string;
+    dateTime?: string;
+    author?: string;
+    image?: StandardCardImage;
+    class?: string;
+  };
 </script>
 
 <script lang="ts">
@@ -51,22 +67,6 @@
   import { requireNonEmptyString } from '../lib/componentValidation';
   import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
 
-  type Props = {
-    href: string;
-    title: string;
-    target?: string;
-    rel?: string;
-    linkLabel?: string;
-    headingLevel?: HeadingLevel;
-    kicker?: string;
-    description?: string;
-    date?: string;
-    dateTime?: string;
-    author?: string;
-    image?: StandardCardImage;
-    class?: string;
-  };
-
   const VALID_HEADING_LEVELS = new Set([1, 2, 3, 4, 5, 6]);
 
   let {
@@ -83,7 +83,7 @@
     author = '',
     image,
     class: className = '',
-  }: Props = $props();
+  }: StandardCardProps = $props();
 
   function normalizeOptionalString(value: unknown): string {
     return typeof value === 'string' ? value.trim() : '';

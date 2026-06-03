@@ -1,3 +1,13 @@
+<script module lang="ts">
+  import type { Snippet } from 'svelte';
+
+  export type TagGroupProps = {
+    children?: Snippet;
+    class?: string;
+    [key: string]: unknown;
+  };
+</script>
+
 <script lang="ts">
   /**
    * TagGroup
@@ -7,17 +17,11 @@
    * Existing broader root forwarding is part of the public root-hook contract:
    * class and rest props land on the root <div>.
    */
-  import type { Snippet } from 'svelte';
-
   let {
     children,
     class: className = '',
     ...restProps
-  }: {
-    children?: Snippet;
-    class?: string;
-    [key: string]: unknown;
-  } = $props();
+  }: TagGroupProps = $props();
 
   const groupClasses = $derived(['tag-group', className].filter(Boolean).join(' '));
 </script>

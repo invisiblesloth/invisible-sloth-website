@@ -10,6 +10,14 @@
  * @prop {string} class - Additional CSS classes for the root time element
  */
 -->
+<script module lang="ts">
+  export type PostDateProps = {
+    date: string;
+    dateTime?: string;
+    class?: string;
+  };
+</script>
+
 <script lang="ts">
   import { requireNonEmptyString } from '../lib/componentValidation';
 
@@ -17,11 +25,7 @@
     date,
     dateTime,
     class: className = '',
-  }: {
-    date: string;
-    dateTime?: string;
-    class?: string;
-  } = $props();
+  }: PostDateProps = $props();
 
   const validatedDate = $derived(
     requireNonEmptyString(date, { componentName: 'PostDate', propName: 'date' })

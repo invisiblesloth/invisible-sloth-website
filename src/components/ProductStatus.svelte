@@ -1,3 +1,11 @@
+<script module lang="ts">
+  export type ProductStatusProps = {
+    text: string;
+    detail?: string;
+    class?: string;
+  };
+</script>
+
 <script lang="ts">
   /**
    * ProductStatus
@@ -17,11 +25,7 @@
     text,
     detail = '',
     class: className = '',
-  }: {
-    text: string;
-    detail?: string;
-    class?: string;
-  } = $props();
+  }: ProductStatusProps = $props();
 
   const normalizedText = $derived(
     requireNonEmptyString(text, { componentName: 'ProductStatus', propName: 'text' })

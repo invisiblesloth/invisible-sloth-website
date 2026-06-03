@@ -26,7 +26,7 @@
     credit?: Snippet;
   };
 
-  type Props = FigureCaptionContent & {
+  export type FigureCaptionProps = FigureCaptionContent & {
     class?: string;
   };
 </script>
@@ -38,7 +38,7 @@
     caption,
     credit,
     class: className = '',
-  }: Props = $props();
+  }: FigureCaptionProps = $props();
 
   const hasCaptionContent = $derived(Boolean(caption) || String(captionText ?? '').trim().length > 0);
   const hasCreditContent = $derived(Boolean(credit) || String(creditText ?? '').trim().length > 0);

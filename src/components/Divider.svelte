@@ -1,3 +1,16 @@
+<script module lang="ts">
+  export type DividerProps = {
+    /** Orientation of the divider */
+    orientation?: "horizontal" | "vertical";
+    /** Thickness variant: default is 1px, double is 2px */
+    thickness?: "Default" | "Double";
+    /** Hide divider from assistive technologies when purely decorative */
+    ariaHidden?: boolean;
+    /** Additional global utility or hook classes */
+    class?: string;
+  };
+</script>
+
 <script lang="ts">
   /**
    * Divider primitive for separating content.
@@ -9,23 +22,12 @@
    * Vertical dividers stretch only inside a flex/grid parent with a definite
    * cross-size. Without that parent sizing, the divider may render at zero height.
    */
-  interface Props {
-    /** Orientation of the divider */
-    orientation?: "horizontal" | "vertical";
-    /** Thickness variant: default is 1px, double is 2px */
-    thickness?: "Default" | "Double";
-    /** Hide divider from assistive technologies when purely decorative */
-    ariaHidden?: boolean;
-    /** Additional global utility or hook classes */
-    class?: string;
-  }
-
   let {
     orientation = "horizontal",
     thickness = "Default",
     ariaHidden = false,
     class: className = "",
-  }: Props = $props();
+  }: DividerProps = $props();
 
   function classes(...values: Array<string | false | undefined>): string {
     return values

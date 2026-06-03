@@ -1,3 +1,12 @@
+<script module lang="ts">
+  import type { BadgeVariant } from '../lib/badge';
+
+  export type BadgeProps = {
+    variant?: BadgeVariant;
+    label?: string;
+  };
+</script>
+
 <script lang="ts">
   import {
     BADGE_VARIANTS,
@@ -5,7 +14,6 @@
     isBadgeVariant,
     normalizeBadgeVariant,
     normalizeBadgeVariantCandidate,
-    type BadgeVariant,
   } from '../lib/badge';
   import { warnOnce } from '../lib/devWarnings';
 
@@ -18,10 +26,7 @@
   let {
     variant = DEFAULT_BADGE_VARIANT,
     label = 'Label',
-  }: {
-    variant?: BadgeVariant;
-    label?: string;
-  } = $props();
+  }: BadgeProps = $props();
 
   const normalizedCandidate = $derived(normalizeBadgeVariantCandidate(variant));
   const normalizedVariant = $derived(normalizeBadgeVariant(variant));

@@ -1,3 +1,15 @@
+<script module lang="ts">
+  import type { LogoSize, LogoVariant } from '../lib/logo';
+
+  export type LogoLinkProps = {
+    href?: string;
+    variant?: LogoVariant;
+    size?: LogoSize;
+    label?: string;
+    class?: string;
+  };
+</script>
+
 <script lang="ts">
   import Logo from './Logo.svelte';
   import { warnOnce } from '../lib/devWarnings';
@@ -6,8 +18,6 @@
     DEFAULT_LOGO_LINK_LABEL,
     isBlankString,
     normalizeLogoLinkLabel,
-    type LogoSize,
-    type LogoVariant,
   } from '../lib/logo';
   import { normalizeHref } from '../lib/linkBehavior';
 
@@ -22,13 +32,7 @@
     size = 'md',
     label = undefined,
     class: className = '',
-  }: {
-    href?: string;
-    variant?: LogoVariant;
-    size?: LogoSize;
-    label?: string;
-    class?: string;
-  } = $props();
+  }: LogoLinkProps = $props();
 
   const normalizedHref = $derived(normalizeHref(href) ?? DEFAULT_LOGO_LINK_HREF);
   const normalizedLabel = $derived(normalizeLogoLinkLabel(label));

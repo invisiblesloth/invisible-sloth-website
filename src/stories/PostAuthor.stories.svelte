@@ -1,9 +1,7 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import type { ComponentProps } from 'svelte';
   import PostAuthor from '../components/PostAuthor.svelte';
-
-  type PostAuthorProps = ComponentProps<typeof PostAuthor>;
+  import type { PostAuthorProps } from '../components/PostAuthor.svelte';
 
   const DEFAULT_IMAGE_SRC = '/assets/note-thanun-86_8M5BckfA-unsplash-640.webp';
   const DEFAULT_AUTHOR: NonNullable<PostAuthorProps['authors']> = [

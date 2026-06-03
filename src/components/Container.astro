@@ -25,11 +25,13 @@
  * </Container>
  */
 
-interface Props {
+export type ContainerProps = {
   padded?: boolean;
   size?: 'sm' | 'md' | 'lg';
   class?: string;
-}
+};
+
+type Props = ContainerProps;
 
 const {
   padded = true,

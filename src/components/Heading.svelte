@@ -16,20 +16,22 @@
  * @prop {string} class - Additional classes for the rendered heading element
  */
 -->
-<script lang="ts">
+<script module lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { SvelteHTMLElements } from 'svelte/elements';
 
 	type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 	type HeadingAttributes = SvelteHTMLElements[HeadingLevel];
-	type HeadingProps = Omit<HeadingAttributes, 'class'> & {
+	export type HeadingProps = Omit<HeadingAttributes, 'class'> & {
 		level?: HeadingLevel;
 		visualLevel?: HeadingLevel;
 		text?: string;
 		children?: Snippet;
 		class?: string;
 	};
+</script>
 
+<script lang="ts">
 	let {
 		level = 'h1',
 		visualLevel,

@@ -1,3 +1,14 @@
+<script module lang="ts">
+  import type { LogoSize, LogoVariant } from '../lib/logo';
+
+  export type LogoProps = {
+    variant?: LogoVariant;
+    size?: LogoSize;
+    alt?: string;
+    decorative?: boolean;
+  };
+</script>
+
 <script lang="ts">
   import { warnOnce } from '../lib/devWarnings';
   import {
@@ -7,8 +18,6 @@
     normalizeLogoAlt,
     normalizeLogoVariant,
     resolveLogoSize,
-    type LogoSize,
-    type LogoVariant,
   } from '../lib/logo';
 
   /**
@@ -22,12 +31,7 @@
     size = 'md',
     alt = DEFAULT_LOGO_ALT,
     decorative = false,
-  }: {
-    variant?: LogoVariant;
-    size?: LogoSize;
-    alt?: string;
-    decorative?: boolean;
-  } = $props();
+  }: LogoProps = $props();
 
   const logoSize = $derived(resolveLogoSize(size));
   const normalizedVariant = $derived(normalizeLogoVariant(variant));

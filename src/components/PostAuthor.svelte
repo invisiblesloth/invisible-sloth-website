@@ -19,10 +19,20 @@
  * @prop {string} class - Additional CSS classes for the root wrapper
  */
 -->
+<script module lang="ts">
+  import type { PostAuthorItem } from '../lib/postAuthors';
+
+  export type PostAuthorProps = {
+    authors?: PostAuthorItem[];
+    imageSrc?: string;
+    imageAlt?: string;
+    class?: string;
+  };
+</script>
+
 <script lang="ts">
   import { warnOnce } from '../lib/devWarnings';
   import { resolvePostAuthors } from '../lib/postAuthors';
-  import type { PostAuthorItem } from '../lib/postAuthors';
 
   const getAuthorSeparator = (index: number, total: number): string => {
     if (index === 0) return '';
@@ -36,12 +46,7 @@
     imageSrc,
     imageAlt = '',
     class: className = '',
-  }: {
-    authors?: PostAuthorItem[];
-    imageSrc?: string;
-    imageAlt?: string;
-    class?: string;
-  } = $props();
+  }: PostAuthorProps = $props();
 
   const authorResolution = $derived(resolvePostAuthors(authors));
   const normalizedAuthors = $derived(authorResolution.authors);

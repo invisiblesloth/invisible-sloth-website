@@ -1,3 +1,16 @@
+<script module lang="ts">
+  export type TagProps = {
+    label?: string;
+    href?: string;
+    target?: string;
+    rel?: string;
+    type?: 'button' | 'submit' | 'reset';
+    onclick?: (event: MouseEvent) => void;
+    class?: string;
+    [key: string]: unknown;
+  };
+</script>
+
 <script lang="ts">
   import { warnOnce } from '../lib/devWarnings';
   import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
@@ -13,17 +26,6 @@
    */
 
   type TagMode = 'link' | 'button';
-
-  type Props = {
-    label?: string;
-    href?: string;
-    target?: string;
-    rel?: string;
-    type?: 'button' | 'submit' | 'reset';
-    onclick?: (event: MouseEvent) => void;
-    class?: string;
-    [key: string]: unknown;
-  };
 
   const GLOBAL_ATTRIBUTES = new Set([
     'id',
@@ -75,7 +77,7 @@
     onclick,
     class: className = '',
     ...restProps
-  }: Props = $props();
+  }: TagProps = $props();
 
   const normalizedHref = $derived(normalizeHref(href));
   const hasHrefProp = $derived(href !== undefined && href !== null);

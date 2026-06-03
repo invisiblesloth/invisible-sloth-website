@@ -1,3 +1,12 @@
+<script module lang="ts">
+  import type { Snippet } from 'svelte';
+
+  export type BadgeGroupProps = {
+    children?: Snippet;
+    class?: string;
+  };
+</script>
+
 <script lang="ts">
   /**
    * BadgeGroup component for displaying multiple badges in a flexible layout
@@ -9,15 +18,10 @@
    *
    * @slot default - Badge components to display in the group
    */
-  import type { Snippet } from 'svelte';
-
   let {
     children,
     class: className = '',
-  }: {
-    children?: Snippet;
-    class?: string;
-  } = $props();
+  }: BadgeGroupProps = $props();
 
   const normalizedClassName = $derived(String(className ?? '').trim());
   const badgeGroupClasses = $derived(

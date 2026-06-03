@@ -1,3 +1,21 @@
+<script module lang="ts">
+  import type { Snippet } from 'svelte';
+  import type { TagLink } from '../lib/tagLinks';
+
+  type TagGroupSnippet = Snippet;
+  type TagLinkGroupWrapper = Snippet<[TagGroupSnippet]>;
+
+  export type TagLinkGroupProps = {
+    tags?: TagLink[];
+    componentLabel?: string;
+    warningNamespace?: string;
+    wrapper?: TagLinkGroupWrapper;
+    children?: Snippet;
+    class?: string;
+    [key: string]: unknown;
+  };
+</script>
+
 <script lang="ts">
   /**
    * TagLinkGroup
@@ -9,15 +27,10 @@
    * outer placement.
    * Data composition contract: renders no DOM when there are no valid tags.
    */
-  import type { Snippet } from 'svelte';
   import { warnOnce } from '../lib/devWarnings';
   import { resolveTagLinks } from '../lib/tagLinks';
-  import type { TagLink } from '../lib/tagLinks';
   import Tag from './Tag.svelte';
   import TagGroup from './TagGroup.svelte';
-
-  type TagGroupSnippet = Snippet;
-  type TagLinkGroupWrapper = Snippet<[TagGroupSnippet]>;
 
   let {
     tags = [],
@@ -27,15 +40,7 @@
     class: className = '',
     children: _children,
     ...restProps
-  }: {
-    tags?: TagLink[];
-    componentLabel?: string;
-    warningNamespace?: string;
-    wrapper?: TagLinkGroupWrapper;
-    children?: Snippet;
-    class?: string;
-    [key: string]: unknown;
-  } = $props();
+  }: TagLinkGroupProps = $props();
 
   const tagResolution = $derived(resolveTagLinks(tags));
   const normalizedTags = $derived(tagResolution.links);

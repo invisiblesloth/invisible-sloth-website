@@ -1,4 +1,5 @@
 <script module lang="ts">
+  import type { SvelteHTMLElements } from 'svelte/elements';
   import { requireNonEmptyString } from '../lib/componentValidation';
 
   export type ProductSupportDocumentLink = {
@@ -8,6 +9,46 @@
 
   type ResolvedProductSupportDocumentLink = ProductSupportDocumentLink & {
     index: number;
+  };
+
+  const SUPPORT_HEADING_LEVELS = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
+  const DOCUMENTS_HEADING_LEVELS = ['h3', 'h4', 'h5', 'h6'] as const;
+  const VALID_SUPPORT_HEADING_LEVELS = new Set<unknown>(SUPPORT_HEADING_LEVELS);
+  const VALID_DOCUMENTS_HEADING_LEVELS = new Set<unknown>(DOCUMENTS_HEADING_LEVELS);
+
+  type SupportHeadingLevel = (typeof SUPPORT_HEADING_LEVELS)[number];
+  type DocumentsHeadingLevel = (typeof DOCUMENTS_HEADING_LEVELS)[number];
+  type PanelAttributes = Omit<SvelteHTMLElements['div'], 'children' | 'class'>;
+  type SupportCopyProps =
+    | {
+        /** @deprecated Use supportDetails for support copy. */
+        supportDetail: string;
+        supportDetails?: never;
+      }
+    | {
+        supportDetail?: never;
+        supportDetails: string[];
+      };
+
+  type BaseProps = PanelAttributes & {
+    heading: string;
+    emailPrompt: string;
+    supportEmail: string;
+    documentsHeading: string;
+    documents: ProductSupportDocumentLink[];
+    headingLevel?: SupportHeadingLevel;
+    documentsHeadingLevel?: DocumentsHeadingLevel;
+    class?: string;
+  };
+
+  export type ProductSupportProps = BaseProps & SupportCopyProps;
+
+  const DERIVED_DOCUMENTS_HEADING_LEVELS: Record<SupportHeadingLevel, DocumentsHeadingLevel> = {
+    h2: 'h3',
+    h3: 'h4',
+    h4: 'h5',
+    h5: 'h6',
+    h6: 'h6',
   };
 
   function requireSupportDetailsItem(value: unknown, index: number): string {
@@ -130,48 +171,8 @@
    * @prop {string} documentsHeadingLevel - Optional semantic heading level for documentsHeading, h3-h6; derives from headingLevel when omitted
    * @prop {string} class - Additional classes merged onto the root panel
    */
-  import type { SvelteHTMLElements } from 'svelte/elements';
   import { warnOnce } from '../lib/devWarnings';
   import Heading from './Heading.svelte';
-
-  const SUPPORT_HEADING_LEVELS = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
-  const DOCUMENTS_HEADING_LEVELS = ['h3', 'h4', 'h5', 'h6'] as const;
-  const VALID_SUPPORT_HEADING_LEVELS = new Set<unknown>(SUPPORT_HEADING_LEVELS);
-  const VALID_DOCUMENTS_HEADING_LEVELS = new Set<unknown>(DOCUMENTS_HEADING_LEVELS);
-
-  type SupportHeadingLevel = (typeof SUPPORT_HEADING_LEVELS)[number];
-  type DocumentsHeadingLevel = (typeof DOCUMENTS_HEADING_LEVELS)[number];
-  type PanelAttributes = Omit<SvelteHTMLElements['div'], 'children' | 'class'>;
-  type SupportCopyProps =
-    | {
-        /** @deprecated Use supportDetails for support copy. */
-        supportDetail: string;
-        supportDetails?: never;
-      }
-    | {
-        supportDetail?: never;
-        supportDetails: string[];
-      };
-
-  type BaseProps = PanelAttributes & {
-    heading: string;
-    emailPrompt: string;
-    supportEmail: string;
-    documentsHeading: string;
-    documents: ProductSupportDocumentLink[];
-    headingLevel?: SupportHeadingLevel;
-    documentsHeadingLevel?: DocumentsHeadingLevel;
-    class?: string;
-  };
-
-  type Props = BaseProps & SupportCopyProps;
-  const DERIVED_DOCUMENTS_HEADING_LEVELS: Record<SupportHeadingLevel, DocumentsHeadingLevel> = {
-    h2: 'h3',
-    h3: 'h4',
-    h4: 'h5',
-    h5: 'h6',
-    h6: 'h6',
-  };
 
   let {
     heading,
@@ -185,7 +186,7 @@
     documentsHeadingLevel,
     class: className = '',
     ...restProps
-  }: Props = $props();
+  }: ProductSupportProps = $props();
 
   function normalizeSupportHeadingLevel(value: unknown): SupportHeadingLevel {
     return VALID_SUPPORT_HEADING_LEVELS.has(value) ? (value as SupportHeadingLevel) : 'h2';

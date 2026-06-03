@@ -1,5 +1,15 @@
 <script module lang="ts">
+  import type { SvelteHTMLElements } from 'svelte/elements';
+  import type { FeatureListItem } from '../lib/featureListItems';
+
   export type { FeatureListItem } from '../lib/featureListItems';
+
+  type ListAttributes = Omit<SvelteHTMLElements['ul'], 'children' | 'class'>;
+
+  export type FeatureListProps = ListAttributes & {
+    items?: FeatureListItem[];
+    class?: string;
+  };
 </script>
 
 <script lang="ts">
@@ -14,24 +24,15 @@
    * @prop {FeatureListItem[]} items - Feature entries with non-empty title and description
    * @prop {string} class - Additional classes merged onto the root list
    */
-  import type { SvelteHTMLElements } from 'svelte/elements';
   import { warnOnce } from '../lib/devWarnings';
   import { resolveFeatureListItems } from '../lib/featureListItems';
-  import type { FeatureListItem } from '../lib/featureListItems';
-
-  type ListAttributes = Omit<SvelteHTMLElements['ul'], 'children' | 'class'>;
-
-  type Props = ListAttributes & {
-    items?: FeatureListItem[];
-    class?: string;
-  };
 
   let {
     items = [],
     role = 'list',
     class: className = '',
     ...restProps
-  }: Props = $props();
+  }: FeatureListProps = $props();
 
   const featureListResolution = $derived(resolveFeatureListItems(items));
   const normalizedItems = $derived(featureListResolution.items);

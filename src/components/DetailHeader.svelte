@@ -1,3 +1,12 @@
+<script module lang="ts">
+  export type DetailHeaderProps = {
+    title: string;
+    excerpt?: string;
+    class?: string;
+    [key: string]: unknown;
+  };
+</script>
+
 <script lang="ts">
   import { requireNonEmptyString } from '../lib/componentValidation';
 
@@ -20,12 +29,7 @@
     excerpt,
     class: className = '',
     ...restProps
-  }: {
-    title: string;
-    excerpt?: string;
-    class?: string;
-    [key: string]: unknown;
-  } = $props();
+  }: DetailHeaderProps = $props();
 
   const validatedTitle = $derived(
     requireNonEmptyString(title, { componentName: 'DetailHeader', propName: 'title' })

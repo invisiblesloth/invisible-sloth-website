@@ -14,25 +14,28 @@
  * @prop {string} class - Additional classes merged onto the root wrapper
  */
 -->
-<script lang="ts">
+<script module lang="ts">
   import type { Snippet } from 'svelte';
   import type { SvelteHTMLElements } from 'svelte/elements';
-  import { warnOnce } from '../lib/devWarnings';
 
   type DivAttributes = Omit<SvelteHTMLElements['div'], 'children' | 'class'>;
 
-  type Props = DivAttributes & {
+  export type RichTextBlockProps = DivAttributes & {
     body?: string;
     children?: Snippet;
     class?: string;
   };
+</script>
+
+<script lang="ts">
+  import { warnOnce } from '../lib/devWarnings';
 
   let {
     body = '',
     children,
     class: className = '',
     ...restProps
-  }: Props = $props();
+  }: RichTextBlockProps = $props();
 
   const hasChildren = $derived(Boolean(children));
   const hasMalformedBody = $derived(typeof body !== 'string');
