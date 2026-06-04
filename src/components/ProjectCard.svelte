@@ -45,11 +45,10 @@
   import BadgeGroup from './BadgeGroup.svelte';
   import Badge from './Badge.svelte';
   import ExternalLink from '../icons/ExternalLink.svelte';
+  import { normalizeOptionProp } from '../lib/componentValidation';
   import { isExternalAbsoluteHttpUrl } from '../lib/siteLinks';
 
   type HeadingTag = `h${HeadingLevel}`;
-
-  const VALID_HEADING_LEVELS = new Set<number>(PROJECT_CARD_HEADING_LEVELS);
 
   let {
     title = 'Project Name',
@@ -62,15 +61,18 @@
     class: className = '',
   }: ProjectCardProps = $props();
 
-  function normalizeHeadingLevel(value: unknown): HeadingLevel {
-    return typeof value === 'number' && VALID_HEADING_LEVELS.has(value)
-      ? (value as HeadingLevel)
-      : 2;
-  }
-
   const hasBadges = $derived(badges.length > 0);
   const fallbackDescription = $derived(description?.trim());
-  const resolvedHeadingLevel = $derived(normalizeHeadingLevel(headingLevel));
+  const resolvedHeadingLevel = $derived(
+    normalizeOptionProp({
+      value: headingLevel,
+      allowedValues: PROJECT_CARD_HEADING_LEVELS,
+      fallbackValue: 2,
+      componentName: 'ProjectCard',
+      propName: 'headingLevel',
+      warningKey: 'project-card:invalid-heading-level',
+    })
+  );
   const headingTag = $derived(`h${resolvedHeadingLevel}` as HeadingTag);
   const showsExternalCtaIcon = $derived(Boolean(button && isExternalAbsoluteHttpUrl(button.href)));
   const normalizedClassName = $derived(String(className ?? '').trim());

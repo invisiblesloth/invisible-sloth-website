@@ -1,12 +1,21 @@
 <script module lang="ts">
-  export type ImageFit = 'cover' | 'contain';
-  export type ImageFrame = 'ratio' | 'auto' | 'clamped';
-  export type ImageAspectRatio = '3:2' | '2:3' | '1:1' | '16:9';
-  export type ImageRadius = 'none' | 'small' | 'medium' | 'large';
-  export type ImageLoadingMode = 'lazy' | 'eager';
-  export type ImageDecodingMode = 'auto' | 'sync' | 'async';
-  export type ImageFetchPriority = 'auto' | 'high' | 'low';
-  export type ImageContainSizing = 'intrinsic' | 'fill-inline';
+  const IMAGE_FITS = ['cover', 'contain'] as const;
+  const IMAGE_FRAMES = ['ratio', 'auto', 'clamped'] as const;
+  const IMAGE_ASPECT_RATIOS = ['3:2', '2:3', '1:1', '16:9'] as const;
+  const IMAGE_RADII = ['none', 'small', 'medium', 'large'] as const;
+  const IMAGE_LOADING_OPTIONS = ['lazy', 'eager'] as const;
+  const IMAGE_DECODING_MODES = ['auto', 'sync', 'async'] as const;
+  const IMAGE_FETCH_PRIORITIES = ['auto', 'high', 'low'] as const;
+  const IMAGE_CONTAIN_SIZINGS = ['intrinsic', 'fill-inline'] as const;
+
+  export type ImageFit = (typeof IMAGE_FITS)[number];
+  export type ImageFrame = (typeof IMAGE_FRAMES)[number];
+  export type ImageAspectRatio = (typeof IMAGE_ASPECT_RATIOS)[number];
+  export type ImageRadius = (typeof IMAGE_RADII)[number];
+  export type ImageLoadingMode = (typeof IMAGE_LOADING_OPTIONS)[number];
+  export type ImageDecodingMode = (typeof IMAGE_DECODING_MODES)[number];
+  export type ImageFetchPriority = (typeof IMAGE_FETCH_PRIORITIES)[number];
+  export type ImageContainSizing = (typeof IMAGE_CONTAIN_SIZINGS)[number];
   export type ImageDimension = number | string;
 
   export type ImageProps = {
@@ -46,6 +55,7 @@
     IMAGE_LOAD_STATES,
     IMAGE_LOADING_MODES,
   } from '../lib/imageEnhancementContract';
+  import { normalizeOptionProp } from '../lib/componentValidation';
   import { warnOnce } from '../lib/devWarnings';
 
   /**
@@ -128,6 +138,86 @@
 
   const normalizedSrc = $derived(src.trim());
   const normalizedFallbackSrc = $derived(fallbackSrc.trim());
+  const normalizedFit = $derived(
+    normalizeOptionProp({
+      value: fit,
+      allowedValues: IMAGE_FITS,
+      fallbackValue: 'cover',
+      componentName: 'Image',
+      propName: 'fit',
+      warningKey: 'image:invalid-fit',
+    })
+  );
+  const normalizedFrame = $derived(
+    normalizeOptionProp({
+      value: frame,
+      allowedValues: IMAGE_FRAMES,
+      fallbackValue: 'ratio',
+      componentName: 'Image',
+      propName: 'frame',
+      warningKey: 'image:invalid-frame',
+    })
+  );
+  const normalizedRatio = $derived(
+    normalizeOptionProp({
+      value: ratio,
+      allowedValues: IMAGE_ASPECT_RATIOS,
+      fallbackValue: '3:2',
+      componentName: 'Image',
+      propName: 'ratio',
+      warningKey: 'image:invalid-ratio',
+    })
+  );
+  const normalizedRadius = $derived(
+    normalizeOptionProp({
+      value: radius,
+      allowedValues: IMAGE_RADII,
+      fallbackValue: 'small',
+      componentName: 'Image',
+      propName: 'radius',
+      warningKey: 'image:invalid-radius',
+    })
+  );
+  const normalizedContainSizing = $derived(
+    normalizeOptionProp({
+      value: containSizing,
+      allowedValues: IMAGE_CONTAIN_SIZINGS,
+      fallbackValue: 'intrinsic',
+      componentName: 'Image',
+      propName: 'containSizing',
+      warningKey: 'image:invalid-contain-sizing',
+    })
+  );
+  const normalizedLoading = $derived(
+    normalizeOptionProp({
+      value: loading,
+      allowedValues: IMAGE_LOADING_OPTIONS,
+      fallbackValue: 'lazy',
+      componentName: 'Image',
+      propName: 'loading',
+      warningKey: 'image:invalid-loading',
+    })
+  );
+  const normalizedDecoding = $derived(
+    normalizeOptionProp({
+      value: decoding,
+      allowedValues: IMAGE_DECODING_MODES,
+      fallbackValue: 'async',
+      componentName: 'Image',
+      propName: 'decoding',
+      warningKey: 'image:invalid-decoding',
+    })
+  );
+  const normalizedFetchPriority = $derived(
+    normalizeOptionProp({
+      value: fetchPriority,
+      allowedValues: IMAGE_FETCH_PRIORITIES,
+      fallbackValue: 'auto',
+      componentName: 'Image',
+      propName: 'fetchPriority',
+      warningKey: 'image:invalid-fetch-priority',
+    })
+  );
   const hasSource = $derived(normalizedSrc.length > 0);
   const activeIsFallback = $derived(!hasSource);
   const canRenderImage = $derived(
@@ -165,7 +255,7 @@
 
     return alt;
   });
-  const ratioValue = $derived(RATIO_MAP[ratio]);
+  const ratioValue = $derived(RATIO_MAP[normalizedRatio]);
   const imageMode = $derived(
     activeIsFallback
       ? IMAGE_DECLARATIVE_MODES.declarativeFallback
@@ -224,10 +314,14 @@
   const imageClasses = $derived(
     [
       'image',
-      `image--${fit}`,
-      frame === 'clamped' ? 'image--ratio image--clamped' : `image--${frame}`,
-      `image--radius-${radius}`,
-      fit === 'contain' && frame === 'auto' && containSizing === 'fill-inline'
+      `image--${normalizedFit}`,
+      normalizedFrame === 'clamped'
+        ? 'image--ratio image--clamped'
+        : `image--${normalizedFrame}`,
+      `image--radius-${normalizedRadius}`,
+      normalizedFit === 'contain' &&
+      normalizedFrame === 'auto' &&
+      normalizedContainSizing === 'fill-inline'
         ? 'image--contain-sizing-fill-inline'
         : '',
       className,
@@ -238,18 +332,31 @@
 
   const imageStyle = $derived.by(() => {
     const styles = [
-      `--image-fit: ${fit}`,
+      `--image-fit: ${normalizedFit}`,
       `--image-object-position: ${objectPosition}`,
       `--image-min-height: ${minHeight}`,
       `--image-preferred-height: ${preferredHeight}`,
       `--image-max-height: ${maxHeight}`,
     ];
 
-    if (frame === 'ratio' || frame === 'clamped') {
+    if (normalizedFrame === 'ratio' || normalizedFrame === 'clamped') {
       styles.push(`--image-ratio: ${ratioValue}`);
     }
 
     return styles.join('; ');
+  });
+
+  $effect(() => {
+    // Read all option normalizers so invalid runtime values warn even when
+    // a specific frame mode or no-renderable-source state skips their output.
+    void normalizedFit;
+    void normalizedFrame;
+    void normalizedRatio;
+    void normalizedRadius;
+    void normalizedContainSizing;
+    void normalizedLoading;
+    void normalizedDecoding;
+    void normalizedFetchPriority;
   });
 
   $effect(() => {
@@ -274,9 +381,9 @@
       alt={resolvedAlt}
       width={activeWidth}
       height={activeHeight}
-      {loading}
-      {decoding}
-      fetchpriority={fetchPriority}
+      loading={normalizedLoading}
+      decoding={normalizedDecoding}
+      fetchpriority={normalizedFetchPriority}
     />
   {:else}
     <div class="image__placeholder" aria-hidden="true"></div>

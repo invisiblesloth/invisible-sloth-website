@@ -21,7 +21,9 @@
     | 'fallbackHeight'
   >;
 
-  type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+  const STANDARD_CARD_HEADING_LEVELS = [1, 2, 3, 4, 5, 6] as const;
+
+  type HeadingLevel = (typeof STANDARD_CARD_HEADING_LEVELS)[number];
   type HeadingTag = `h${HeadingLevel}`;
 
   export type StandardCardProps = {
@@ -64,10 +66,8 @@
    * @prop {StandardCardImage} image - Optional image input rendered through Image
    * @prop {string} class - Additional classes appended to the root article
    */
-  import { requireNonEmptyString } from '../lib/componentValidation';
+  import { normalizeOptionProp, requireNonEmptyString } from '../lib/componentValidation';
   import { normalizeHref, normalizeRelForTarget, normalizeTarget } from '../lib/linkBehavior';
-
-  const VALID_HEADING_LEVELS = new Set([1, 2, 3, 4, 5, 6]);
 
   let {
     href,
@@ -101,12 +101,6 @@
     return normalizedValue.length > 0 ? normalizedValue : undefined;
   }
 
-  function normalizeHeadingLevel(value: unknown): HeadingLevel {
-    return typeof value === 'number' && VALID_HEADING_LEVELS.has(value)
-      ? (value as HeadingLevel)
-      : 3;
-  }
-
   const normalizedHref = $derived(normalizeRequiredHref(href));
   const normalizedTitle = $derived(
     requireNonEmptyString(title, { componentName: 'StandardCard', propName: 'title' })
@@ -117,7 +111,16 @@
   );
   const normalizedLinkLabel = $derived(normalizeOptionalString(linkLabel));
   const linkAriaLabel = $derived(normalizedLinkLabel.length > 0 ? normalizedLinkLabel : undefined);
-  const resolvedHeadingLevel = $derived(normalizeHeadingLevel(headingLevel));
+  const resolvedHeadingLevel = $derived(
+    normalizeOptionProp({
+      value: headingLevel,
+      allowedValues: STANDARD_CARD_HEADING_LEVELS,
+      fallbackValue: 3,
+      componentName: 'StandardCard',
+      propName: 'headingLevel',
+      warningKey: 'standard-card:invalid-heading-level',
+    })
+  );
   const headingTag = $derived(`h${resolvedHeadingLevel}` as HeadingTag);
 
   const normalizedKicker = $derived(normalizeOptionalString(kicker));

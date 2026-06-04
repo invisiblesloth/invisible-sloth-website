@@ -10,7 +10,7 @@
       docs: {
         description: {
           component:
-            'Responsive image atom with declarative fallback support and runtime loading enhancement. Non-decorative images warn once in client development when Svelte resolves an empty rendered alt; the resolved alt may use fallbackAlt when the fallback is rendered declaratively.',
+            'Responsive image atom with declarative fallback support and runtime loading enhancement. Malformed option props warn once in client development and fall back to documented defaults. Non-decorative images warn once in client development when Svelte resolves an empty rendered alt; the resolved alt may use fallbackAlt when the fallback is rendered declaratively.',
         },
       },
       controls: {
@@ -344,6 +344,28 @@
     minHeight: '220px',
     preferredHeight: '45svh',
     maxHeight: '560px',
+  }}
+/>
+
+<Story
+  name="Invalid Option Prop Fallbacks"
+  args={{
+    fit: 'stretch',
+    frame: 'poster',
+    ratio: '4:3',
+    radius: 'round',
+    containSizing: 'wide',
+    loading: 'auto',
+    decoding: 'defer',
+    fetchPriority: 'highest',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Malformed option-like runtime props fall back to the documented Image defaults and warn once per prop key in client development.',
+      },
+    },
   }}
 />
 

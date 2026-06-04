@@ -13,8 +13,6 @@
 
   const SUPPORT_HEADING_LEVELS = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
   const DOCUMENTS_HEADING_LEVELS = ['h3', 'h4', 'h5', 'h6'] as const;
-  const VALID_SUPPORT_HEADING_LEVELS = new Set<unknown>(SUPPORT_HEADING_LEVELS);
-  const VALID_DOCUMENTS_HEADING_LEVELS = new Set<unknown>(DOCUMENTS_HEADING_LEVELS);
 
   type SupportHeadingLevel = (typeof SUPPORT_HEADING_LEVELS)[number];
   type DocumentsHeadingLevel = (typeof DOCUMENTS_HEADING_LEVELS)[number];
@@ -171,7 +169,7 @@
    * @prop {string} documentsHeadingLevel - Optional semantic heading level for documentsHeading, h3-h6; derives from headingLevel when omitted
    * @prop {string} class - Additional classes merged onto the root panel
    */
-  import { warnOnce } from '../lib/devWarnings';
+  import { normalizeOptionProp } from '../lib/componentValidation';
   import Heading from './Heading.svelte';
 
   let {
@@ -189,7 +187,14 @@
   }: ProductSupportProps = $props();
 
   function normalizeSupportHeadingLevel(value: unknown): SupportHeadingLevel {
-    return VALID_SUPPORT_HEADING_LEVELS.has(value) ? (value as SupportHeadingLevel) : 'h2';
+    return normalizeOptionProp({
+      value,
+      allowedValues: SUPPORT_HEADING_LEVELS,
+      fallbackValue: 'h2',
+      componentName: 'ProductSupport',
+      propName: 'headingLevel',
+      warningKey: 'product-support:invalid-heading-level',
+    });
   }
 
   function resolveDocumentsHeadingLevel(
@@ -200,7 +205,14 @@
       return DERIVED_DOCUMENTS_HEADING_LEVELS[derivedHeadingLevel];
     }
 
-    return VALID_DOCUMENTS_HEADING_LEVELS.has(value) ? (value as DocumentsHeadingLevel) : 'h3';
+    return normalizeOptionProp({
+      value,
+      allowedValues: DOCUMENTS_HEADING_LEVELS,
+      fallbackValue: 'h3',
+      componentName: 'ProductSupport',
+      propName: 'documentsHeadingLevel',
+      warningKey: 'product-support:invalid-documents-heading-level',
+    });
   }
 
   const normalizedHeading = $derived(
@@ -240,25 +252,6 @@
   const productSupportClasses = $derived(
     ['product-support', normalizedClassName].filter(Boolean).join(' ')
   );
-
-  $effect(() => {
-    if (!VALID_SUPPORT_HEADING_LEVELS.has(headingLevel)) {
-      warnOnce(
-        'product-support:invalid-heading-level',
-        '[ProductSupport] `headingLevel` must be one of h2, h3, h4, h5, h6. Falling back to h2.'
-      );
-    }
-
-    if (
-      documentsHeadingLevel !== undefined &&
-      !VALID_DOCUMENTS_HEADING_LEVELS.has(documentsHeadingLevel)
-    ) {
-      warnOnce(
-        'product-support:invalid-documents-heading-level',
-        '[ProductSupport] `documentsHeadingLevel` must be one of h3, h4, h5, h6. Falling back to h3.'
-      );
-    }
-  });
 </script>
 
 <div {...restProps} class={productSupportClasses}>
