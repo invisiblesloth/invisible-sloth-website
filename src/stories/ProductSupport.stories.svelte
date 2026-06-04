@@ -216,6 +216,31 @@
 </Story>
 
 <Story
+  name="Legacy Single Detail"
+  args={{
+    supportDetail:
+      'Tracer stores data on your device, so Invisible Sloth does not have access to your activities, entries, notes, or backups unless you choose to send them.',
+    supportDetails: undefined,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Deprecated legacy single-paragraph support copy remains supported while callers migrate to supportDetails.',
+      },
+    },
+  }}
+>
+  {#snippet template(args)}
+    <section class="product-support-story__preview-section" data-preview-layout="story-owned">
+      <div class="product-support-story__preview-rail">
+        <ProductSupport {...args} />
+      </div>
+    </section>
+  {/snippet}
+</Story>
+
+<Story
   name="Whitespace Trim"
   args={{
     heading: '  Support  ',

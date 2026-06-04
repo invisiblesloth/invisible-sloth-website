@@ -1,15 +1,8 @@
 <script module lang="ts">
   import type { SvelteHTMLElements } from 'svelte/elements';
-  import { requireNonEmptyString } from '../lib/componentValidation';
+  import type { ProductSupportDocumentLink } from '../lib/productSupport';
 
-  export type ProductSupportDocumentLink = {
-    label: string;
-    href: string;
-  };
-
-  type ResolvedProductSupportDocumentLink = ProductSupportDocumentLink & {
-    index: number;
-  };
+  export type { ProductSupportDocumentLink } from '../lib/productSupport';
 
   const SUPPORT_HEADING_LEVELS = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
   const DOCUMENTS_HEADING_LEVELS = ['h3', 'h4', 'h5', 'h6'] as const;
@@ -48,101 +41,6 @@
     h5: 'h6',
     h6: 'h6',
   };
-
-  function requireSupportDetailsItem(value: unknown, index: number): string {
-    const normalizedValue = typeof value === 'string' ? value.trim() : '';
-
-    if (normalizedValue.length === 0) {
-      throw new Error(
-        `[ProductSupport] \`supportDetails.${index}\` must resolve to a non-empty string after trimming.`
-      );
-    }
-
-    return normalizedValue;
-  }
-
-  function resolveProductSupportDetails(
-    supportDetail: unknown,
-    supportDetails: unknown
-  ): string[] {
-    const hasSupportDetail = supportDetail !== undefined;
-    const hasSupportDetails = supportDetails !== undefined;
-
-    if (hasSupportDetail && hasSupportDetails) {
-      throw new Error(
-        '[ProductSupport] Pass exactly one of `supportDetail` or `supportDetails`; both were provided.'
-      );
-    }
-
-    if (!hasSupportDetail && !hasSupportDetails) {
-      throw new Error(
-        '[ProductSupport] Pass exactly one of `supportDetail` or `supportDetails`; neither was provided.'
-      );
-    }
-
-    if (hasSupportDetails) {
-      if (!Array.isArray(supportDetails) || supportDetails.length === 0) {
-        throw new Error('[ProductSupport] `supportDetails` must be a non-empty array.');
-      }
-
-      return Array.from(supportDetails, (supportDetailItem, index) =>
-        requireSupportDetailsItem(supportDetailItem, index)
-      );
-    }
-
-    return [
-      requireNonEmptyString(supportDetail, {
-        componentName: 'ProductSupport',
-        propName: 'supportDetail',
-      }),
-    ];
-  }
-
-  function isRecord(value: unknown): value is Record<string, unknown> {
-    return typeof value === 'object' && value !== null && !Array.isArray(value);
-  }
-
-  function requireDocumentString(
-    value: unknown,
-    index: number,
-    propName: keyof ProductSupportDocumentLink
-  ): string {
-    if (typeof value !== 'string' || value.trim().length === 0) {
-      throw new Error(
-        `[ProductSupport] \`documents.${index}.${propName}\` must resolve to a non-empty string after trimming.`
-      );
-    }
-
-    return requireNonEmptyString(value, {
-      componentName: 'ProductSupport',
-      propName: `documents.${propName}`,
-    });
-  }
-
-  function resolveProductSupportDocuments(
-    documents: unknown
-  ): ResolvedProductSupportDocumentLink[] {
-    if (!Array.isArray(documents) || documents.length === 0) {
-      throw new Error('[ProductSupport] `documents` must be a non-empty array.');
-    }
-
-    return Array.from(documents, (documentLink, index) => {
-      if (!isRecord(documentLink)) {
-        throw new Error(
-          `[ProductSupport] \`documents.${index}\` must include non-empty string label and href values.`
-        );
-      }
-
-      const label = requireDocumentString(documentLink.label, index, 'label');
-      const href = requireDocumentString(documentLink.href, index, 'href');
-
-      return {
-        index,
-        label,
-        href,
-      };
-    });
-  }
 </script>
 
 <script lang="ts">
@@ -170,6 +68,8 @@
    * @prop {string} class - Additional classes merged onto the root panel
    */
   import { normalizeOptionProp } from '../lib/componentValidation';
+  import type { ProductSupportContentInput } from '../lib/productSupport';
+  import { resolveProductSupportContent } from '../lib/productSupport';
   import Heading from './Heading.svelte';
 
   let {
@@ -215,35 +115,18 @@
     });
   }
 
-  const normalizedHeading = $derived(
-    requireNonEmptyString(heading, {
-      componentName: 'ProductSupport',
-      propName: 'heading',
-    })
+  const productSupportContent = $derived(
+    resolveProductSupportContent({
+      heading,
+      emailPrompt,
+      supportEmail,
+      supportDetail,
+      supportDetails,
+      documentsHeading,
+      documents,
+    } satisfies ProductSupportContentInput)
   );
-  const normalizedEmailPrompt = $derived(
-    requireNonEmptyString(emailPrompt, {
-      componentName: 'ProductSupport',
-      propName: 'emailPrompt',
-    })
-  );
-  const normalizedSupportEmail = $derived(
-    requireNonEmptyString(supportEmail, {
-      componentName: 'ProductSupport',
-      propName: 'supportEmail',
-    })
-  );
-  const normalizedSupportDetails = $derived(
-    resolveProductSupportDetails(supportDetail, supportDetails)
-  );
-  const normalizedDocumentsHeading = $derived(
-    requireNonEmptyString(documentsHeading, {
-      componentName: 'ProductSupport',
-      propName: 'documentsHeading',
-    })
-  );
-  const normalizedDocuments = $derived(resolveProductSupportDocuments(documents));
-  const emailHref = $derived(`mailto:${normalizedSupportEmail}`);
+  const emailHref = $derived(`mailto:${productSupportContent.supportEmail}`);
   const normalizedHeadingLevel = $derived(normalizeSupportHeadingLevel(headingLevel));
   const normalizedDocumentsHeadingLevel = $derived(
     resolveDocumentsHeadingLevel(documentsHeadingLevel, normalizedHeadingLevel)
@@ -259,16 +142,16 @@
     <Heading
       level={normalizedHeadingLevel}
       visualLevel="h3"
-      text={normalizedHeading}
+      text={productSupportContent.heading}
       class="product-support__heading"
     />
 
     <div class="product-support__body text-body-responsive-tight">
       <p>
-        {normalizedEmailPrompt}{' '}
-        <a href={emailHref} class="product-support__link text-link">{normalizedSupportEmail}</a>.
+        {productSupportContent.emailPrompt}{' '}
+        <a href={emailHref} class="product-support__link text-link">{productSupportContent.supportEmail}</a>.
       </p>
-      {#each normalizedSupportDetails as normalizedSupportDetail}
+      {#each productSupportContent.supportDetails as normalizedSupportDetail}
         <p>{normalizedSupportDetail}</p>
       {/each}
     </div>
@@ -280,12 +163,12 @@
     <Heading
       level={normalizedDocumentsHeadingLevel}
       visualLevel="h4"
-      text={normalizedDocumentsHeading}
+      text={productSupportContent.documentsHeading}
       class="product-support__documents-heading"
     />
 
     <ul class="product-support__documents text-body-responsive-tight">
-      {#each normalizedDocuments as documentLink (documentLink.index)}
+      {#each productSupportContent.documents as documentLink (documentLink.index)}
         <li class="product-support__document">
           <a href={documentLink.href} class="product-support__link text-link">
             {documentLink.label}
