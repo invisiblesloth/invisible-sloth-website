@@ -20,7 +20,20 @@
     tags: ['autodocs'],
     parameters: {
       controls: {
-        exclude: ['children', 'class'],
+        exclude: ['children'],
+      },
+      docs: {
+        description: {
+          component:
+            'Single-column project list surface. The root `class` hook lands on the outer `.project-list` wrapper for layout/global selectors only.',
+        },
+      },
+    },
+    argTypes: {
+      class: {
+        control: false,
+        description:
+          'Optional outer `.project-list` root class hook for layout hooks, global utilities, and global selectors.',
       },
     },
   });
@@ -76,7 +89,16 @@
       ],
     },
   ];
+
+  const rootHookProject = sampleProjects[0];
 </script>
+
+<style>
+  :global(.project-list-story__root-hook) {
+    outline: 1px dashed var(--color-outline);
+    outline-offset: var(--space-100);
+  }
+</style>
 
 <Story name="Stacked List">
   {#snippet template()}
@@ -110,6 +132,30 @@
           <Divider thickness="Double" ariaHidden />
         {/if}
       {/each}
+    </ProjectListSurface>
+  {/snippet}
+</Story>
+
+<Story
+  name="Root Class Hook"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Marker-only coverage: the class lands on the outer `.project-list` root for layout/global selectors and is not a theming API.',
+      },
+    },
+  }}
+>
+  {#snippet template()}
+    <ProjectListSurface class="project-list-story__root-hook">
+      <ProjectCard
+        title={rootHookProject.title}
+        subhead={rootHookProject.subhead}
+        badges={rootHookProject.badges}
+      >
+        <p>{rootHookProject.description}</p>
+      </ProjectCard>
     </ProjectListSurface>
   {/snippet}
 </Story>

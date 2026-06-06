@@ -14,15 +14,25 @@
    * Layout deliberately stays as one column across breakpoints to focus attention on each project,
    * while responsive spacing and container padding adapt for larger viewports.
    *
+   * Root-hook component: `class` is appended to the outer `.project-list` root and is
+   * for layout/global selectors only.
+   *
    * @prop {Snippet} children - Composed project cards and separators
+   * @prop {string} class - Additional classes appended to the outer `.project-list`
+   * root for layout/global selectors only
    */
   let {
     children,
     class: className = '',
   }: ProjectListSurfaceProps = $props();
+
+  const normalizedClassName = $derived(String(className ?? '').trim());
+  const projectListClasses = $derived(
+    ['project-list', normalizedClassName].filter(Boolean).join(' ')
+  );
 </script>
 
-<div class={`project-list ${className}`}>
+<div class={projectListClasses}>
   <div class="project-list__surface elevation-2">
     {@render children?.()}
   </div>

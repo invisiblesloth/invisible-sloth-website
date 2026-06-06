@@ -34,14 +34,22 @@ class is appended for hooks/layout selectors; this does not promise cascade or
 override power. These components should not broadly forward arbitrary attributes
 unless that behavior is already public.
 
-This pass adds root `class` only to `ContactUs`, `ProjectCard`,
-`StandardCard`, and `BadgeGroup`. `ContentSection`, `RichTextBlock`,
-`FeatureList`, `TagGroup`, and `DetailHeader` already forward root attributes
-and keep that broader public contract. `ProductSupport`
-forwards root panel attributes/classes, while parent composition owns rails,
-placement, section semantics, anchors, and section rhythm. `RichTextBlock`
-is the prose/body primitive: it styles already-rendered prose-shaped children;
-its `body` prop remains escaped plain-text fallback content and does not parse
+Class-only narrow root hooks include `ContactUs`, `ProjectCard`,
+`ProjectListSurface`, `StandardCard`, `BadgeGroup`, and `ProductStatus`. These
+components append caller classes to their documented root element without
+opening a broader attribute-forwarding surface. Within this group,
+`ProductStatus` exposes the hook on its panel surface while parent composition
+owns rails, placement, and section rhythm; `ProjectListSurface` exposes it on
+the outer `.project-list` wrapper while the inner surface remains
+component-owned.
+
+Broader root attribute forwarders keep their existing public contracts:
+`ContentSection`, `RichTextBlock`, `FeatureList`, `TagGroup`, `DetailHeader`,
+and `ProductSupport` forward root attributes/classes. `ProductSupport` forwards
+root panel attributes/classes, while parent composition owns rails, placement,
+section semantics, anchors, and section rhythm. `RichTextBlock` is the
+prose/body primitive: it styles already-rendered prose-shaped children; its
+`body` prop remains escaped plain-text fallback content and does not parse
 Markdown or HTML.
 
 `ContentSection` forwards root section attributes and owns section heading/body
@@ -49,8 +57,6 @@ placement. Slotted children default to prose mode and render through
 `RichTextBlock`; set `bodyMode="structured"` when a child component owns its own
 typography, rhythm, semantics, and internal spacing. Children still win over the
 plain `body` prop, and plain `body` always remains prose-shaped fallback content.
-`ProductStatus` exposes only a root `class` on its panel surface; parent
-composition owns rails, placement, and section rhythm.
 `FeatureList` keeps its existing broad root `<ul>` forwarding surface for
 compatibility; new components should not copy that breadth by default.
 
