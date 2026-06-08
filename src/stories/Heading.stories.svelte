@@ -1,6 +1,10 @@
-<script module>
+<script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import Heading from '../components/Heading.svelte';
+  import Heading, { type HeadingProps } from '../components/Heading.svelte';
+
+  const invalidRuntimeLevel = 'h7' as unknown as NonNullable<HeadingProps['level']>;
+  const invalidRuntimeVisualLevel =
+    'display' as unknown as NonNullable<HeadingProps['visualLevel']>;
 
   const { Story } = defineMeta({
     title: 'Molecules/Heading',
@@ -121,6 +125,23 @@
     level: 'h2',
     visualLevel: 'h3',
     text: 'Semantic H2 with H3 visual scale',
+  }}
+/>
+
+<Story
+  name="Invalid Option Fallback"
+  args={{
+    level: invalidRuntimeLevel,
+    visualLevel: invalidRuntimeVisualLevel,
+    text: 'Invalid heading options fall back safely',
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Invalid runtime level falls back to h1; invalid visualLevel falls back to the normalized semantic level.',
+      },
+    },
   }}
 />
 

@@ -20,7 +20,9 @@
 	import type { Snippet } from 'svelte';
 	import type { SvelteHTMLElements } from 'svelte/elements';
 
-	type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+	const HEADING_LEVELS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const;
+
+	type HeadingLevel = (typeof HEADING_LEVELS)[number];
 	type HeadingAttributes = SvelteHTMLElements[HeadingLevel];
 	export type HeadingProps = Omit<HeadingAttributes, 'class'> & {
 		level?: HeadingLevel;
@@ -32,6 +34,8 @@
 </script>
 
 <script lang="ts">
+	import { normalizeOptionProp } from '../lib/componentValidation';
+
 	let {
 		level = 'h1',
 		visualLevel,
@@ -41,13 +45,35 @@
 		...restProps
 	}: HeadingProps = $props();
 
-	const resolvedVisualLevel = $derived(visualLevel ?? level);
+	const normalizedLevel = $derived(
+		normalizeOptionProp({
+			value: level,
+			allowedValues: HEADING_LEVELS,
+			fallbackValue: 'h1',
+			componentName: 'Heading',
+			propName: 'level',
+			warningKey: 'heading:invalid-level',
+		}),
+	);
+	const resolvedVisualLevel = $derived(
+		visualLevel === undefined
+			? normalizedLevel
+			: normalizeOptionProp({
+					value: visualLevel,
+					allowedValues: HEADING_LEVELS,
+					fallbackValue: normalizedLevel,
+					componentName: 'Heading',
+					propName: 'visualLevel',
+					warningKey: 'heading:invalid-visual-level',
+					fallbackLabel: 'the resolved semantic level',
+				}),
+	);
 	const headingClasses = $derived(
 		['heading', `heading-${resolvedVisualLevel}`, className].filter(Boolean).join(' '),
 	);
 </script>
 
-<svelte:element this={level} {...restProps} class={headingClasses}>
+<svelte:element this={normalizedLevel} {...restProps} class={headingClasses}>
 	{#if text !== undefined}{text}{:else if children}{@render children()}{/if}
 </svelte:element>
 

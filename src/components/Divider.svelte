@@ -1,9 +1,15 @@
 <script module lang="ts">
+  const DIVIDER_ORIENTATIONS = ["horizontal", "vertical"] as const;
+  const DIVIDER_THICKNESSES = ["Default", "Double"] as const;
+
+  type DividerOrientation = (typeof DIVIDER_ORIENTATIONS)[number];
+  type DividerThickness = (typeof DIVIDER_THICKNESSES)[number];
+
   export type DividerProps = {
     /** Orientation of the divider */
-    orientation?: "horizontal" | "vertical";
+    orientation?: DividerOrientation;
     /** Thickness variant: default is 1px, double is 2px */
-    thickness?: "Default" | "Double";
+    thickness?: DividerThickness;
     /** Hide divider from assistive technologies when purely decorative */
     ariaHidden?: boolean;
     /** Additional global utility or hook classes */
@@ -12,6 +18,8 @@
 </script>
 
 <script lang="ts">
+  import { normalizeOptionProp } from "../lib/componentValidation";
+
   /**
    * Divider primitive for separating content.
    *
@@ -29,6 +37,27 @@
     class: className = "",
   }: DividerProps = $props();
 
+  const normalizedOrientation = $derived(
+    normalizeOptionProp({
+      value: orientation,
+      allowedValues: DIVIDER_ORIENTATIONS,
+      fallbackValue: "horizontal",
+      componentName: "Divider",
+      propName: "orientation",
+      warningKey: "divider:invalid-orientation",
+    })
+  );
+  const normalizedThickness = $derived(
+    normalizeOptionProp({
+      value: thickness,
+      allowedValues: DIVIDER_THICKNESSES,
+      fallbackValue: "Default",
+      componentName: "Divider",
+      propName: "thickness",
+      warningKey: "divider:invalid-thickness",
+    })
+  );
+
   function classes(...values: Array<string | false | undefined>): string {
     return values
       .map((value) => (typeof value === "string" ? value.trim() : ""))
@@ -40,7 +69,7 @@
     classes(
       "divider",
       "divider--horizontal",
-      thickness === "Double" && "divider--double",
+      normalizedThickness === "Double" && "divider--double",
       className
     )
   );
@@ -49,13 +78,13 @@
     classes(
       "divider",
       "divider--vertical",
-      thickness === "Double" && "divider--double",
+      normalizedThickness === "Double" && "divider--double",
       className
     )
   );
 </script>
 
-{#if orientation === "horizontal"}
+{#if normalizedOrientation === "horizontal"}
   <hr class={horizontalClasses} aria-hidden={ariaHidden ? "true" : undefined} />
 {:else}
   <div

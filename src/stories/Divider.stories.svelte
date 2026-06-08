@@ -1,6 +1,10 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
-  import Divider from '../components/Divider.svelte';
+  import Divider, { type DividerProps } from '../components/Divider.svelte';
+
+  const invalidRuntimeOrientation =
+    'diagonal' as unknown as NonNullable<DividerProps['orientation']>;
+  const invalidRuntimeThickness = 'Triple' as unknown as NonNullable<DividerProps['thickness']>;
 
   const { Story } = defineMeta({
     title: 'Atoms/Divider',
@@ -82,6 +86,23 @@
     orientation: 'horizontal',
     thickness: 'Double',
     ariaHidden: false,
+  }}
+/>
+
+<Story
+  name="Invalid Option Fallback"
+  args={{
+    orientation: invalidRuntimeOrientation,
+    thickness: invalidRuntimeThickness,
+    ariaHidden: false,
+  }}
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Invalid runtime orientation falls back to horizontal; invalid thickness falls back to Default.',
+      },
+    },
   }}
 />
 
