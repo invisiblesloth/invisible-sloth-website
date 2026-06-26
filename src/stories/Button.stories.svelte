@@ -22,6 +22,9 @@
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
       .join(' '),
   }));
+  const filledVariantExamples = labelVariantExamples.filter((example) =>
+    example.variant.startsWith('filled-')
+  );
 
   const { Story } = defineMeta({
     title: 'Atoms/Button',
@@ -136,6 +139,103 @@
     align-items: center;
     gap: var(--space-600);
   }
+
+  .button-state-matrix {
+    display: grid;
+    gap: var(--space-700);
+    overflow: visible;
+  }
+
+  .button-state-matrix__grid {
+    display: grid;
+    grid-template-columns: max-content repeat(3, minmax(9rem, max-content));
+    gap: var(--space-400) var(--space-600);
+    align-items: center;
+    overflow: visible;
+  }
+
+  .button-state-matrix__heading,
+  .button-state-matrix__variant {
+    color: var(--color-on-surface-dim);
+  }
+
+  .button-state-matrix__heading {
+    align-self: end;
+  }
+
+  .button-state-matrix__variant {
+    overflow-wrap: anywhere;
+  }
+
+  .button-state-matrix__cell {
+    display: flex;
+    align-items: center;
+    min-block-size: 72px;
+    padding: var(--space-300);
+    overflow: visible;
+  }
+
+  .button-state-matrix__disabled {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-600);
+    overflow: visible;
+  }
+
+  .button-state-matrix :global(.button[data-story-state='hover']:not(:disabled):not(.is-disabled) .button__shadow) {
+    box-shadow: var(--button-cast-shadow-hover) !important;
+    opacity: var(--button-cast-shadow-opacity) !important;
+  }
+
+  .button-state-matrix :global(.button[data-story-state='hover']:not(:disabled):not(.is-disabled) .button__surface) {
+    box-shadow:
+      inset 0 0 0 var(--button-border-width) var(--button-border-color),
+      var(--button-surface-shadow-hover) !important;
+    transform: var(--button-surface-transform-hover) !important;
+  }
+
+  .button-state-matrix :global(.button[data-story-state='hover']:not(:disabled):not(.is-disabled) .button__state-layer) {
+    background-color: var(--button-state-hover) !important;
+    opacity: 1 !important;
+  }
+
+  .button-state-matrix :global(.button[data-story-state='pressed']:not(:disabled):not(.is-disabled) .button__shadow) {
+    box-shadow: var(--button-cast-shadow-pressed) !important;
+    opacity: 0 !important;
+  }
+
+  .button-state-matrix :global(.button[data-story-state='pressed']:not(:disabled):not(.is-disabled) .button__surface) {
+    box-shadow:
+      inset 0 0 0 var(--button-border-width) var(--button-border-color),
+      var(--button-surface-shadow-pressed) !important;
+    transform: var(--button-surface-transform-pressed) !important;
+  }
+
+  .button-state-matrix :global(.button[data-story-state='pressed']:not(:disabled):not(.is-disabled) .button__state-layer) {
+    background-color: var(--button-state-pressed) !important;
+    opacity: 1 !important;
+  }
+
+  @media (max-width: 700px) {
+    .button-state-matrix__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-300);
+    }
+
+    .button-state-matrix__heading {
+      display: none;
+    }
+
+    .button-state-matrix__variant {
+      margin-block-start: var(--space-400);
+    }
+
+    .button-state-matrix__cell {
+      min-block-size: 64px;
+      padding-inline: 0;
+    }
+  }
 </style>
 
 {#snippet closeIcon()}
@@ -168,6 +268,82 @@
       {#each labelVariantExamples as example}
         <Button label={example.label} variant={example.variant} disabled />
       {/each}
+    </div>
+  {/snippet}
+</Story>
+
+<Story
+  name="Interaction States"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Standard Button interaction states across rest, hover-simulated, pressed-simulated, disabled, and icon-only paths. Switch the global Storybook theme toolbar between Light and Dark for theme checks.',
+      },
+    },
+  }}
+>
+  {#snippet template()}
+    <div class="button-state-matrix">
+      <div class="button-state-matrix__grid">
+        <span></span>
+        <span class="button-state-matrix__heading text-label-large">Rest</span>
+        <span class="button-state-matrix__heading text-label-large">Hover</span>
+        <span class="button-state-matrix__heading text-label-large">Pressed</span>
+
+        {#each filledVariantExamples as example}
+          <span class="button-state-matrix__variant text-label-large">{example.variant}</span>
+
+          <div class="button-state-matrix__cell">
+            <Button label="Button" variant={example.variant} data-story-state="rest" />
+          </div>
+
+          <div class="button-state-matrix__cell">
+            <Button label="Button" variant={example.variant} data-story-state="hover" />
+          </div>
+
+          <div class="button-state-matrix__cell">
+            <Button label="Button" variant={example.variant} data-story-state="pressed" />
+          </div>
+        {/each}
+
+        <span class="button-state-matrix__variant text-label-large">icon filled-inverse-primary</span>
+
+        <div class="button-state-matrix__cell">
+          <Button
+            label="Close navigation"
+            variant="filled-inverse-primary"
+            shape="icon"
+            icon={closeIcon}
+            data-story-state="rest"
+          />
+        </div>
+
+        <div class="button-state-matrix__cell">
+          <Button
+            label="Close navigation"
+            variant="filled-inverse-primary"
+            shape="icon"
+            icon={closeIcon}
+            data-story-state="hover"
+          />
+        </div>
+
+        <div class="button-state-matrix__cell">
+          <Button
+            label="Close navigation"
+            variant="filled-inverse-primary"
+            shape="icon"
+            icon={closeIcon}
+            data-story-state="pressed"
+          />
+        </div>
+      </div>
+
+      <div class="button-state-matrix__disabled">
+        <span class="button-state-matrix__variant text-label-large">disabled filled-primary</span>
+        <Button label="Disabled Filled" variant="filled-primary" disabled />
+      </div>
     </div>
   {/snippet}
 </Story>

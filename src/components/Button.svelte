@@ -67,7 +67,7 @@
   ]);
 
   /**
-   * Button component with lift-and-reveal hover effect
+   * Button component with canonical raised-surface interaction states
    *
    * Strict control escape hatch: only allowlisted safe/native attributes from
    * rest props are forwarded. Button does not forward `class`, `style`, ARIA
@@ -260,6 +260,7 @@
 </script>
 
 {#snippet buttonContent()}
+  <div class="button__shadow" aria-hidden="true"></div>
   <div class="button__side" aria-hidden="true"></div>
 
   <div class="button__surface">
@@ -345,6 +346,20 @@
     --button-side-color: var(--color-button-side-primary);
     --button-border-width: 0px;
     --button-border-color: transparent;
+    --button-contact-line-color: rgba(0, 0, 0, 0.15);
+    --button-cast-shadow-rest:
+      0 2px 2px 0 rgba(0, 0, 0, 0.18),
+      0 1px 1px 0 rgba(0, 0, 0, 0.12);
+    --button-cast-shadow-hover:
+      0 3px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    --button-cast-shadow-pressed: 0 0 0 0 transparent;
+    --button-cast-shadow-current: var(--button-cast-shadow-rest);
+    --button-cast-shadow-opacity: 1;
+    --button-surface-transform-rest: translate(-1px, -3px);
+    --button-surface-transform-hover: translate(-1.8px, -4px);
+    --button-surface-transform-touch-rest: translate(-1.4px, -3px);
+    --button-surface-transform-pressed: translate(0, 0);
     --button-surface-shadow: 0 0 0 0 transparent;
     --button-surface-shadow-hover: 0 0 0 0 transparent;
     --button-surface-shadow-focus: var(--button-surface-shadow-hover);
@@ -373,7 +388,46 @@
     cursor: pointer;
     font-family: inherit;
     text-decoration: none;
+    isolation: isolate;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  :global(html[data-theme='dark']) .button {
+    --button-contact-line-color: transparent;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(html:not([data-theme])) .button {
+      --button-contact-line-color: transparent;
+    }
+  }
+
+  @supports (color: color-mix(in srgb, red 50%, transparent)) {
+    .button {
+      --button-cast-shadow-color: var(--button-side-color);
+      --button-cast-shadow-rest:
+        0 2px 2px 0 color-mix(in srgb, var(--button-cast-shadow-color) 22%, transparent),
+        0 1px 1px 0 color-mix(in srgb, var(--button-cast-shadow-color) 15%, transparent);
+      --button-cast-shadow-hover:
+        0 3px 3px 0 color-mix(in srgb, var(--button-cast-shadow-color) 10%, transparent),
+        0 1px 2px 0 color-mix(in srgb, var(--button-cast-shadow-color) 10%, transparent);
+    }
+
+    :global(html[data-theme='dark']) .button {
+      --button-cast-shadow-color: var(--button-side-color);
+      --button-cast-shadow-hover:
+        0 3px 3px 0 color-mix(in srgb, var(--button-cast-shadow-color) 24%, transparent),
+        0 1px 2px 0 color-mix(in srgb, var(--button-cast-shadow-color) 18%, transparent);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :global(html:not([data-theme])) .button {
+        --button-cast-shadow-color: var(--button-side-color);
+        --button-cast-shadow-hover:
+          0 3px 3px 0 color-mix(in srgb, var(--button-cast-shadow-color) 24%, transparent),
+          0 1px 2px 0 color-mix(in srgb, var(--button-cast-shadow-color) 18%, transparent);
+      }
+    }
   }
 
   .button--shape-icon {
@@ -390,13 +444,28 @@
     cursor: not-allowed;
   }
 
+  .button__shadow,
   .button__side {
     position: absolute;
     box-sizing: border-box;
     inset: 0;
     border-radius: var(--radius-full);
-    background-color: var(--button-side-color);
     pointer-events: none;
+  }
+
+  .button__shadow {
+    z-index: 0;
+    box-shadow: var(--button-cast-shadow-current);
+    opacity: var(--button-cast-shadow-opacity);
+    transition:
+      box-shadow var(--button-transition),
+      opacity var(--button-transition);
+  }
+
+  .button__side {
+    border-block-end: 1px solid var(--button-contact-line-color);
+    background-color: var(--button-side-color);
+    z-index: 1;
   }
 
   .button__surface {
@@ -419,7 +488,8 @@
       background-color var(--button-transition),
       box-shadow var(--button-transition);
     overflow: hidden;
-    transform: translate(-1px, -3px);
+    transform: var(--button-surface-transform-rest);
+    z-index: 2;
   }
 
   .button__state-layer {
@@ -523,6 +593,9 @@
   .button--text,
   .button--outline-error,
   .button--text-error {
+    --button-cast-shadow-current: var(--button-cast-shadow-pressed);
+    --button-cast-shadow-opacity: 0;
+    --button-contact-line-color: transparent;
     --button-surface-color: transparent;
     --button-side-color: transparent;
     --button-surface-shadow-hover: var(--effect-standard-card-lift);
@@ -572,11 +645,16 @@
 
   /* POINTER DEVICES (mouse/trackpad) */
   @media (hover: hover) and (pointer: fine) {
+    .button:where(:hover):not(:disabled):not(.is-disabled) .button__shadow {
+      box-shadow: var(--button-cast-shadow-hover);
+      opacity: var(--button-cast-shadow-opacity);
+    }
+
     .button:where(:hover):not(:disabled):not(.is-disabled) .button__surface {
       box-shadow:
         inset 0 0 0 var(--button-border-width) var(--button-border-color),
         var(--button-surface-shadow-hover);
-      transform: translate(-1.8px, -4px);
+      transform: var(--button-surface-transform-hover);
     }
 
     .button:where(:hover):not(:disabled):not(.is-disabled) .button__state-layer {
@@ -584,11 +662,17 @@
       opacity: 1;
     }
 
+    .button:active:not(:disabled):not(.is-disabled) .button__shadow {
+      box-shadow: var(--button-cast-shadow-pressed);
+      opacity: 0;
+      transition-duration: 50ms;
+    }
+
     .button:active:not(:disabled):not(.is-disabled) .button__surface {
       box-shadow:
         inset 0 0 0 var(--button-border-width) var(--button-border-color),
         var(--button-surface-shadow-pressed);
-      transform: translate(0, 0);
+      transform: var(--button-surface-transform-pressed);
       transition-duration: 50ms;
     }
 
@@ -602,14 +686,20 @@
   /* TOUCH DEVICES (touch screens) */
   @media (hover: none) and (pointer: coarse) {
     .button:not(:disabled):not(.is-disabled):not(:active):not(:focus-visible) .button__surface {
-      transform: translate(-1.4px, -3px);
+      transform: var(--button-surface-transform-touch-rest);
+    }
+
+    .button:active:not(:disabled):not(.is-disabled) .button__shadow {
+      box-shadow: var(--button-cast-shadow-pressed);
+      opacity: 0;
+      transition-duration: 50ms;
     }
 
     .button:active:not(:disabled):not(.is-disabled) .button__surface {
       box-shadow:
         inset 0 0 0 var(--button-border-width) var(--button-border-color),
         var(--button-surface-shadow-pressed);
-      transform: translate(0, 0);
+      transform: var(--button-surface-transform-pressed);
       transition-duration: 50ms;
     }
 
@@ -625,11 +715,16 @@
     outline: var(--focus-outline-width) solid var(--color-focus);
   }
 
+  .button:focus-visible:not(:disabled):not(.is-disabled) .button__shadow {
+    box-shadow: var(--button-cast-shadow-pressed);
+    opacity: 0;
+  }
+
   .button:focus-visible:not(:disabled):not(.is-disabled) .button__surface {
     box-shadow:
       inset 0 0 0 var(--button-border-width) var(--button-border-color),
       var(--button-surface-shadow-focus);
-    transform: translate(0, 0);
+    transform: var(--button-surface-transform-pressed);
   }
 
   .button:focus-visible:not(:disabled):not(.is-disabled) .button__surface::before {
@@ -647,10 +742,37 @@
     opacity: 1;
   }
 
+  @media (hover: hover) and (pointer: fine) {
+    .button:where(:hover):focus-visible:not(:disabled):not(.is-disabled) .button__shadow {
+      box-shadow: var(--button-cast-shadow-pressed);
+      opacity: 0;
+    }
+
+    .button:where(:hover):focus-visible:not(:disabled):not(.is-disabled) .button__surface {
+      box-shadow:
+        inset 0 0 0 var(--button-border-width) var(--button-border-color),
+        var(--button-surface-shadow-focus);
+      transform: var(--button-surface-transform-pressed);
+    }
+
+    .button:where(:hover):focus-visible:not(:disabled):not(.is-disabled) .button__state-layer {
+      background-color: var(--button-state-focus);
+      opacity: 1;
+    }
+  }
+
+  .button:focus-visible:active:not(:disabled):not(.is-disabled) .button__shadow {
+    box-shadow: var(--button-cast-shadow-pressed);
+    opacity: 0;
+    transition-duration: 50ms;
+  }
+
   .button:focus-visible:active:not(:disabled):not(.is-disabled) .button__surface {
     box-shadow:
       inset 0 0 0 var(--button-border-width) var(--button-border-color),
       var(--button-surface-shadow-pressed);
+    transform: var(--button-surface-transform-pressed);
+    transition-duration: 50ms;
   }
 
   .button:focus-visible:active:not(:disabled):not(.is-disabled) .button__state-layer {
@@ -669,8 +791,15 @@
     color: var(--button-disabled-content-color);
   }
 
+  .button:disabled .button__shadow,
+  .button.is-disabled .button__shadow {
+    box-shadow: var(--button-cast-shadow-pressed);
+    opacity: 0;
+  }
+
   .button:disabled .button__side,
   .button.is-disabled .button__side {
+    border-block-end-color: transparent;
     background: none;
   }
 
@@ -685,12 +814,19 @@
   }
 
   /* Touch-driven pressed state helper */
+  .button.is-pressed:not(:disabled):not(.is-disabled) .button__shadow,
+  .button.is-enhanced-pressed:not(:disabled):not(.is-disabled) .button__shadow {
+    box-shadow: var(--button-cast-shadow-pressed);
+    opacity: 0;
+    transition-duration: 50ms;
+  }
+
   .button.is-pressed:not(:disabled):not(.is-disabled) .button__surface,
   .button.is-enhanced-pressed:not(:disabled):not(.is-disabled) .button__surface {
     box-shadow:
       inset 0 0 0 var(--button-border-width) var(--button-border-color),
       var(--button-surface-shadow-pressed);
-    transform: translate(0, 0) !important;
+    transform: var(--button-surface-transform-pressed) !important;
     transition-duration: 50ms;
   }
 
@@ -734,6 +870,7 @@
      ========================================== */
 
   @media (prefers-reduced-motion: reduce) {
+    .button__shadow,
     .button__surface,
     .button__state-layer {
       transition: none;
@@ -744,6 +881,14 @@
     .button--outline-error,
     .button--text-error {
       --button-surface-shadow-hover: 0 0 0 0 transparent;
+    }
+
+    .button:not(:disabled):not(.is-disabled) .button__shadow,
+    .button:where(:hover, :active, :focus-visible):not(:disabled):not(.is-disabled) .button__shadow,
+    .button.is-pressed:not(:disabled):not(.is-disabled) .button__shadow,
+    .button.is-enhanced-pressed:not(:disabled):not(.is-disabled) .button__shadow {
+      box-shadow: var(--button-cast-shadow-pressed);
+      opacity: 0;
     }
 
     /* Neutralize default and interactive transforms, including touch default lift */
