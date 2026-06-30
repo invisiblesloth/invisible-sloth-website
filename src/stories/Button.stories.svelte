@@ -205,6 +205,12 @@
     opacity: 0 !important;
   }
 
+  .button-state-matrix :global(.button[data-story-state='pressed']:not(:disabled):not(.is-disabled) .button__side) {
+    --button-side-color-transition: var(--button-side-color-press-transition);
+    border-block-end-color: transparent !important;
+    background-color: var(--button-surface-color) !important;
+  }
+
   .button-state-matrix :global(.button[data-story-state='pressed']:not(:disabled):not(.is-disabled) .button__surface) {
     box-shadow:
       inset 0 0 0 var(--button-border-width) var(--button-border-color),

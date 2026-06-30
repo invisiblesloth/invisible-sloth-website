@@ -336,6 +336,9 @@
 
   .button {
     --button-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --button-side-color-release-transition: 150ms cubic-bezier(0.075, 0.82, 0.165, 1);
+    --button-side-color-press-transition: 50ms cubic-bezier(0.6, 0.04, 0.98, 0.335);
+    --button-side-color-transition: var(--button-side-color-release-transition);
     --button-block-size: 40px;
     --button-min-inline-size: 64px;
     --button-padding-block: var(--space-300);
@@ -465,6 +468,9 @@
   .button__side {
     border-block-end: 1px solid var(--button-contact-line-color);
     background-color: var(--button-side-color);
+    transition:
+      background-color var(--button-side-color-transition),
+      border-color var(--button-side-color-transition);
     z-index: 1;
   }
 
@@ -781,6 +787,21 @@
     transition-duration: 50ms;
   }
 
+  .button:active:not(:disabled):not(.is-disabled) .button__side,
+  .button:focus-visible:not(:disabled):not(.is-disabled) .button__side,
+  .button.is-pressed:not(:disabled):not(.is-disabled) .button__side,
+  .button.is-enhanced-pressed:not(:disabled):not(.is-disabled) .button__side {
+    border-block-end-color: transparent;
+    background-color: var(--button-surface-color);
+  }
+
+  .button:active:not(:disabled):not(.is-disabled) .button__side,
+  .button:focus-visible:not(:disabled):not(.is-disabled) .button__side,
+  .button.is-pressed:not(:disabled):not(.is-disabled) .button__side,
+  .button.is-enhanced-pressed:not(:disabled):not(.is-disabled) .button__side {
+    --button-side-color-transition: var(--button-side-color-press-transition);
+  }
+
   /* Disabled - muted appearance, no shadow */
   .button:disabled .button__surface,
   .button.is-disabled .button__surface {
@@ -871,6 +892,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .button__shadow,
+    .button__side,
     .button__surface,
     .button__state-layer {
       transition: none;
@@ -889,6 +911,11 @@
     .button.is-enhanced-pressed:not(:disabled):not(.is-disabled) .button__shadow {
       box-shadow: var(--button-cast-shadow-pressed);
       opacity: 0;
+    }
+
+    .button:not(:disabled):not(.is-disabled) .button__side {
+      border-block-end-color: transparent;
+      background-color: var(--button-surface-color);
     }
 
     /* Neutralize default and interactive transforms, including touch default lift */
