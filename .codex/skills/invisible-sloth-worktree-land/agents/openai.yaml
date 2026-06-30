@@ -1,0 +1,4 @@
+interface:
+  display_name: "Invisible Sloth Worktree Land"
+  short_description: "Land site worktree branches locally"
+  default_prompt: "Use $invisible-sloth-worktree-land to rebase this invisible-sloth-website worktree branch onto local main and fast-forward main."
