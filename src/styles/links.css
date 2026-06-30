@@ -35,9 +35,10 @@
   @media (hover: hover) and (pointer: fine) {
     .text-link:where(:hover):not(:focus-visible) {
       text-decoration-color: currentcolor;
+      transform: translateY(-1px);
     }
 
-    .text-link:where(:active):not(:focus-visible) {
+    .text-link:where(:active, :hover:active):not(:focus-visible) {
       background-color: transparent;
       text-decoration-color: currentcolor;
       transform: translateY(1px);

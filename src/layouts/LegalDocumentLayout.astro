@@ -277,7 +277,11 @@ const canonicalUrl = frontmatter?.canonicalUrl?.trim() || undefined;
       text-decoration-color: currentcolor;
     }
 
-    .legal-document :global(a:where(:active):not(:focus-visible)) {
+    .legal-document :global(a:where(:hover):not(:focus-visible)) {
+      transform: translateY(-1px);
+    }
+
+    .legal-document :global(a:where(:active, :hover:active):not(:focus-visible)) {
       transform: translateY(1px);
     }
   }

@@ -632,13 +632,14 @@
       .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
     ):where(:hover):not(:focus-visible) {
     text-decoration-color: currentcolor;
+    transform: translateY(-1px);
   }
 
   .rich-text
     > :where(p:not([class]), p[class^='s-']:not([class*=' ']), p[class^='svelte-']:not([class*=' ']))
     a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
       .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
-    ):where(:active):not(:focus-visible),
+    ):where(:active, :hover:active):not(:focus-visible),
   .rich-text
     > :where(
       ul:not([class]),
@@ -650,7 +651,7 @@
     )
     a:where(:not([class]), [class^='s-']:not([class*=' ']), [class^='svelte-']:not([class*=' '])):not(
       .rich-text [class]:not([class^='s-']:not([class*=' '])):not([class^='svelte-']:not([class*=' '])) *
-    ):where(:active):not(:focus-visible) {
+    ):where(:active, :hover:active):not(:focus-visible) {
     background-color: transparent;
     text-decoration-color: currentcolor;
     transform: translateY(1px);
