@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Reviewer"
+  short_description: "Review Invisible Sloth website plans"
+  default_prompt: "Use $plan-reviewer to review this Invisible Sloth website implementation plan before coding."
