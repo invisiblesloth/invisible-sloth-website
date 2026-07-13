@@ -4,10 +4,10 @@ The official website for Invisible Sloth, showcasing our projects across games, 
 
 ## Tech Stack
 
-- **[Astro 6.2.1](https://astro.build)** - Static site generation with island architecture
-- **[Svelte 5.55.5](https://svelte.dev)** - Interactive UI components with runes syntax
-- **[Tailwind CSS v4](https://tailwindcss.com)** - Utility-first styling with CSS-native configuration
-- **[Storybook 10.3.6](https://storybook.js.org)** - Component development and documentation
+- **[Astro 7.0.8](https://astro.build)** - Static site generation with island architecture
+- **[Svelte 5.56.4](https://svelte.dev)** - Interactive UI components with runes syntax
+- **[Tailwind CSS 4.3.2](https://tailwindcss.com)** - Utility-first styling with CSS-native configuration
+- **[Storybook 10.5.0](https://storybook.js.org)** - Component development and documentation
 - **Node.js 22.22.0** - Local and CI runtime, managed through `.nvmrc`
 
 ## Project Structure
@@ -51,7 +51,7 @@ All commands are run from the project root:
 | Command | Action |
 | :--- | :--- |
 | `npm run astro ...` | Run Astro CLI commands |
-| `npm run astro check` | Type-check the project |
+| `npm run check` | Type-check the project |
 | `npm run icons:optimize` | Optimize icon SVGs |
 | `npm run logos:build` | Optimize and deploy logo SVGs |
 

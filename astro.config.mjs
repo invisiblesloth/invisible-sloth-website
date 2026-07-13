@@ -60,6 +60,8 @@ export default defineConfig({
   site: 'https://invisiblesloth.com',
   base: '/',
   output: 'static',
+  // Preserve HTML-aware whitespace between inline elements across Astro upgrades.
+  compressHTML: true,
 
   build: {
     inlineStylesheets: 'auto',

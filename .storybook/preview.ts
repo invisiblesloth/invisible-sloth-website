@@ -88,8 +88,11 @@ const preview: Preview = {
           },
         },
       },
-      defaultViewport: 'large',
     },
+  },
+
+  globals: {
+    viewport: 'large',
   },
 
   globalTypes: {

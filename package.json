@@ -12,6 +12,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "check": "astro check",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
     "check:rich-text": "node scripts/check-rich-text-contract.mjs",
@@ -22,22 +23,22 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
-    "@astrojs/svelte": "^8.1.0",
-    "@tailwindcss/vite": "^4.2.4",
-    "astro": "^6.2.1",
-    "svelte": "^5.55.5",
-    "typescript": "^5.9.3"
+    "@astrojs/svelte": "^9.0.1",
+    "@tailwindcss/vite": "^4.3.2",
+    "astro": "^7.0.8",
+    "svelte": "^5.56.4",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^5.1.2",
-    "@storybook/addon-a11y": "^10.3.6",
-    "@storybook/addon-docs": "^10.3.6",
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-a11y": "^10.5.0",
+    "@storybook/addon-docs": "^10.5.0",
     "@storybook/addon-svelte-csf": "^5.1.2",
-    "@storybook/svelte-vite": "^10.3.6",
-    "@sveltejs/vite-plugin-svelte": "^6.2.4",
-    "storybook": "^10.3.6",
-    "svgo": "^4.0.1",
-    "tailwindcss": "^4.2.4"
+    "@storybook/svelte-vite": "^10.5.0",
+    "@sveltejs/vite-plugin-svelte": "^7.2.0",
+    "storybook": "^10.5.0",
+    "svgo": "^4.0.2",
+    "tailwindcss": "^4.3.2"
   },
   "overrides": {
     "yaml-language-server": {
