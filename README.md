@@ -52,8 +52,15 @@ All commands are run from the project root:
 | :--- | :--- |
 | `npm run astro ...` | Run Astro CLI commands |
 | `npm run check` | Type-check the project |
+| `npm run tokens:reconcile -- <export.json>` | Reconcile a Figma token export |
+| `npm run tokens:check -- <export.json>` | Check generated color tokens against an export |
+| `npm run test:tokens` | Test token reconciliation safeguards |
 | `npm run icons:optimize` | Optimize icon SVGs |
 | `npm run logos:build` | Optimize and deploy logo SVGs |
+
+The [design token reconciliation guide](./src/styles/tokens/README.md) documents
+the Figma export workflow, collection ownership, Display P3 handling, and the
+tracked record of the most recently reconciled export.
 
 ## Deployment
 

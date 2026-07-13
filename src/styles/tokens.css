@@ -3,6 +3,7 @@
    Imports modular token files for better organization
 
    This file serves as a convenient aggregator for all design tokens.
+   See tokens/README.md for the Figma reconciliation workflow.
    Individual token categories are defined in separate files:
 
    - tokens/typeface.css    → Font families, weights, and styles

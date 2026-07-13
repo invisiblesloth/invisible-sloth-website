@@ -1,58 +1,38 @@
 /* ==========================================
    COLOR PRIMITIVES
-   Core color palette organized by hue family
-   These are the foundation colors used by semantic tokens
+   Figma values are authored in Display P3. The @theme values are
+   color-managed sRGB fallbacks; capable browsers receive P3 overrides.
    ========================================== */
 
 @theme {
-  /* ==========================================
-     GREEN FAMILY
-     ========================================== */
+  /* GREEN FAMILY */
 
-  --color-green-000: #000000;
-  --color-green-010: #0b2005;
-  --color-green-020: #17380c;
-  --color-green-025: #1d4610;
-  --color-green-027: #204912;
-  --color-green-030: #245214;
-  --color-green-040: #316c1d;
-  --color-green-050: #478731;
-  --color-green-060: #60a247;
-  --color-green-070: #7ebd65;
-  --color-green-080: #9dd784;
-  --color-green-085: #aae590;
-  --color-green-090: #bcf3a3;
-  --color-green-095: #d4ffbd;
-  --color-green-099: #f8ffef;
   --color-green-100: #ffffff;
+  --color-green-000: #000000;
+  --color-green-010: #032102;
+  --color-green-020: #053903;
+  --color-green-030: #095302;
+  --color-green-040: #0d6e04;
+  --color-green-050: #2a891f;
+  --color-green-060: #46a437;
+  --color-green-070: #69bf59;
+  --color-green-080: #8bd97a;
+  --color-green-090: #acf59a;
+  --color-green-095: #c9ffb6;
+  --color-green-099: #f6ffed;
+  --color-green-025: #044702;
+  --color-green-085: #98e786;
+  --color-green-027: #094a04;
 
-  /* ==========================================
-     GRAY FAMILY
-     ========================================== */
+  /* GRAY FAMILY */
 
+  --color-gray-100: #ffffff;
   --color-gray-000: #000000;
-  --color-gray-001: #030404;
-  --color-gray-002: #060808;
-  --color-gray-003: #0a0c0c;
-  --color-gray-004: #0c0f0f;
-  --color-gray-005: #0f1212;
-  --color-gray-006: #111414;
-  --color-gray-007: #131616;
-  --color-gray-008: #151818;
-  --color-gray-009: #171a1a;
-  --color-gray-010: #191c1c;
-  --color-gray-012: #1a2121;
-  --color-gray-017: #252c2c;
+  --color-gray-006: #121414;
   --color-gray-020: #293232;
-  --color-gray-022: #2d3636;
-  --color-gray-023: #2f3737;
-  --color-gray-024: #323b3b;
   --color-gray-030: #3f4848;
-  --color-gray-035: #4b5454;
   --color-gray-040: #576160;
-  --color-gray-047: #677270;
   --color-gray-050: #6f7978;
-  --color-gray-053: #778180;
   --color-gray-060: #889291;
   --color-gray-070: #a3aeac;
   --color-gray-080: #bec9c6;
@@ -67,54 +47,157 @@
   --color-gray-097: #f3f8f3;
   --color-gray-098: #f8faf6;
   --color-gray-099: #fbfdf9;
-  --color-gray-100: #ffffff;
+  --color-gray-010: #1a1c1c;
+  --color-gray-024: #323b3b;
+  --color-gray-004: #0d0f0f;
+  --color-gray-012: #192121;
+  --color-gray-017: #252c2c;
+  --color-gray-022: #2d3636;
+  --color-gray-001: #030404;
+  --color-gray-002: #060808;
+  --color-gray-003: #0a0c0c;
+  --color-gray-005: #101212;
+  --color-gray-009: #181a1a;
+  --color-gray-008: #161818;
+  --color-gray-007: #141616;
+  --color-gray-035: #4b5454;
+  --color-gray-047: #677270;
+  --color-gray-053: #778180;
+  --color-gray-023: #303737;
 
-  /* ==========================================
-     BLUE FAMILY
-     ========================================== */
+  /* BLUE FAMILY */
 
+  --color-blue-100: #ffffff;
   --color-blue-000: #000000;
-  --color-blue-010: #001e2b;
-  --color-blue-020: #003548;
-  --color-blue-025: #004157;
+  --color-blue-010: #011e2b;
+  --color-blue-020: #013548;
   --color-blue-030: #004d66;
-  --color-blue-035: #005977;
   --color-blue-040: #006687;
   --color-blue-050: #0080a9;
   --color-blue-060: #1b9cca;
   --color-blue-070: #47b7e6;
-  --color-blue-080: #72d2ff;
-  --color-blue-085: #9cddff;
+  --color-blue-080: #72d2fe;
   --color-blue-090: #c1e8ff;
   --color-blue-095: #e2f3ff;
   --color-blue-099: #fbfcff;
-  --color-blue-100: #ffffff;
+  --color-blue-035: #005977;
+  --color-blue-085: #9cddff;
+  --color-blue-025: #004157;
 
-  /* ==========================================
-     RED FAMILY
-     ========================================== */
+  /* RED FAMILY */
 
+  --color-red-100: #ffffff;
   --color-red-000: #000000;
   --color-red-010: #410001;
   --color-red-020: #690002;
-  --color-red-025: #790e0a;
-  --color-red-030: #8b1a14;
-  --color-red-035: #9b261e;
+  --color-red-030: #8c1a14;
   --color-red-040: #ac3328;
   --color-red-050: #ce4b3e;
   --color-red-060: #f06454;
   --color-red-070: #ff8a7b;
   --color-red-080: #ffb4aa;
-  --color-red-085: #ffc7c0;
   --color-red-090: #ffdad5;
   --color-red-095: #ffedea;
   --color-red-099: #fffbff;
-  --color-red-100: #ffffff;
-
-  /* ==========================================
-     BASE COLORS
-     ========================================== */
+  --color-red-035: #9b261d;
+  --color-red-025: #790d0b;
+  --color-red-085: #ffc7c0;
+  /* BASE COLORS */
 
   --color-white: #ffffff;
   --color-black: #000000;
+}
+
+@supports (color: color(display-p3 1 1 1)) {
+  :root {
+    --color-green-100: color(display-p3 1 1 1);
+    --color-green-000: color(display-p3 0 0 0);
+    --color-green-010: color(display-p3 0.0431 0.1255 0.0196);
+    --color-green-020: color(display-p3 0.0902 0.2196 0.0471);
+    --color-green-030: color(display-p3 0.1412 0.3216 0.0784);
+    --color-green-040: color(display-p3 0.1922 0.4235 0.1137);
+    --color-green-050: color(display-p3 0.2784 0.5294 0.1922);
+    --color-green-060: color(display-p3 0.3765 0.6353 0.2784);
+    --color-green-070: color(display-p3 0.4941 0.7412 0.3961);
+    --color-green-080: color(display-p3 0.6157 0.8431 0.5176);
+    --color-green-090: color(display-p3 0.7373 0.9529 0.6392);
+    --color-green-095: color(display-p3 0.8314 1 0.7412);
+    --color-green-099: color(display-p3 0.9725 1 0.9373);
+    --color-green-025: color(display-p3 0.1137 0.2745 0.0627);
+    --color-green-085: color(display-p3 0.6667 0.898 0.5647);
+    --color-green-027: color(display-p3 0.1255 0.2863 0.0706);
+
+    --color-gray-100: color(display-p3 1 1 1);
+    --color-gray-000: color(display-p3 0 0 0);
+    --color-gray-006: color(display-p3 0.0706 0.0784 0.0784);
+    --color-gray-020: color(display-p3 0.1686 0.1961 0.1961);
+    --color-gray-030: color(display-p3 0.2549 0.2824 0.2824);
+    --color-gray-040: color(display-p3 0.349 0.3804 0.3765);
+    --color-gray-050: color(display-p3 0.4431 0.4745 0.4706);
+    --color-gray-060: color(display-p3 0.5412 0.5725 0.5686);
+    --color-gray-070: color(display-p3 0.6471 0.6824 0.6745);
+    --color-gray-080: color(display-p3 0.7529 0.7882 0.7765);
+    --color-gray-085: color(display-p3 0.8157 0.8392 0.8275);
+    --color-gray-090: color(display-p3 0.8745 0.8941 0.8824);
+    --color-gray-091: color(display-p3 0.8863 0.9059 0.8941);
+    --color-gray-092: color(display-p3 0.898 0.9176 0.9059);
+    --color-gray-093: color(display-p3 0.9059 0.9255 0.9098);
+    --color-gray-094: color(display-p3 0.9176 0.9373 0.9216);
+    --color-gray-095: color(display-p3 0.9333 0.949 0.9333);
+    --color-gray-096: color(display-p3 0.9451 0.9608 0.9412);
+    --color-gray-097: color(display-p3 0.9569 0.9725 0.9529);
+    --color-gray-098: color(display-p3 0.9725 0.9804 0.9647);
+    --color-gray-099: color(display-p3 0.9843 0.9922 0.9765);
+    --color-gray-010: color(display-p3 0.102 0.1098 0.1098);
+    --color-gray-024: color(display-p3 0.2039 0.2314 0.2314);
+    --color-gray-004: color(display-p3 0.051 0.0588 0.0588);
+    --color-gray-012: color(display-p3 0.1059 0.1294 0.1294);
+    --color-gray-017: color(display-p3 0.149 0.1725 0.1725);
+    --color-gray-022: color(display-p3 0.1843 0.2118 0.2118);
+    --color-gray-001: color(display-p3 0.0118 0.0157 0.0157);
+    --color-gray-002: color(display-p3 0.0235 0.0314 0.0314);
+    --color-gray-003: color(display-p3 0.0392 0.0471 0.0471);
+    --color-gray-005: color(display-p3 0.0627 0.0706 0.0706);
+    --color-gray-009: color(display-p3 0.0941 0.102 0.102);
+    --color-gray-008: color(display-p3 0.0863 0.0941 0.0941);
+    --color-gray-007: color(display-p3 0.0784 0.0863 0.0863);
+    --color-gray-035: color(display-p3 0.302 0.3294 0.3294);
+    --color-gray-047: color(display-p3 0.4118 0.4471 0.4392);
+    --color-gray-053: color(display-p3 0.4745 0.5059 0.502);
+    --color-gray-023: color(display-p3 0.1922 0.2157 0.2157);
+
+    --color-blue-100: color(display-p3 1 1 1);
+    --color-blue-000: color(display-p3 0 0 0);
+    --color-blue-010: color(display-p3 0.0314 0.1137 0.1647);
+    --color-blue-020: color(display-p3 0.0745 0.2039 0.2745);
+    --color-blue-030: color(display-p3 0.1176 0.298 0.3922);
+    --color-blue-040: color(display-p3 0.1647 0.3922 0.5176);
+    --color-blue-050: color(display-p3 0.2157 0.4941 0.6471);
+    --color-blue-060: color(display-p3 0.2902 0.6039 0.7765);
+    --color-blue-070: color(display-p3 0.4039 0.7098 0.8824);
+    --color-blue-080: color(display-p3 0.5412 0.8157 0.9804);
+    --color-blue-090: color(display-p3 0.7882 0.9059 0.9922);
+    --color-blue-095: color(display-p3 0.898 0.949 0.9961);
+    --color-blue-099: color(display-p3 0.9843 0.9882 1);
+    --color-blue-035: color(display-p3 0.1412 0.3451 0.4549);
+    --color-blue-085: color(display-p3 0.6667 0.8588 0.9843);
+    --color-blue-025: color(display-p3 0.0941 0.251 0.3333);
+
+    --color-red-100: color(display-p3 1 1 1);
+    --color-red-000: color(display-p3 0 0 0);
+    --color-red-010: color(display-p3 0.2314 0.0235 0.0157);
+    --color-red-020: color(display-p3 0.3765 0.0588 0.0392);
+    --color-red-030: color(display-p3 0.502 0.1451 0.1098);
+    --color-red-040: color(display-p3 0.6235 0.2353 0.1843);
+    --color-red-050: color(display-p3 0.749 0.3294 0.2706);
+    --color-red-060: color(display-p3 0.8745 0.4275 0.3569);
+    --color-red-070: color(display-p3 0.9412 0.5647 0.502);
+    --color-red-080: color(display-p3 0.9569 0.7176 0.6784);
+    --color-red-090: color(display-p3 0.9765 0.8588 0.8392);
+    --color-red-095: color(display-p3 0.9882 0.9333 0.9216);
+    --color-red-099: color(display-p3 0.9961 0.9843 1);
+    --color-red-035: color(display-p3 0.5608 0.1882 0.1451);
+    --color-red-025: color(display-p3 0.4353 0.102 0.0745);
+    --color-red-085: color(display-p3 0.9647 0.7882 0.7608);
+  }
 }

@@ -1,0 +1,13 @@
+{
+  "sourceExport": "design-tokens-from-figma-2026-05-27.json",
+  "sourceSha256": "0390fd189f4923aefe605cf69f1d90d8d8aec77d15aa1f0cf3cfc50e964d402a",
+  "figmaFileKey": "fPZa0wKLb2IqzuvCsq55Ej",
+  "documentColorProfile": "DISPLAY_P3",
+  "reconciledOn": "2026-07-13",
+  "scope": {
+    "primitiveColors": 88,
+    "semanticSchemeTokens": 152,
+    "semanticStateLayersUsedByCode": 104,
+    "linkUnderlinesUsedByCode": 12
+  }
+}
