@@ -10,6 +10,7 @@ import ProductSupport from "../../components/ProductSupport.svelte";
 import type { PageHeaderMedia } from "../../components/PageHeader.svelte";
 import type { FeatureListItem } from "../../components/FeatureList.svelte";
 import type { ProductSupportDocumentLink } from "../../components/ProductSupport.svelte";
+import { TRACER_PRODUCT_STATUS } from "../../lib/tracerProductStatus";
 
 const pageTitle = "Tracer | Invisible Sloth";
 const pageDescription =
@@ -100,10 +101,7 @@ const supportDocuments: ProductSupportDocumentLink[] = [
       </Container>
 
       <Container size="md" class="tracer-page__content-group">
-        <ProductStatus
-          text="Tracer is currently in private beta."
-          detail="Requires iPhone running iOS 26 or later."
-        />
+        <ProductStatus {...TRACER_PRODUCT_STATUS} />
       </Container>
 
       <Container size="sm" class="tracer-page__content-group">

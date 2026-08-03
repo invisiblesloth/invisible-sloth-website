@@ -1,12 +1,11 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import ProductStatus from '../components/ProductStatus.svelte';
+  import { TRACER_PRODUCT_STATUS } from '../lib/tracerProductStatus';
 
   const longStatusText =
     'Tracer is currently in private beta with a small group while the core timer, entry editing, and on-device data workflows are being tested.';
-  const defaultDetailText = 'Requires iPhone running iOS 26 or later.';
-  const longDetailText =
-    'Requires iPhone running iOS 26 or later while the private beta remains limited to a small testing group.';
+  const longDetailText = `${TRACER_PRODUCT_STATUS.detail} The private beta remains limited to a small testing group.`;
   const longUnbrokenTokenText =
     'Tracer private beta reference: TracerPrivateBetaStatusSuperLongUnbrokenTokenThatShouldStillWrapInsideTheStatusPanelAtCompactWidthsWithoutEscapingTheCanvas.';
 
@@ -26,10 +25,7 @@
         },
       },
     },
-    args: {
-      text: 'Tracer is currently in private beta.',
-      detail: defaultDetailText,
-    },
+    args: TRACER_PRODUCT_STATUS,
     argTypes: {
       text: {
         control: 'text',
@@ -95,7 +91,7 @@
 <Story
   name="Long Unbroken Token"
   args={{
-    text: 'Tracer is currently in private beta.',
+    text: TRACER_PRODUCT_STATUS.text,
     detail: longUnbrokenTokenText,
   }}
 >
