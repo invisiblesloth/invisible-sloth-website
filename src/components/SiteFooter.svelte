@@ -132,6 +132,10 @@
   }
 
   .site-footer__slot-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-gutter-loose);
     width: 100%;
   }
 

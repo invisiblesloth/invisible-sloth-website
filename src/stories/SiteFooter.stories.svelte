@@ -1,11 +1,32 @@
-<script module>
+<script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import SiteFooter from '../components/SiteFooter.svelte';
   import ContactUs from '../components/ContactUs.svelte';
+  import FooterLinks from '../components/FooterLinks.svelte';
   import { DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
+  import type { NavigationSection } from '../lib/navigation';
 
   const contactText = 'For questions, support, or just to say hi, email us at';
   const contactEmail = 'hello@invisiblesloth.com';
+  const footerSections: NavigationSection[] = [
+    {
+      heading: 'Social',
+      items: [
+        {
+          label: 'GitHub',
+          href: 'https://github.com/invisiblesloth',
+          target: '_blank',
+        },
+      ],
+    },
+    {
+      heading: 'Legal',
+      items: [
+        { label: 'Privacy Policy', href: '/privacy' },
+        { label: 'Terms', href: '/terms' },
+      ],
+    },
+  ];
 
   const { Story } = defineMeta({
     title: 'Organisms/SiteFooter',
@@ -85,6 +106,29 @@
       copyrightText="© Invisible Sloth, LLC"
     >
       <ContactUs text={contactText} email={contactEmail} />
+    </SiteFooter>
+  {/snippet}
+</Story>
+
+<Story
+  name="Complete Composition"
+  parameters={{
+    docs: {
+      description: {
+        story:
+          'Production footer composition with the contact surface followed by grouped social and legal navigation.',
+      },
+    },
+  }}
+>
+  {#snippet template()}
+    <SiteFooter
+      homeHref="/"
+      tagline="We may be slow, but we're not slowing down!"
+      copyrightText="© Invisible Sloth, LLC"
+    >
+      <ContactUs text={contactText} email={contactEmail} />
+      <FooterLinks sections={footerSections} />
     </SiteFooter>
   {/snippet}
 </Story>

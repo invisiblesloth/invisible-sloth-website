@@ -4,6 +4,7 @@ import SiteHeader from "../components/SiteHeader.svelte";
 import SiteNavigation from "../components/SiteNavigation.svelte";
 import SiteFooter from "../components/SiteFooter.svelte";
 import ContactUs from "../components/ContactUs.svelte";
+import FooterLinks from "../components/FooterLinks.svelte";
 import {
   resolveNavigationSections,
   type NavigationSection,
@@ -23,6 +24,25 @@ const DEFAULT_NAVIGATION_SECTIONS: NavigationSection[] = [
     items: [
       { label: "Home", href: "/" },
       { label: "Tracer", href: "/tracer" },
+    ],
+  },
+];
+const FOOTER_LINK_SECTIONS: NavigationSection[] = [
+  {
+    heading: "Social",
+    items: [
+      {
+        label: "GitHub",
+        href: "https://github.com/invisiblesloth",
+        target: "_blank",
+      },
+    ],
+  },
+  {
+    heading: "Legal",
+    items: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms", href: "/terms" },
     ],
   },
 ];
@@ -127,6 +147,7 @@ const resolvedActiveHref =
             text="For questions, support, or just to say hi, email us at"
             email="hello@invisiblesloth.com"
           />
+          <FooterLinks sections={FOOTER_LINK_SECTIONS} />
         </SiteFooter>
       </SiteNavigation>
     ) : (
@@ -140,6 +161,7 @@ const resolvedActiveHref =
             text="For questions, support, or just to say hi, email us at"
             email="hello@invisiblesloth.com"
           />
+          <FooterLinks sections={FOOTER_LINK_SECTIONS} />
         </SiteFooter>
       </>
     )
