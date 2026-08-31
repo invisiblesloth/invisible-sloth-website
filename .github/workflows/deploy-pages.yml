@@ -36,7 +36,9 @@ jobs:
         run: npm ci
 
       - name: Check project
-        run: npm run check
+        run: |
+          npm run check
+          npm run check:fonts
 
       - name: Build Astro site and Storybook
         run: |
@@ -45,6 +47,7 @@ jobs:
           npm run build-storybook
           mkdir -p dist/storybook
           cp -R storybook-static/* dist/storybook/
+          npm run check:fonts:generated
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

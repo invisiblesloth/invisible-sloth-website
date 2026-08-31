@@ -5,15 +5,16 @@
    Import order:
    1. Tailwind CSS base
    2. Reset & normalization
-   3. Design tokens (primitives + semantic token registration)
-   4. Theme routing (system fallback + manual data-theme)
-   5. Base element styles
-   6. Typography utilities
-   7. Inline link utilities
-   8. Rich text prose contract
-   9. Visual effects (elevation, glow)
-   10. Layout utilities (page containers, sections, grid, stack)
-   11. Storybook integration
+   3. Local font faces
+   4. Design tokens (primitives + semantic token registration)
+   5. Theme routing (system fallback + manual data-theme)
+   6. Base element styles
+   7. Typography utilities
+   8. Inline link utilities
+   9. Rich text prose contract
+   10. Visual effects (elevation, glow)
+   11. Layout utilities (page containers, sections, grid, stack)
+   12. Storybook integration
    ========================================== */
 
 /* Tailwind CSS base */
@@ -21,6 +22,9 @@
 
 /* Reset & normalization (enhancements to Tailwind preflight) */
 @import "./reset.css";
+
+/* Pinned, self-hosted font faces */
+@import "./fonts.css";
 
 /* Design system tokens (colors, typography, spacing, etc.) */
 @import "./tokens.css";
