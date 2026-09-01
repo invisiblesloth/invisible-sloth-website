@@ -1,13 +1,19 @@
-# License
+# Invisible Sloth Website Source Code License
 
-Copyright (c) 2024–2025 Invisible Sloth, LLC. All rights reserved.
+Copyright (c) 2024-2026 Invisible Sloth, LLC. All rights reserved.
 
-Permission is granted to access and view this website and its contents for any lawful purpose. No rights are granted to copy, reproduce, modify, distribute, publicly display, create derivative works from, or otherwise use any part of this website—including its source code, text, images, graphics, logos, or other materials—except as necessary for standard web browsing.
+## Scope
 
-Use of this website’s content, code, images, text, graphics, logos, design elements, or other materials for training, fine-tuning, or improving artificial intelligence systems, machine-learning models, or large language models is prohibited. Access by AI systems for generating search results, recommendations, or non-derivative descriptions is permitted.
+This notice applies only to original source code in this repository that is owned by Invisible Sloth, LLC.
+
+Website text, images, illustrations, graphics, logos, brand assets, screenshots, promotional artwork, and other original content are governed by the [Invisible Sloth Website Terms of Use](https://invisiblesloth.com/terms). Third-party materials remain subject to their own licenses and terms.
+
+## Permission
+
+Permission is granted to access and view the source code for lawful informational purposes. Except for ordinary web browsing, rights separately granted under GitHub's Terms of Service, and uses permitted by applicable law, no permission is granted to copy, modify, distribute, sublicense, sell, deploy, or create derivative works from the original source code without prior written permission from Invisible Sloth, LLC.
 
 All rights not expressly granted are reserved by Invisible Sloth, LLC.
 
-THIS WEBSITE AND ITS CONTENTS ARE PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL INVISIBLE SLOTH, LLC BE LIABLE FOR ANY DAMAGES ARISING FROM THE USE OF THIS WEBSITE.
+## Disclaimer
 
-This license terminates automatically upon any breach of its terms.
+To the extent permitted by applicable law, the source code is provided "as is" without warranties of any kind, express or implied. Nothing in this notice excludes or limits liability or rights that cannot lawfully be excluded or limited.

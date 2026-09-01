@@ -69,7 +69,10 @@ The site is deployed to GitHub Pages:
 - **Main Site**: [invisiblesloth.com](https://invisiblesloth.com) *(coming soon)*
 - **Storybook**: Component documentation and design system *(coming soon)*
 
-## License
+## Licensing
 
-All rights reserved. This project is not open source.
-See the full license here: [LICENSE](./LICENSE)
+This repository is public for website development and deployment, but it is not open source.
+
+- Original source code is governed by [LICENSE](./LICENSE).
+- Website text, images, logos, brand assets, and original design materials are governed by the [Invisible Sloth Website Terms of Use](https://invisiblesloth.com/terms).
+- Third-party materials remain subject to their own licenses and terms.
