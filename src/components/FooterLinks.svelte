@@ -137,8 +137,8 @@
     inline-size: 100%;
     padding-inline: var(--space-rail-inline-xl);
 
-    /* Match the footer contact link's contextual underline treatment. */
-    --text-link-underline: var(--color-link-underline-on-tertiary-container);
+    /* Keep the resting underline in the link color at reduced opacity. */
+    --text-link-underline: color-mix(in srgb, currentColor 58%, transparent);
   }
 
   .footer-links__columns {
