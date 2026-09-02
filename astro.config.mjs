@@ -4,6 +4,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 import svelte from '@astrojs/svelte';
+import sitemap from '@astrojs/sitemap';
 
 /**
  * @param {string} id - The module ID
@@ -60,6 +61,7 @@ export default defineConfig({
   site: 'https://invisiblesloth.com',
   base: '/',
   output: 'static',
+  trailingSlash: 'always',
   // Preserve HTML-aware whitespace between inline elements across Astro upgrades.
   compressHTML: true,
 
@@ -75,5 +77,10 @@ export default defineConfig({
     },
   },
 
-  integrations: [svelte()]
+  integrations: [
+    svelte(),
+    sitemap({
+      filter: (page) => page !== 'https://invisiblesloth.com/404/',
+    }),
+  ]
 });

@@ -5,7 +5,7 @@
   "packageManager": "npm@10.9.4",
   "engines": {
     "node": ">=22.12.0",
-    "npm": ">=9.6.5"
+    "npm": ">=10.8.2"
   },
   "scripts": {
     "dev": "astro dev",
@@ -17,6 +17,7 @@
     "build-storybook": "storybook build",
     "check:fonts": "node scripts/check-font-contract.mjs",
     "check:fonts:generated": "node scripts/check-font-contract.mjs --generated",
+    "check:seo": "node scripts/check-seo.mjs",
     "check:legal": "node scripts/check-legal-pages.mjs",
     "check:rich-text": "node scripts/check-rich-text-contract.mjs",
     "tokens:reconcile": "node scripts/reconcile-design-tokens.mjs",
@@ -29,6 +30,7 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
+    "@astrojs/sitemap": "^3.7.4",
     "@astrojs/svelte": "^9.0.1",
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.8",
@@ -47,6 +49,7 @@
     "tailwindcss": "^4.3.2"
   },
   "overrides": {
+    "fast-uri": "3.1.6",
     "yaml-language-server": {
       "yaml": "2.8.3"
     }

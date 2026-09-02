@@ -9,7 +9,7 @@ const LEGAL_PAGES = [
   {
     route: 'privacy',
     title: 'Invisible Sloth Website Privacy Policy',
-    canonicalUrl: 'https://invisiblesloth.com/privacy',
+    canonicalUrl: 'https://invisiblesloth.com/privacy/',
     headings: [
       'The short version',
       '1. What this policy covers',
@@ -26,7 +26,7 @@ const LEGAL_PAGES = [
   {
     route: 'terms',
     title: 'Invisible Sloth Website Terms of Use',
-    canonicalUrl: 'https://invisiblesloth.com/terms',
+    canonicalUrl: 'https://invisiblesloth.com/terms/',
     headings: [
       'The short version',
       '1. Agreement and scope',
@@ -194,8 +194,8 @@ async function checkBuiltPage(page) {
     `>${page.title}</h1>`,
     'class="legal-document__table-scroll"',
     'aria-label="Footer navigation"',
-    'href="/privacy"',
-    'href="/terms"',
+    'href="/privacy/"',
+    'href="/terms/"',
   ];
 
   for (const markup of requiredMarkup) {

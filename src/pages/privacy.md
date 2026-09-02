@@ -2,7 +2,7 @@
 layout: ../layouts/LegalDocumentLayout.astro
 title: Invisible Sloth Website Privacy Policy
 description: Privacy policy for the Invisible Sloth website.
-canonicalUrl: https://invisiblesloth.com/privacy
+canonicalUrl: https://invisiblesloth.com/privacy/
 ---
 
 # Invisible Sloth Website Privacy Policy
@@ -20,7 +20,7 @@ The rest of this policy explains those two things. We do not use website account
 
 ## 1. What this policy covers
 
-This policy describes how Invisible Sloth, LLC ("we," "us," or "our") handles information on the public website at [invisiblesloth.com](https://invisiblesloth.com), including website pages that describe our products. It does not govern information handled inside any app, game, beta, software product, or other service we provide. Those products may have their own privacy policies. For example, the Tracer iOS app has a separate [privacy policy](/tracer/privacy).
+This policy describes how Invisible Sloth, LLC ("we," "us," or "our") handles information on the public website at [invisiblesloth.com](https://invisiblesloth.com), including website pages that describe our products. It does not govern information handled inside any app, game, beta, software product, or other service we provide. Those products may have their own privacy policies. For example, the Tracer iOS app has a separate [privacy policy](/tracer/privacy/).
 
 This policy also does not cover third-party websites, app stores, beta-distribution platforms, or other services linked from or used in connection with our website or products. Those services are governed by their own privacy policies.
 
@@ -105,7 +105,7 @@ If you have questions about this policy or our website's privacy practices, cont
 **Invisible Sloth, LLC**<br>
 Email: [hello@invisiblesloth.com](mailto:hello@invisiblesloth.com)
 
-Related document: [Invisible Sloth Website Terms of Use](/terms)
+Related document: [Invisible Sloth Website Terms of Use](/terms/)
 
 ---
 

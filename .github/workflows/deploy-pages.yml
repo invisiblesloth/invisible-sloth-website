@@ -43,6 +43,7 @@ jobs:
       - name: Build Astro site and Storybook
         run: |
           npm run build
+          npm run check:seo
           npm run check:legal
           npm run check:rich-text
           npm run build-storybook

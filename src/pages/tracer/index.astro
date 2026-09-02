@@ -11,11 +11,12 @@ import type { PageHeaderMedia } from "../../components/PageHeader.svelte";
 import type { FeatureListItem } from "../../components/FeatureList.svelte";
 import type { ProductSupportDocumentLink } from "../../components/ProductSupport.svelte";
 import { TRACER_PRODUCT_STATUS } from "../../lib/tracerProductStatus";
+import { createTracerJsonLd, TRACER_URL } from "../../lib/seo";
 
-const pageTitle = "Tracer | Invisible Sloth";
+const pageTitle = "Tracer: Private Time Tracker for iPhone | Invisible Sloth";
 const pageDescription =
-  "Tracer is a simple, on-device time tracker for iPhone from Invisible Sloth.";
-const canonicalUrl = "https://invisiblesloth.com/tracer";
+  "Tracer is a private, on-device time tracker for iPhone. Track activities, edit or add entries, review reports, and export your data—no account required.";
+const jsonLd = createTracerJsonLd(pageTitle, pageDescription);
 
 const tracerPreviewMedia: PageHeaderMedia = {
   image: {
@@ -62,11 +63,11 @@ const tracerFeatures: FeatureListItem[] = [
 const supportDocuments: ProductSupportDocumentLink[] = [
   {
     label: "Tracer App Privacy Policy",
-    href: "/tracer/privacy",
+    href: "/tracer/privacy/",
   },
   {
     label: "Tracer App Terms of Use",
-    href: "/tracer/terms",
+    href: "/tracer/terms/",
   },
 ];
 ---
@@ -74,7 +75,8 @@ const supportDocuments: ProductSupportDocumentLink[] = [
 <SiteChrome
   title={pageTitle}
   description={pageDescription}
-  canonicalUrl={canonicalUrl}
+  canonicalUrl={TRACER_URL}
+  jsonLd={jsonLd}
   activeHref="/tracer"
 >
   <main class="site-main tracer-page">

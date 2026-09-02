@@ -2,7 +2,7 @@
 layout: ../../layouts/LegalDocumentLayout.astro
 title: Tracer Privacy Policy
 description: Privacy policy for Tracer, the local-only iOS time tracker from Invisible Sloth, LLC.
-canonicalUrl: https://invisiblesloth.com/tracer/privacy
+canonicalUrl: https://invisiblesloth.com/tracer/privacy/
 ---
 
 # Tracer Privacy Policy
@@ -126,9 +126,9 @@ Email: [support@invisiblesloth.com](mailto:support@invisiblesloth.com)
 
 Related links:
 
-- [Tracer](/tracer)
-- [Terms of Use](/tracer/terms)
-- [Support](/tracer#support)
+- [Tracer](/tracer/)
+- [Terms of Use](/tracer/terms/)
+- [Support](/tracer/#support)
 
 ---
 

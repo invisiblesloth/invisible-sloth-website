@@ -2,7 +2,7 @@
 layout: ../layouts/LegalDocumentLayout.astro
 title: Invisible Sloth Website Terms of Use
 description: Terms of use for the Invisible Sloth website.
-canonicalUrl: https://invisiblesloth.com/terms
+canonicalUrl: https://invisiblesloth.com/terms/
 ---
 
 # Invisible Sloth Website Terms of Use
@@ -23,7 +23,7 @@ Use the site lawfully and do not use our name, logo, or branding in a way that s
 
 By using [https://invisiblesloth.com](https://invisiblesloth.com), you agree to these Terms of Use. If you do not agree, do not use the website.
 
-These Terms govern visitors' access to and use of the Invisible Sloth website. They do not govern any Invisible Sloth app, game, beta, software product, or other service; GitHub itself; or third-party websites and services linked from this website. Invisible Sloth products may have separate terms, end-user license agreements, or other licenses. For example, the Tracer iOS app has separate [Terms of Use](/tracer/terms).
+These Terms govern visitors' access to and use of the Invisible Sloth website. They do not govern any Invisible Sloth app, game, beta, software product, or other service; GitHub itself; or third-party websites and services linked from this website. Invisible Sloth products may have separate terms, end-user license agreements, or other licenses. For example, the Tracer iOS app has separate [Terms of Use](/tracer/terms/).
 
 In these Terms, "you" means the person or organization that accesses or uses the website, directly or through an automated system that it operates or directs.
 
@@ -101,7 +101,7 @@ The website may link to third-party websites, app stores, code repositories, soc
 
 We are not responsible for third-party websites or services.
 
-Our website privacy practices are described in the [Invisible Sloth Website Privacy Policy](/privacy). Individual Invisible Sloth products may have separate privacy policies. For example, the Tracer iOS app has a separate [privacy policy](/tracer/privacy).
+Our website privacy practices are described in the [Invisible Sloth Website Privacy Policy](/privacy/). Individual Invisible Sloth products may have separate privacy policies. For example, the Tracer iOS app has a separate [privacy policy](/tracer/privacy/).
 
 ---
 
@@ -148,7 +148,7 @@ These Terms constitute the entire agreement between you and Invisible Sloth, LLC
 **Invisible Sloth, LLC**<br>
 Email: [hello@invisiblesloth.com](mailto:hello@invisiblesloth.com)
 
-Related document: [Invisible Sloth Website Privacy Policy](/privacy)
+Related document: [Invisible Sloth Website Privacy Policy](/privacy/)
 
 ---
 

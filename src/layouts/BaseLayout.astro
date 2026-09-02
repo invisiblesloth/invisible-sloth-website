@@ -1,23 +1,36 @@
 ---
 import "../styles/global.css";
+import {
+  DEFAULT_SOCIAL_IMAGE,
+  serializeJsonLd,
+  type JsonLdGraph,
+  type SocialImage,
+} from "../lib/seo";
 
 export interface Props {
   title?: string;
   description?: string;
   canonicalUrl?: string;
   robots?: string;
+  socialImage?: SocialImage;
+  jsonLd?: JsonLdGraph;
 }
 
 const {
   title = "Invisible Sloth",
   description = "Invisible Sloth creates imaginative indie games and apps.",
   canonicalUrl,
-  robots = "noai, noimageai",
+  robots = "index, follow, max-image-preview:large, noai, noimageai",
+  socialImage = DEFAULT_SOCIAL_IMAGE,
+  jsonLd,
 } = Astro.props as Props;
 
 // Build canonical URL: use prop if provided, otherwise construct from Astro.url
 const canonical = (canonicalUrl || new URL(Astro.url.pathname, Astro.site)).toString();
-const socialCardUrl = new URL("/social-card.png", Astro.site).toString();
+const socialImageUrl = new URL(socialImage.src, Astro.site).toString();
+const socialImageWidth = socialImage.width.toString();
+const socialImageHeight = socialImage.height.toString();
+const serializedJsonLd = jsonLd ? serializeJsonLd(jsonLd) : undefined;
 ---
 
 <!doctype html>
@@ -58,6 +71,7 @@ const socialCardUrl = new URL("/social-card.png", Astro.site).toString();
     </script>
 
     <link rel="canonical" href={canonical} />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -66,12 +80,22 @@ const socialCardUrl = new URL("/social-card.png", Astro.site).toString();
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={socialCardUrl} />
+    <meta property="og:site_name" content="Invisible Sloth" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:alt" content={socialImage.alt} />
+    <meta property="og:image:width" content={socialImageWidth} />
+    <meta property="og:image:height" content={socialImageHeight} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={socialCardUrl} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={socialImage.alt} />
+
+    {serializedJsonLd && (
+      <script is:inline type="application/ld+json" set:html={serializedJsonLd}></script>
+    )}
 
     <!-- Legacy DOM polyfill. -->
     <script is:inline>

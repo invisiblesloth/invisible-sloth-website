@@ -4,11 +4,21 @@ import Container from "../components/Container.astro";
 import Heading from "../components/Heading.svelte";
 import HomepageProjectList from "../components/HomepageProjectList.astro";
 import { getHomepageProjectEntries } from "../lib/projectContent";
+import { createHomepageJsonLd, SITE_URL } from "../lib/seo";
 
 const projects = await getHomepageProjectEntries();
+const pageTitle = "Invisible Sloth | Tracer, Games & Developer Tools";
+const pageDescription =
+	"Invisible Sloth creates Tracer, a private iPhone time tracker, the Roxy Playdate game engine, and Drawing Zoo, a collaborative board game.";
+const jsonLd = createHomepageJsonLd();
 ---
 
-<SiteChrome title="Invisible Sloth" description="Invisible Sloth projects">
+<SiteChrome
+	title={pageTitle}
+	description={pageDescription}
+	canonicalUrl={SITE_URL}
+	jsonLd={jsonLd}
+>
 	<main class="site-main">
 		<section class="section">
 			<Container padded={false} size="md" class="stack">

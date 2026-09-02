@@ -75,5 +75,5 @@ The site is deployed to GitHub Pages:
 This repository is public for website development and deployment, but it is not open source.
 
 - Original source code is governed by [LICENSE](./LICENSE).
-- Website text, images, logos, brand assets, and original design materials are governed by the [Invisible Sloth Website Terms of Use](https://invisiblesloth.com/terms).
+- Website text, images, logos, brand assets, and original design materials are governed by the [Invisible Sloth Website Terms of Use](https://invisiblesloth.com/terms/).
 - Third-party materials remain subject to their own licenses and terms.

@@ -9,12 +9,15 @@ import {
   resolveNavigationSections,
   type NavigationSection,
 } from "../lib/navigation";
+import type { JsonLdGraph, SocialImage } from "../lib/seo";
 
 export interface Props {
   title?: string;
   description?: string;
   canonicalUrl?: string;
   robots?: string;
+  socialImage?: SocialImage;
+  jsonLd?: JsonLdGraph;
   activeHref?: string;
   navigationSections?: NavigationSection[];
 }
@@ -23,7 +26,7 @@ const DEFAULT_NAVIGATION_SECTIONS: NavigationSection[] = [
   {
     items: [
       { label: "Home", href: "/" },
-      { label: "Tracer", href: "/tracer" },
+      { label: "Tracer", href: "/tracer/" },
     ],
   },
 ];
@@ -41,8 +44,8 @@ const FOOTER_LINK_SECTIONS: NavigationSection[] = [
   {
     heading: "Legal",
     items: [
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy/" },
+      { label: "Terms", href: "/terms/" },
     ],
   },
 ];
@@ -118,6 +121,8 @@ const {
   description,
   canonicalUrl,
   robots,
+  socialImage,
+  jsonLd,
   activeHref,
   navigationSections,
 } = Astro.props as Props;
@@ -131,7 +136,7 @@ const resolvedActiveHref =
     : normalizeExplicitActiveHref(activeHref);
 ---
 
-<BaseLayout {title} {description} {canonicalUrl} {robots}>
+<BaseLayout {title} {description} {canonicalUrl} {robots} {socialImage} {jsonLd}>
   {
     hasNavigation ? (
       <SiteNavigation

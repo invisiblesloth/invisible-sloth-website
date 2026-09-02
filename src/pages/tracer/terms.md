@@ -2,7 +2,7 @@
 layout: ../../layouts/LegalDocumentLayout.astro
 title: Tracer Terms of Use
 description: Terms of Use for Tracer, the local-only iOS time tracker from Invisible Sloth, LLC.
-canonicalUrl: https://invisiblesloth.com/tracer/terms
+canonicalUrl: https://invisiblesloth.com/tracer/terms/
 ---
 
 # Tracer Terms of Use
@@ -25,7 +25,7 @@ Invisible Sloth, LLC grants you a limited, non-exclusive, non-transferable, revo
 
 ## 3. Your data
 
-All data you create in Tracer – activities, time entries, notes, and preferences – is yours. It is stored locally on your device. Invisible Sloth, LLC does not automatically collect it, store server copies of it, or sell it. For details, see our [Privacy Policy](/tracer/privacy).
+All data you create in Tracer – activities, time entries, notes, and preferences – is yours. It is stored locally on your device. Invisible Sloth, LLC does not automatically collect it, store server copies of it, or sell it. For details, see our [Privacy Policy](/tracer/privacy/).
 
 Tracer includes data export and import. When you export, you choose where to send the exported file through the iOS share sheet, such as Files, email, or another destination you select. You are responsible for exported files once they leave Tracer. When you import, Tracer reads the JSON backup file you choose and restores it locally on your device.
 
@@ -92,7 +92,7 @@ If any provision of these terms is found to be unenforceable, the remaining prov
 
 ## 14. Entire agreement
 
-These terms, together with our [Privacy Policy](/tracer/privacy), constitute the entire agreement between you and Invisible Sloth, LLC only regarding Tracer and supersede any prior agreements between you and Invisible Sloth, LLC on that subject.
+These terms, together with our [Privacy Policy](/tracer/privacy/), constitute the entire agreement between you and Invisible Sloth, LLC only regarding Tracer and supersede any prior agreements between you and Invisible Sloth, LLC on that subject.
 
 ## 15. Contact
 
@@ -101,9 +101,9 @@ Email: [support@invisiblesloth.com](mailto:support@invisiblesloth.com)
 
 Related links:
 
-- [Tracer](/tracer)
-- [Privacy Policy](/tracer/privacy)
-- [Support](/tracer#support)
+- [Tracer](/tracer/)
+- [Privacy Policy](/tracer/privacy/)
+- [Support](/tracer/#support)
 
 ---
 
