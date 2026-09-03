@@ -46,6 +46,8 @@ All commands are run from the project root:
 | `npm run storybook` | Start Storybook dev server at `localhost:6006` |
 | `npm run build-storybook` | Build static Storybook for deployment |
 
+Storybook planning and rollout evidence are documented in the [guidelines roadmap](./docs/storybook-guidelines-plan.md), [alignment record](./docs/storybook-alignment-plan.md), and [inventory guide](./docs/storybook-component-inventory.md).
+
 ### Utilities
 
 | Command | Action |
