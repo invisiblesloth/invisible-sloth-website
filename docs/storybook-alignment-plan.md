@@ -1,124 +1,76 @@
 # Storybook Alignment and Review Record
 
-Status: rollout evidence template. No alignment phase has started.
+Status: planning revision complete; rollout Phases 0–4 have not started. This record contains report dispositions and historical observations, not evidence that the planned configuration fixes or checks have run.
 
-This document records evidence collected while implementing the roadmap in [`storybook-guidelines-plan.md`](./storybook-guidelines-plan.md). It is not the Storybook policy and is not the canonical component inventory.
+The [roadmap](./storybook-guidelines-plan.md) owns decisions, sequencing, and completion criteria. The [registry guide](./storybook-component-inventory.md) explains exception maintenance. This record does not introduce another policy, catalog, or approval checklist.
 
-## Baseline audit
+## Baseline observations
 
-| Field | Value |
-|---|---|
-| Audit date | 2026-09-03 |
-| Commit SHA | _to be recorded when rollout begins_ |
-| Reviewer | _to be recorded_ |
-| Storybook version | Storybook 10 family; authoritative value in `package.json` and `package-lock.json` |
-| Renderer | `@storybook/svelte-vite` |
-| Story files | 35 |
-| Story entries | 258 |
-| Docs entries | 35 |
-| Protected IDs | None initially |
-| Test runner | None currently installed or configured |
-| Visual regression | None currently executed |
-| Accessibility CI | None currently configured |
+The September 3, 2026 source audit reported 35 Svelte CSF story files, 258 story entries, and 35 Docs entries using Storybook 10 and `@storybook/svelte-vite`. Counts are dated observations, not enforced requirements. Version authorities are [package.json](../package.json), [package-lock.json](../package-lock.json), and [.nvmrc](../.nvmrc).
 
-The current audit found no tracked or historical individual Storybook links. Private bookmarks cannot be discovered, so only explicitly registered future references should become protected IDs.
+- Atomic ordering, global styles, system/light/dark themes, enhancement scripts, Svelte CSF, and Autodocs are present.
+- The intended 430/744/1024/1512px viewports use obsolete configuration. Working toolbar choices and canvas dimensions require Phase 0 verification.
+- Badge, Divider, and SiteFooter need description work. PostHeader already has a substantial description; Typography is the foundation exception.
+- `LogoLink` has linked and fallback examples in `Brand/Logo`; `ProjectListSurface` is the primary component of `Organisms/ProjectList`. `Container` and `HomepageProjectList` are Astro components.
+- `docgen: false` makes manual prop documentation load-bearing. Button intentionally documents rejected `class`/`style` inputs and uses narrowly asserted malformed-runtime fixtures.
+- Chromatic is installed and registered without a configured visual-regression service. Svelte story type-checking coverage is not yet demonstrated by the planned checks.
+- The source audit found no tracked or historical individual Storybook links; private bookmarks were not discoverable. The roadmap therefore starts protected IDs empty.
 
-## Known baseline observations
+The source audit reported a successful Storybook build with a Vite chunk-size warning. It also reported a non-clean local installation missing the declared `@astrojs/sitemap` dependency. These are historical environment observations, not fresh validation results or proof of a repository dependency defect. No builds or clean-install checks were performed for this Markdown revision.
 
-- Atomic ordering is already configured as Brand, Foundations, Atoms, Molecules, Organisms, Templates.
-- Preview setup includes global styles, system/light/dark themes, enhancement scripts, and named viewports at 430, 744, 1024, and 1512 pixels.
-- Existing stories use Svelte CSF and `autodocs`.
-- Badge, Divider, and SiteFooter need component-description work.
-- PostHeader already has a substantial description and needs review rather than an assumed rewrite.
-- Typography is an approved foundation story without component metadata.
-- Existing fallback and composition stories should be classified before any visibility changes are considered.
+## Report dispositions
 
-## Command evidence
+Source: the report attached to **“W1 Storybook standards updates”**, dated **September 3, 2026**, reviewing the Storybook guidelines roadmap, inventory guide, and alignment record. The implementation task retains the local source attachment reference; tracked documentation identifies it by task title and date for portability.
 
-Record command, environment, date, result, and relevant output for each run.
+The original report's A–J points and six numbered omissions are dispositioned once below. Status describes the planning response, not rollout completion. Explanations include subsequent review qualifications so contributors do not need the original attachment to understand the decisions.
 
-| Command | Environment | Result | Evidence/notes |
-|---|---|---|---|
-| `npm ci` | Clean install / CI / disposable environment | _pending_ | Required for rollout completion |
-| `npm run check` | Clean install | _pending_ | Current non-clean `node_modules` state lacks `@astrojs/sitemap` |
-| `npm run build` | Clean install | _pending_ | Current non-clean `node_modules` state lacks `@astrojs/sitemap` |
-| `npm run build-storybook` | Current audit environment | Passed | Existing static build succeeds with a Vite chunk-size warning |
-| `npm run verify:storybook` | After Phase 2 | _pending_ | Must include every checker |
+| Report item | Disposition | Decision and implementation destination |
+|---|---|---|
+| A — Redundant inventory | adopted | Keep only exceptions, judgment-based approvals, and protected IDs; derive catalog facts and remove expected counts. Phase 0 and the registry guide. Tier derivation is qualified under omission 4. |
+| B — Unconsumed story modes | deferred | Remove mandatory classification from this rollout. Revisit only when a concrete consumer needs modes; manual review follows changed behavior. Authoritative decisions. |
+| C — Deployment blast radius | adopted | Add independent quality verification with visible failures and no site build/deploy dependency. Retain the existing combined publication path, so Storybook build failures can still block deployment. Phase 4. |
+| D — Unused Chromatic addon | adopted | Remove the addon registration and dependency, including its lockfile entry. Phase 0. |
+| E — Script surface | adopted | Expose only `check:storybook`, `test:storybook-checks`, and `verify:storybook`; keep source/index stages internal. Retain focused Node checker tests. Phase 1. |
+| F — Missing problem and outcomes | adopted | Lead with reliable contracts and low upkeep; define completion through usable review tools, meaningful drift detection, resolved findings, and independent checks. Roadmap problem/outcome and phase exits. |
+| G — Policy follows registry | adopted | Write the contributor standard before creating its registry in Phase 0; repair the viewport prerequisite first. |
+| H — Duplicate approval lists | adopted | Use the roadmap's authoritative decisions as the single list. Remove repeated approval checkboxes and conflicting resolved/pending labels. |
+| I — Unowned attestation matrix | adopted | The phase implementer records findings as discovered and one completion summary when exiting a phase. No per-story/per-viewport passing attestations. Phase 3 and evidence instructions below. |
+| J — Smaller inconsistencies | adopted | Remove README's Storybook “coming soon”; use version families linked to authorities; schedule the narrow story glob and report excluded files; distinguish targeted local rich-text checking from unconditional deploy checks. Phase 0 and validation boundaries. |
+| Omission 1 — Broken viewports | corrected | Adopt the urgent repair, using `parameters.viewport.options` and `initialGlobals.viewport = { value: 'large', isRotated: false }`, correcting the report's final `globals` suggestion. Verify selectable toolbar sizes and actual canvas resizing in Phase 0. |
+| Omission 2 — Manual prop documentation | adopted | Explain `docgen: false` and validate documentation separately from types. Preserve documented rejected inputs and intentional story-only args with narrow explanations. Button's rejected `class`/`style` entries are valid; an entry is stale only when it no longer describes a supported input, rejection, or story-only arg and lacks a valid explanation. Do not demand controls for every documented input. Phases 0–1. |
+| Omission 3 — Story type checking | corrected | Add `svelte-check`, but do not claim it proves `argTypes` completeness. Demonstrate unasserted invalid CSF `args` and direct component markup both fail; narrowly asserted runtime fixtures must pass and still exercise fallback behavior. State included files, module/instance script modes, JavaScript/TypeScript treatment, and limitations. Phase 1. |
+| Omission 4 — Component coverage and tier derivation | corrected | LogoLink already has examples in Brand/Logo, and ProjectListSurface is the primary ProjectList component. The other two named components are Astro components. Check eligible Svelte coverage by identity, with multi-component exceptions; do not create four new families. The component README illustrates tier policy and must not be parsed as an exhaustive registry. Phases 0–2. |
+| Omission 5 — Previous review work | adopted | Reference historical harnesses as sources of scenarios, not current passing evidence; reproduce relevant checks and record fresh findings. Phase 3 and prior art below. |
+| Omission 6 — Upgrade policy | adopted | On Storybook majors, renderer/CSF changes, or index-format changes, inspect target-version migration guidance/tooling in an isolated checkout, rerun verification, and review viewports, Docs, themes, and protected links. Phase 4. |
 
-Run `npm run check:rich-text` only for prose, Markdown, links, or rich-text changes. Run `npm run test:tokens` only for token definitions, reconciliation, or token-facing styles.
+The report's opening viewport blocker is omission 1. Its “Too much” section is covered by A, B, and I; the proposed exhaustive README tier checker is corrected under omission 4. Its final eight recommendations map respectively to omission 1; G; A; B; omissions 2–3; omission 4; C; and H/I. These references consolidate repeated recommendations rather than create another decision list.
 
-## Phase evidence
+## Historical review scenarios
 
-### Phase 0 — Baseline and inventory
+The source report identifies `.astro/phase8-storybook-a11y.html` and `.astro/phase8-storybook-matrix.html` as prior local review harnesses. They are generated/local artifacts and may be absent from a fresh checkout; they are not durable evidence links or prerequisites.
 
-- Inventory path: `.storybook/inventory.json`
-- Maintainer decisions:
-  - [ ] Hybrid family-default and story-override model approved.
-  - [ ] Atomic order approved.
-  - [ ] Empty initial protected-ID registry approved.
-  - [ ] Browser-safe import policy approved.
-- Completion evidence:
-  - [ ] All families represented.
-  - [ ] Effective mode exists for every story.
-  - [ ] Expected family counts recorded.
+Their scenarios can inform focused checks of interactive links and disabled states, LogoLink naming, image fallbacks, project cards, footer contact content, and long-content layouts. Fresh review must use the corrected viewport configuration and current stories. Do not infer current accessibility compliance or review completion from those harnesses or their prior execution.
 
-### Phase 1 — Standard documentation
+## Evidence ownership and timing
 
-- Standard path: `docs/storybook-standard.md`
-- Completion evidence:
-  - [ ] Contributor workflow documented.
-  - [ ] Framework-specific rules separated from universal Storybook guidance.
-  - [ ] README points to the tracked Storybook documentation.
-  - [ ] Version authorities are `package.json`, `package-lock.json`, and `.nvmrc`.
+During rollout, the phase implementer records findings when discovered and adds one concise completion summary when the phase exits. Include phase, date, commit, implementer, outcome, representative scope and selection reason, command evidence, and any unresolved findings. If a phase is incomplete, say so explicitly. Do not duplicate the roadmap's exit criteria as checkboxes.
 
-### Phase 2 — Validation scripts
+For command evidence, record the command, environment, date, outcome, and a concise diagnostic or task reference when needed. Clean-install evidence belongs to CI, a fresh clone, or a disposable environment. Do not treat the historical build observation above as satisfying rollout validation.
 
-- Completion evidence:
-  - [ ] Configuration checks use focused TypeScript AST parsing.
-  - [ ] Story checks use supported Svelte parsing.
-  - [ ] Generated-index checks use `storybook-static/index.json`.
-  - [ ] Checker tests cover success and failure cases.
-  - [ ] `verify:storybook` invokes source validation, the build, inventory validation, and checker tests.
+After Phase 1 exists, the unified command must include source/type validation, checker tests, one build, and generated-index validation. Follow the roadmap's local validation policy; deployment still runs `check:rich-text` unconditionally. No planned command is claimed to have run yet.
 
-### Phase 3 — Story alignment
+For Phase 1, identify the expected diagnostics from isolated negative-fixture runs separately from passing runtime-fallback stories. For Phase 2, record the outcome of the temporary before/after story and Docs ID comparison. Neither negative checker fixtures nor the temporary catalog baseline belongs in the published Storybook or a permanent inventory.
 
-- Completion evidence:
-  - [ ] All 35 files reviewed as candidates.
-  - [ ] Only necessary story files changed.
-  - [ ] Required descriptions and exceptions are recorded.
-  - [ ] Mixed-family overrides are valid.
-  - [ ] `npm run verify:storybook` passes.
+## Manual findings
 
-### Phase 4 — Manual review
+No rollout review has been performed yet. Add entries only for findings, using a short stable identifier and recording:
 
-- Completion evidence:
-  - [ ] Changed stories reviewed at their default viewport.
-  - [ ] Layout-sensitive stories reviewed at 430, 744, 1024, and 1512 pixels.
-  - [ ] Affected breakpoint boundaries reviewed.
-  - [ ] Representative 320px reflow and 200% text checks completed.
-  - [ ] Theme, reduced-motion, Docs, semantic, keyboard, focus, and a11y checks completed.
-  - [ ] Reviewed story IDs and findings recorded below.
+- Affected story ID or family and the reason it was reviewed.
+- Reproduction conditions: relevant viewport, theme, motion preference, keyboard action, or Docs context.
+- Observed problem, impact, resolution or explicit deferral rationale, and verification evidence.
 
-### Phase 5 — Deployment and handoff
+The phase completion summary records representative review scope even if there were no findings. Do not create passing rows for every story/viewport/theme combination. Durable exceptions belong in the registry once it exists; this record retains the discovery and resolution context.
 
-- Completion evidence:
-  - [ ] Deployment switches to `npm run verify:storybook` only after Phase 3 alignment passes.
-  - [ ] Clean-install validation passes.
-  - [ ] Static Storybook is present under `dist/storybook`.
-  - [ ] Maintainer signoff recorded.
+## Planning revision verification
 
-## Manual review matrix
-
-| Story ID or family | Review reason | Viewports | Themes | Reduced motion | Accessibility/keyboard | Reviewer | Result |
-|---|---|---|---|---|---|---|---|
-| _to be recorded_ | _default / layout / Docs / diagnostic_ | _to be recorded_ | _to be recorded_ | _yes/no_ | _to be recorded_ | _to be recorded_ | _pending_ |
-
-Review every changed story at its default viewport. Expand to all four named viewports for layout-sensitive contract and overview stories. Review only affected breakpoint boundaries at 631/632, 1014/1015, and 1175/1176 pixels. Use representative stories for 320px reflow and 200% text enlargement rather than rendering the entire catalog at every combination.
-
-## Exceptions and decisions
-
-Record durable exceptions in `.storybook/inventory.json`; record the review context and evidence here.
-
-| Date | Story/family | Exception or decision | Rationale | Approver |
-|---|---|---|---|---|
-| _to be recorded_ | _to be recorded_ | _to be recorded_ | _to be recorded_ | _to be recorded_ |
+The original report was read and reconciled against the current sources; all A–J points and six numbered omissions have a disposition above. The subsequent argTypes, type-checking, and portability feedback is incorporated. Configuration, stories, dependencies, and CI remain unchanged, and rollout completion is not asserted here.

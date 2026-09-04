@@ -1,70 +1,55 @@
-# Storybook Component Inventory
+# Storybook Exception and Protected-ID Registry Guide
 
-Status: planning documentation. The canonical inventory will be added during Phase 0.
+Status: planning documentation. `.storybook/inventory.json` will be created in Phase 0 after the contributor standard. No registry or registry checker is implemented by this document.
 
-## Purpose
+## Purpose and authority
 
-The inventory records the intended Storybook catalog and the exceptions that cannot be inferred safely from generated output. It is a reviewable contract between the Atomic taxonomy, Svelte CSF stories, and the automated catalog checks.
+The retained inventory filename will hold a small exception/protected-ID registry, not a canonical copy of the Storybook catalog. The [roadmap's authoritative decisions](./storybook-guidelines-plan.md#authoritative-decisions) govern its scope. This guide explains maintenance; the [alignment record](./storybook-alignment-plan.md) holds report dispositions and implementation evidence.
 
-The machine-readable source will be:
+## Planned contents
 
-```text
-.storybook/inventory.json
-```
+Store a schema version, narrow approved exceptions, and explicitly protected IDs. An exception identifies the relevant component, story, input, or rule and explains why the normal check does not apply. Include only the identity needed to resolve that exception; do not list every family merely to establish coverage.
 
-This Markdown document explains how to maintain that file. It must not become a second manually maintained catalog or repeat all family and story facts.
+Examples of decisions that may require an entry include:
 
-## Planned inventory responsibilities
+- Explicit multi-component coverage that primary component metadata cannot express.
+- Approved eligibility or documentation omissions, including the Typography foundation case.
+- Intentional rejected-input or story-only-arg documentation that the checker cannot otherwise recognize from its narrow explanation.
+- Judgment-based approval for a browser-safe helper or an asset/fixture that cannot be checked statically.
+- A narrowly scoped typing limitation with a reason and review trigger; it cannot waive Phase 1's required invalid-CSF-args or direct-component acceptance cases.
 
-The JSON inventory will record:
+Keep rationale next to its source when that is sufficient; do not copy every story explanation into JSON. If a registry entry is needed, reference the source explanation instead of maintaining a second version. Define the concrete schema during Phase 0 after the standard establishes its requirements.
 
-- Schema version.
-- Ordered Atomic categories.
-- Story family titles and file paths.
-- Primary component or composition subjects.
-- `defaultStoryMode` and story-level `storyModeOverrides` keyed by effective Svelte CSF `exportName`.
-- Default visibility and approved visibility exceptions.
-- Expected family story counts as drift sentinels.
-- Extension tiers, including `not-documented` where no tier is assigned in `src/components/README.md`.
-- Approved control surfaces and control exceptions.
-- Browser-safe `src/lib` imports.
-- Asset and fixture exceptions.
-- Typing, visibility, and exclusion exceptions with reasons.
-- Explicitly protected Storybook IDs.
+Do not store story counts, a complete family/path/subject catalog, Atomic ordering, duplicated extension tiers or control surfaces, or derivable import/asset lists. Mandatory story modes and per-family defaults/overrides are deferred until a concrete consumer needs them. Ordinary story additions must not require a registry edit unless they introduce an exception or protected reference.
 
-## Classification model
+## Coverage and component contracts
 
-Each family receives a default mode. Only stories that differ from that default need an override. The checker computes the effective mode for every generated story and fails when an override refers to a missing or obsolete `exportName`.
+The source checker will derive primary coverage from story component metadata and use explicit exceptions for multi-component families. Importing a component incidentally is not sufficient evidence of documentation. Story filenames need not match component names.
 
-Allowed modes are:
+`ProjectListSurface` is already the primary component of `Organisms/ProjectList`; `LogoLink` already has linked and fallback examples in `Brand/Logo`. These families need a contract-completeness review, not duplicate families. `Container` and `HomepageProjectList` are Astro components and remain outside direct Svelte Storybook eligibility.
 
-- `contract`
-- `overview`
-- `playground`
-- `composition`
-- `foundation`
-- `diagnostic`
+[Component policies](../src/components/README.md) remain the extension-tier authority. Their examples are illustrative, not an exhaustive component registry. Do not derive missing-tier failures from absent names or introduce a synthetic tier to fill gaps.
 
-Fallback and malformed-input behavior that is part of the public contract stays visible. True hidden machine-only fixtures are deferred until a test runner consumes them.
+Documentation checks must recognize supported inputs, documented rejections, and intentional story-only args. Button's rejected `class` and `style` entries are valid contract documentation. Require narrow explanations for intentional extras, and flag entries only when they no longer correspond to any of those subjects and lack a valid explanation. Documenting an input does not require an interactive control. Type checking is separate from documentation completeness.
 
-## ID policy
+## Protected IDs
 
-`protectedIds` starts empty. Add an ID only when a Storybook story or Docs entry is referenced by tracked documentation, an external integration, or a deliberately published permalink.
+`protectedIds` starts empty under the roadmap decision. Add an ID when a story or Docs entry receives a tracked reference, external integration, or deliberately published permalink. Keep the reference or rationale with the entry.
 
-A protected story must remain resolvable in the generated `storybook-static/index.json`. Preserve its meta component segment with a compatible meta `id` and preserve its story segment by retaining the Svelte CSF `exportName`.
+Require protected IDs to resolve in generated `storybook-static/index.json`. Preserve a protected story's component segment with a compatible meta `id` and its story segment with the effective Svelte CSF `exportName`. Verify the generated result instead of assuming a rename is compatible.
 
-The inventory does not provide redirects. Do not add an `idMigrations` field unless a future Storybook compatibility mechanism makes it meaningful.
+The roadmap's temporary before/after ID comparison checks preservation during alignment. It does not populate this registry or introduce a permanent full-catalog baseline. Unified verification validates only the index produced by its own successful build.
 
-## Extension tiers and imports
+The registry does not provide redirects. Do not introduce `idMigrations` as a substitute for keeping an old URL resolvable.
 
-Do not infer extension tiers from filenames or markup. When a component is not assigned a tier in `src/components/README.md`, use `not-documented` and record the approved control surface directly.
+## Imports and assets
 
-Stories may import public components, approved icons and logos, deterministic fixtures, and explicitly allowlisted browser-safe `src/lib` helpers. Stories must not import pages, layouts, content collections, server-only adapters, or live network data. Inert external link destinations are allowed; runtime network calls are not.
+The roadmap's browser-safe import policy excludes pages, layouts, content collections, server/content adapters, and live network data. Derive actual imports from sources. Keep only judgment-based approvals in the registry, with narrow scope and reasons; do not maintain a second list of every observed import. Inert external link destinations are allowed.
 
-Root-relative asset literals and `srcset` candidates should resolve under `public/` unless an explicit inventory exception explains why they cannot be checked statically.
+Check root-relative asset literals and `srcset` candidates against `public/` where statically resolvable. Explain exceptions that cannot be checked statically rather than listing all valid assets.
 
 ## Maintenance workflow
 
-Update the inventory when a story family is added, removed, renamed, recategorized, or given a new control, asset, import, typing, visibility, or ID exception.
+When adding or changing a story, update its documentation and fixtures first. Update the registry only when an exception, judgment-based approval, or protected reference changes. Remove obsolete exceptions when their source disappears or the normal rule becomes sufficient; the checker must flag stale targets.
 
-Do not update generated `storybook-static/index.json` by hand. Run the Storybook build and inventory checker instead.
+After Phase 1, run `npm run check:storybook` for source/type validation and `npm run verify:storybook` for source/type checks, checker tests, one build, and generated-index validation. Never edit generated `storybook-static/index.json` by hand. New quality checks remain independent of site deployment under the roadmap's CI boundary.

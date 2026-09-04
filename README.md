@@ -4,11 +4,13 @@ The official website for Invisible Sloth, showcasing our projects across games, 
 
 ## Tech Stack
 
-- **[Astro 7.0.8](https://astro.build)** - Static site generation with island architecture
-- **[Svelte 5.56.4](https://svelte.dev)** - Interactive UI components with runes syntax
-- **[Tailwind CSS 4.3.2](https://tailwindcss.com)** - Utility-first styling with CSS-native configuration
-- **[Storybook 10.5.0](https://storybook.js.org)** - Component development and documentation
-- **Node.js 22.22.0** - Local and CI runtime, managed through `.nvmrc`
+- **[Astro 7](https://astro.build)** - Static site generation with island architecture
+- **[Svelte 5](https://svelte.dev)** - Interactive UI components with runes syntax
+- **[Tailwind CSS 4](https://tailwindcss.com)** - Utility-first styling with CSS-native configuration
+- **[Storybook 10](https://storybook.js.org)** - Component development and documentation
+- **Node.js 22 and npm 10** - Local and CI runtime and package manager
+
+Version constraints and the package-manager declaration are in [package.json](./package.json), resolved dependencies in [package-lock.json](./package-lock.json), and the runtime pin in [.nvmrc](./.nvmrc).
 
 ## Project Structure
 
@@ -46,14 +48,14 @@ All commands are run from the project root:
 | `npm run storybook` | Start Storybook dev server at `localhost:6006` |
 | `npm run build-storybook` | Build static Storybook for deployment |
 
-Storybook planning and rollout evidence are documented in the [guidelines roadmap](./docs/storybook-guidelines-plan.md), [alignment record](./docs/storybook-alignment-plan.md), and [inventory guide](./docs/storybook-component-inventory.md).
+Current component guidance lives in [component policies](./src/components/README.md). The [guidelines roadmap](./docs/storybook-guidelines-plan.md), [alignment record](./docs/storybook-alignment-plan.md), and [exception registry guide](./docs/storybook-component-inventory.md) describe the planned Storybook standards rollout. The contributor standard, registry, and new verification commands are future work; these planning documents do not indicate that the rollout is implemented.
 
 ### Utilities
 
 | Command | Action |
 | :--- | :--- |
 | `npm run astro ...` | Run Astro CLI commands |
-| `npm run check` | Type-check the project |
+| `npm run check` | Run Astro checks; planned Svelte story checks are separate |
 | `npm run check:legal` | Check legal-page structure and built metadata |
 | `npm run tokens:reconcile -- <export.json>` | Reconcile a Figma token export |
 | `npm run tokens:check -- <export.json>` | Check generated color tokens against an export |
@@ -70,7 +72,7 @@ tracked record of the most recently reconciled export.
 The site is deployed to GitHub Pages:
 
 - **Main Site**: [invisiblesloth.com](https://invisiblesloth.com) *(coming soon)*
-- **Storybook**: Component documentation and design system *(coming soon)*
+- **Storybook**: Component documentation and design system, built and published under `/storybook/` with the site
 
 ## Licensing
 
