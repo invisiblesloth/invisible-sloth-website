@@ -1,12 +1,39 @@
 # Storybook Exception and Protected-ID Registry Guide
 
-Status: planning documentation. `.storybook/inventory.json` will be created in Phase 0 after the contributor standard. No registry or registry checker is implemented by this document.
+Status: Phase 0 complete. The [contributor standard](./storybook-standard.md) precedes and governs `.storybook/inventory.json`; automated registry checking remains planned for Phase 1.
 
 ## Purpose and authority
 
-The retained inventory filename will hold a small exception/protected-ID registry, not a canonical copy of the Storybook catalog. The [roadmap's authoritative decisions](./storybook-guidelines-plan.md#authoritative-decisions) govern its scope. This guide explains maintenance; the [alignment record](./storybook-alignment-plan.md) holds report dispositions and implementation evidence.
+The retained inventory filename holds a small exception/protected-ID registry, not a canonical copy of the Storybook catalog. The [roadmap's authoritative decisions](./storybook-guidelines-plan.md#authoritative-decisions) govern its scope. This guide explains maintenance; the [alignment record](./storybook-alignment-plan.md) holds report dispositions and implementation evidence.
 
-## Planned contents
+## Schema and contents
+
+The registry uses `schemaVersion: 1` and exactly three top-level arrays:
+`exceptions`, `judgmentApprovals`, and `protectedIds`. Unknown top-level fields
+and unknown entry fields are invalid. All string fields must be non-empty after
+trimming, entry IDs must be unique within their array, and source/component paths
+are repository-relative POSIX paths that must resolve to tracked files.
+
+Every exception requires `id`, `rule`, `storyTitle`, `source`, `reason`, and
+`reviewTrigger`. `rule` is a closed discriminator with two valid values and
+shapes:
+
+- `component-coverage` requires a non-empty `components` array.
+- `primary-component-metadata` omits `components`.
+
+Unknown rule values are invalid. Adding a rule or changing either shape changes
+the registry interpretation and requires a `schemaVersion` bump, an update to
+this guide, and an update to the Phase 1 checker once it exists.
+
+Every judgment approval requires `id`, `kind`, `target`, `scope`, `reason`, and
+`reviewTrigger`. `kind` is closed to `browser-safe-import`, `dynamic-asset`, and
+`typing-limitation`; adding a kind requires the same versioned schema update.
+Every protected-ID entry contains only `id`, `reason`, and a tracked `reference`,
+where `id` is the generated Storybook story or Docs ID being protected.
+
+The initial registry contains only the Brand/Logo multi-component coverage and
+the Typography primary-component-metadata exception. Judgment approvals and
+protected IDs start empty.
 
 Store a schema version, narrow approved exceptions, and explicitly protected IDs. An exception identifies the relevant component, story, input, or rule and explains why the normal check does not apply. Include only the identity needed to resolve that exception; do not list every family merely to establish coverage.
 
@@ -18,7 +45,7 @@ Examples of decisions that may require an entry include:
 - Judgment-based approval for a browser-safe helper or an asset/fixture that cannot be checked statically.
 - A narrowly scoped typing limitation with a reason and review trigger; it cannot waive Phase 1's required invalid-CSF-args or direct-component acceptance cases.
 
-Keep rationale next to its source when that is sufficient; do not copy every story explanation into JSON. If a registry entry is needed, reference the source explanation instead of maintaining a second version. Define the concrete schema during Phase 0 after the standard establishes its requirements.
+Keep rationale next to its source when that is sufficient; do not copy every story explanation into JSON. If a registry entry is needed, reference the source explanation instead of maintaining a second version.
 
 Do not store story counts, a complete family/path/subject catalog, Atomic ordering, duplicated extension tiers or control surfaces, or derivable import/asset lists. Mandatory story modes and per-family defaults/overrides are deferred until a concrete consumer needs them. Ordinary story additions must not require a registry edit unless they introduce an exception or protected reference.
 

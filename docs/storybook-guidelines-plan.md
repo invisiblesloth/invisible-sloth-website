@@ -1,10 +1,10 @@
 # Storybook Guidelines Roadmap
 
-Status: planning only. This document records the approved direction for future implementation. Updating these planning documents does not implement or authorize any rollout phase. The contributor standard, exception registry, and new commands described below do not exist yet.
+Status: rollout roadmap. Phase 0 is complete; later phases remain planned. The contributor standard and exception registry now exist, while the new commands described below do not exist yet.
 
 ## Problem and intended outcome
 
-Storybook should provide reliable component documentation with low maintenance overhead. Today its intended named viewports are misconfigured, some component descriptions need work, and neither story type-checking coverage nor hand-maintained prop documentation has an enforced verification path. The previous roadmap would have added duplicate catalog bookkeeping and new site deployment blockers.
+Storybook should provide reliable component documentation with low maintenance overhead. Phase 0 repaired its named viewports and established contributor policy; some component descriptions still need work, and neither story type-checking coverage nor hand-maintained prop documentation has an enforced verification path. The previous roadmap would have added duplicate catalog bookkeeping and new site deployment blockers.
 
 The rollout is complete when contributors can identify documented component contracts, review relevant responsive and accessible behavior with working tools, and catch meaningful drift without maintaining a second catalog. Completion also requires clean-install verification, resolution or explicit disposition of material manual findings, and independent quality checks that do not become site deployment prerequisites.
 
@@ -12,8 +12,8 @@ The rollout is complete when contributors can identify documented component cont
 
 - Astro 7 static site, Svelte 5 interactive islands, Tailwind CSS 4, Storybook 10 with `@storybook/svelte-vite` and Svelte CSF 5, Node 22, and npm 10. Version constraints and package-manager declarations live in [package.json](../package.json), resolved dependencies in [package-lock.json](../package-lock.json), and the runtime pin in [.nvmrc](../.nvmrc).
 - The September 3, 2026 audit reported 35 Svelte CSF story files, 258 story entries, and 35 Docs entries. These are dated observations, not required totals.
-- Preview setup includes global styles, system/light/dark themes, and enhancement scripts. The intended 430/744/1024/1512px viewports use obsolete configuration and must not be treated as working review tools until Phase 0 verifies them.
-- The Chromatic addon is installed and registered, but no visual-regression service is configured. No Storybook browser test runner, accessibility CI, or `svelte-check` command is configured. Existing focused Node checker tests are separate from browser testing.
+- Preview setup includes global styles, system/light/dark themes, enhancement scripts, and working 430/744/1024/1512px viewports verified in Phase 0.
+- Phase 0 removed the unused Chromatic addon. No visual-regression service, Storybook browser test runner, accessibility CI, or `svelte-check` command is configured. Existing focused Node checker tests are separate from browser testing.
 - Deployment builds both the site and Storybook, then copies Storybook into `dist/storybook`.
 - [Component policies](../src/components/README.md) govern component boundaries and extension tiers. Their examples are not an exhaustive component-to-tier registry. Ignored local agent guidance is not a tracked Storybook authority.
 
@@ -22,9 +22,9 @@ The rollout is complete when contributors can identify documented component cont
 | Artifact | Responsibility | Timing |
 |---|---|---|
 | This roadmap | Decisions, sequencing, and rollout completion criteria | Planning |
-| `docs/storybook-standard.md` | Contributor-facing policy | Phase 0, before the registry |
-| `.storybook/inventory.json` | Narrow exceptions, judgment-based import approvals, and protected IDs | Phase 0, after the standard |
-| [Inventory guide](./storybook-component-inventory.md) | Registry purpose and maintenance | Planning; refine in Phase 0 |
+| `docs/storybook-standard.md` | Contributor-facing policy | Phase 0, before the registry; complete |
+| `.storybook/inventory.json` | Narrow exceptions, judgment-based import approvals, and protected IDs | Phase 0, after the standard; complete |
+| [Inventory guide](./storybook-component-inventory.md) | Registry purpose and maintenance | Planning and rollout; Phase 0 schema complete |
 | [Alignment record](./storybook-alignment-plan.md) | Report dispositions, implementation evidence, and manual findings | Planning and rollout |
 | Internal validation scripts | Source/type/config and generated-index checks, with focused checker tests | Phase 1 |
 

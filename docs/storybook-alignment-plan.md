@@ -1,6 +1,6 @@
 # Storybook Alignment and Review Record
 
-Status: planning revision complete; rollout Phases 0–4 have not started. This record contains report dispositions and historical observations, not evidence that the planned configuration fixes or checks have run.
+Status: Phase 0 complete; rollout Phases 1–4 have not started. This record contains report dispositions, historical observations, and Phase 0 implementation evidence.
 
 The [roadmap](./storybook-guidelines-plan.md) owns decisions, sequencing, and completion criteria. The [registry guide](./storybook-component-inventory.md) explains exception maintenance. This record does not introduce another policy, catalog, or approval checklist.
 
@@ -9,14 +9,37 @@ The [roadmap](./storybook-guidelines-plan.md) owns decisions, sequencing, and co
 The September 3, 2026 source audit reported 35 Svelte CSF story files, 258 story entries, and 35 Docs entries using Storybook 10 and `@storybook/svelte-vite`. Counts are dated observations, not enforced requirements. Version authorities are [package.json](../package.json), [package-lock.json](../package-lock.json), and [.nvmrc](../.nvmrc).
 
 - Atomic ordering, global styles, system/light/dark themes, enhancement scripts, Svelte CSF, and Autodocs are present.
-- The intended 430/744/1024/1512px viewports use obsolete configuration. Working toolbar choices and canvas dimensions require Phase 0 verification.
+- At the time, the intended 430/744/1024/1512px viewports used obsolete configuration. Working toolbar choices and canvas dimensions required Phase 0 verification.
 - Badge, Divider, and SiteFooter need description work. PostHeader already has a substantial description; Typography is the foundation exception.
 - `LogoLink` has linked and fallback examples in `Brand/Logo`; `ProjectListSurface` is the primary component of `Organisms/ProjectList`. `Container` and `HomepageProjectList` are Astro components.
 - `docgen: false` makes manual prop documentation load-bearing. Button intentionally documents rejected `class`/`style` inputs and uses narrowly asserted malformed-runtime fixtures.
-- Chromatic is installed and registered without a configured visual-regression service. Svelte story type-checking coverage is not yet demonstrated by the planned checks.
+- At the time, Chromatic was installed and registered without a configured visual-regression service. Svelte story type-checking coverage is not yet demonstrated by the planned checks.
 - The source audit found no tracked or historical individual Storybook links; private bookmarks were not discoverable. The roadmap therefore starts protected IDs empty.
 
 The source audit reported a successful Storybook build with a Vite chunk-size warning. It also reported a non-clean local installation missing the declared `@astrojs/sitemap` dependency. These are historical environment observations, not fresh validation results or proof of a repository dependency defect. No builds or clean-install checks were performed for this Markdown revision.
+
+## Phase 0 implementation evidence
+
+Phase 0 was completed on September 4, 2026 by Codex in a working tree based on
+commit `3e9673dc577b66104624b13709e69263d6451c53`. The inspected base matched the
+approved revision, so no re-audit was required. Validation used Node 22.22.0 and
+npm 10.9.4.
+
+The pre-change discovery check found no `*.stories.*` files outside
+`src/stories/**/*.stories.svelte`. A baseline `npm ci` completed before the
+dependency changes; it does not represent clean-install verification of the
+final lockfile. `npm run check`, `npm run build`, and `npm run build-storybook`
+completed successfully after the changes. The Storybook build kept the existing
+non-fatal Vite chunk-size warning. A temporary comparison of the pre- and
+post-change generated indexes found no changes to entry IDs, types, titles,
+names, or effective export names; neither index snapshot was retained.
+
+Fresh Storybook UI review used `Organisms/ProjectList / Stacked List`. Large was
+selected initially with rotation off. Compact, Medium, Extended, and Large were
+all available in the toolbar and resized the canvas to 430 × 932, 744 × 1133,
+1024 × 1366, and 1512 × 982 respectively; Large remained selectable afterward.
+No unresolved Phase 0 findings remain. This evidence does not represent the
+broader manual catalog review planned for Phase 3.
 
 ## Report dispositions
 
@@ -63,7 +86,7 @@ For Phase 1, identify the expected diagnostics from isolated negative-fixture ru
 
 ## Manual findings
 
-No rollout review has been performed yet. Add entries only for findings, using a short stable identifier and recording:
+No Phase 3 catalog review has been performed yet. Add entries only for findings, using a short stable identifier and recording:
 
 - Affected story ID or family and the reason it was reviewed.
 - Reproduction conditions: relevant viewport, theme, motion preference, keyboard action, or Docs context.
@@ -73,4 +96,4 @@ The phase completion summary records representative review scope even if there w
 
 ## Planning revision verification
 
-The original report was read and reconciled against the current sources; all A–J points and six numbered omissions have a disposition above. The subsequent argTypes, type-checking, and portability feedback is incorporated. Configuration, stories, dependencies, and CI remain unchanged, and rollout completion is not asserted here.
+The original report was read and reconciled against the current sources; all A–J points and six numbered omissions have a disposition above. The subsequent argTypes, type-checking, and portability feedback is incorporated. Phase 0 changed configuration, documentation, and dependencies as recorded above; stories and CI remain unchanged, and later rollout completion is not asserted here.

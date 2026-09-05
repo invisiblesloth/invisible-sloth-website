@@ -48,7 +48,7 @@ All commands are run from the project root:
 | `npm run storybook` | Start Storybook dev server at `localhost:6006` |
 | `npm run build-storybook` | Build static Storybook for deployment |
 
-Current component guidance lives in [component policies](./src/components/README.md). The [guidelines roadmap](./docs/storybook-guidelines-plan.md), [alignment record](./docs/storybook-alignment-plan.md), and [exception registry guide](./docs/storybook-component-inventory.md) describe the planned Storybook standards rollout. The contributor standard, registry, and new verification commands are future work; these planning documents do not indicate that the rollout is implemented.
+Current component guidance lives in [component policies](./src/components/README.md), and Storybook contributors should follow the [Storybook contributor standard](./docs/storybook-standard.md). The [guidelines roadmap](./docs/storybook-guidelines-plan.md), [alignment record](./docs/storybook-alignment-plan.md), and [exception registry guide](./docs/storybook-component-inventory.md) describe rollout sequencing, evidence, and registry maintenance. New Storybook verification commands remain planned for Phase 1 and are not available yet.
 
 ### Utilities
 

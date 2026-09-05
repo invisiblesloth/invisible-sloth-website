@@ -2,18 +2,18 @@ import type { StorybookConfig } from '@storybook/svelte-vite';
 
 const config: StorybookConfig = {
   "stories": [
-    "../src/**/*.stories.@(js|ts|svelte)"
+    "../src/stories/**/*.stories.svelte"
   ],
   "addons": [
     "@storybook/addon-svelte-csf",
-    "@chromatic-com/storybook",
     "@storybook/addon-docs",
     "@storybook/addon-a11y"
   ],
   "framework": {
     "name": "@storybook/svelte-vite",
     "options": {
-      // Avoid Storybook docgen parsing Svelte CSF stories as plain Svelte components.
+      // Svelte CSF stories are not ordinary components. Keep docgen disabled so
+      // Storybook does not parse them as such; see docs/storybook-standard.md.
       docgen: false
     }
   },

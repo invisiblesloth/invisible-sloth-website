@@ -58,7 +58,7 @@ const preview: Preview = {
       },
     },
     viewport: {
-      viewports: {
+      options: {
         compact: {
           name: 'Compact (430px)',
           styles: {
@@ -91,8 +91,8 @@ const preview: Preview = {
     },
   },
 
-  globals: {
-    viewport: 'large',
+  initialGlobals: {
+    viewport: { value: 'large', isRotated: false },
   },
 
   globalTypes: {

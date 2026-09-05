@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "exceptions": [
+    {
+      "id": "brand-logo-family-coverage",
+      "rule": "component-coverage",
+      "storyTitle": "Brand/Logo",
+      "source": "src/stories/Logo.stories.svelte",
+      "components": [
+        "src/components/Logo.svelte",
+        "src/components/LogoLink.svelte"
+      ],
+      "reason": "One intentional family documents the standalone and linked logo contracts.",
+      "reviewTrigger": "Review if the family is split or primary component metadata can represent both contracts."
+    },
+    {
+      "id": "typography-foundation-primary-component",
+      "rule": "primary-component-metadata",
+      "storyTitle": "Foundations/Typography",
+      "source": "src/stories/Typography.stories.svelte",
+      "reason": "This foundation documents CSS typography utilities through a story-only preview rather than an eligible public component.",
+      "reviewTrigger": "Review if typography becomes an eligible public component or the foundation family is removed."
+    }
+  ],
+  "judgmentApprovals": [],
+  "protectedIds": []
+}
