@@ -17,6 +17,15 @@
         },
       },
     },
+    argTypes: {
+      variant: { control: 'select', options: ['technical', 'standard'], description: 'Logo artwork variant.' },
+      size: { control: 'text', description: 'Rendered logo size.' },
+      alt: { control: 'text', description: 'Alternative text for a non-decorative standalone logo.' },
+      decorative: { control: 'boolean', description: 'Marks a standalone logo as decorative.' },
+      href: { control: 'text', description: 'Destination used by LogoLink.' },
+      label: { control: 'text', description: 'Accessible link name used by LogoLink.' },
+      class: { control: false, description: 'Optional LogoLink root class hook; standalone Logo does not expose it.' },
+    },
   });
 </script>
 

@@ -1,0 +1,5 @@
+{
+  "extends": "../../../../../tsconfig.storybook.json",
+  "include": ["./AssertedRuntime.svelte", "../../../../../src/components/Divider.svelte"],
+  "exclude": ["../../../../../node_modules"]
+}

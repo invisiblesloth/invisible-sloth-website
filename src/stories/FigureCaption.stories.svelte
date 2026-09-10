@@ -28,6 +28,10 @@
         description:
           'Plain-text credit fallback when no credit snippet is supplied. Snippet content takes precedence.',
       },
+      class: {
+        control: false,
+        description: 'Optional root figcaption class hook for layout and global selectors.',
+      },
     },
   });
 </script>

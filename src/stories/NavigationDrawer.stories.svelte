@@ -55,11 +55,23 @@
       closeButtonLabel: 'Close navigation menu',
     },
     argTypes: {
+      id: { control: 'text', description: 'Stable drawer element id.' },
+      open: { control: 'boolean', description: 'Whether the drawer is open.' },
+      sections: { control: 'object', description: 'Grouped navigation data.' },
+      activeHref: { control: 'text', description: 'Href marked as the current page.' },
+      dialogLabel: { control: 'text', description: 'Accessible dialog label.' },
+      navigationLabel: { control: 'text', description: 'Accessible navigation label.' },
+      closeButtonLabel: { control: 'text', description: 'Accessible close-button label.' },
+      onclose: { action: 'closed', description: 'Svelte callback emitted for close requests.' },
+      onnavigate: { action: 'navigated', description: 'Svelte callback emitted before navigation close policy.' },
+      class: { control: false, description: 'Optional root dialog class hook.' },
       onClose: {
         action: 'closed',
+        description: 'Legacy camel-case close callback retained for compatibility.',
       },
       onNavigate: {
         action: 'navigated',
+        description: 'Legacy camel-case navigation callback retained for compatibility.',
       },
     },
   });

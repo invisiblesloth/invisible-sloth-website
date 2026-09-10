@@ -22,6 +22,39 @@
       "reviewTrigger": "Review if typography becomes an eligible public component or the foundation family is removed."
     }
   ],
-  "judgmentApprovals": [],
+  "judgmentApprovals": [
+    {
+      "id": "image-debug-dynamic-src",
+      "kind": "dynamic-asset",
+      "target": "binding.debugImageProps.src",
+      "scope": "src/stories/Image.stories.svelte",
+      "reason": "The interactive debug story replaces the primary source through a runtime scenario object consumed by the Image spread.",
+      "reviewTrigger": "Review if debugImageProps, setDebugScenario, or the rendered Image spread changes."
+    },
+    {
+      "id": "image-debug-dynamic-srcset",
+      "kind": "dynamic-asset",
+      "target": "binding.debugImageProps.srcset",
+      "scope": "src/stories/Image.stories.svelte",
+      "reason": "The interactive debug story replaces the primary srcset through a runtime scenario object consumed by the Image spread.",
+      "reviewTrigger": "Review if debugImageProps, setDebugScenario, or the rendered Image spread changes."
+    },
+    {
+      "id": "image-debug-dynamic-fallback-src",
+      "kind": "dynamic-asset",
+      "target": "binding.debugImageProps.fallbackSrc",
+      "scope": "src/stories/Image.stories.svelte",
+      "reason": "The interactive debug story replaces the fallback source through a runtime scenario object consumed by the Image spread.",
+      "reviewTrigger": "Review if debugImageProps, setDebugScenario, or the rendered Image spread changes."
+    },
+    {
+      "id": "image-debug-dynamic-fallback-srcset",
+      "kind": "dynamic-asset",
+      "target": "binding.debugImageProps.fallbackSrcset",
+      "scope": "src/stories/Image.stories.svelte",
+      "reason": "The interactive debug story replaces the fallback srcset through a runtime scenario object consumed by the Image spread.",
+      "reviewTrigger": "Review if debugImageProps, setDebugScenario, or the rendered Image spread changes."
+    }
+  ],
   "protectedIds": []
 }

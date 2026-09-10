@@ -1,6 +1,6 @@
 # Storybook Alignment and Review Record
 
-Status: Phase 0 complete; rollout Phases 1–4 have not started. This record contains report dispositions, historical observations, and Phase 0 implementation evidence.
+Status: Phases 0 and 1 complete; rollout Phases 2–4 have not started. This record contains report dispositions, historical observations, and implementation evidence.
 
 The [roadmap](./storybook-guidelines-plan.md) owns decisions, sequencing, and completion criteria. The [registry guide](./storybook-component-inventory.md) explains exception maintenance. This record does not introduce another policy, catalog, or approval checklist.
 
@@ -13,7 +13,7 @@ The September 3, 2026 source audit reported 35 Svelte CSF story files, 258 story
 - Badge, Divider, and SiteFooter need description work. PostHeader already has a substantial description; Typography is the foundation exception.
 - `LogoLink` has linked and fallback examples in `Brand/Logo`; `ProjectListSurface` is the primary component of `Organisms/ProjectList`. `Container` and `HomepageProjectList` are Astro components.
 - `docgen: false` makes manual prop documentation load-bearing. Button intentionally documents rejected `class`/`style` inputs and uses narrowly asserted malformed-runtime fixtures.
-- At the time, Chromatic was installed and registered without a configured visual-regression service. Svelte story type-checking coverage is not yet demonstrated by the planned checks.
+- At the time, Chromatic was installed and registered without a configured visual-regression service, and Svelte story type-checking coverage had not yet been demonstrated.
 - The source audit found no tracked or historical individual Storybook links; private bookmarks were not discoverable. The roadmap therefore starts protected IDs empty.
 
 The source audit reported a successful Storybook build with a Vite chunk-size warning. It also reported a non-clean local installation missing the declared `@astrojs/sitemap` dependency. These are historical environment observations, not fresh validation results or proof of a repository dependency defect. No builds or clean-install checks were performed for this Markdown revision.
@@ -80,9 +80,148 @@ During rollout, the phase implementer records findings when discovered and adds 
 
 For command evidence, record the command, environment, date, outcome, and a concise diagnostic or task reference when needed. Clean-install evidence belongs to CI, a fresh clone, or a disposable environment. Do not treat the historical build observation above as satisfying rollout validation.
 
-After Phase 1 exists, the unified command must include source/type validation, checker tests, one build, and generated-index validation. Follow the roadmap's local validation policy; deployment still runs `check:rich-text` unconditionally. No planned command is claimed to have run yet.
+The Phase 1 unified command includes source/type validation, checker tests, one build, and generated-index validation. Its generated-index stage accepts only version 5 output whose path and timestamp match the successful build in that invocation. Deployment still runs `check:rich-text` unconditionally and does not invoke the new quality command.
 
 For Phase 1, identify the expected diagnostics from isolated negative-fixture runs separately from passing runtime-fallback stories. For Phase 2, record the outcome of the temporary before/after story and Docs ID comparison. Neither negative checker fixtures nor the temporary catalog baseline belongs in the published Storybook or a permanent inventory.
+
+### Phase 1 completion and stabilization — September 8–10, 2026
+
+Phase 1 was implemented and verified against local main base
+`24800bf40e5185e709953e5367767ff7df25145a`. The focused source model derived 35
+current story sources without enforcing that count. It found and resolved
+missing explicit-prop documentation, including both Brand/Logo documentation
+subjects, while retaining the Typography foundation and ProjectListSurface
+decisions. Image and Figure's deliberately missing literals now have
+occurrence-local explanations; the Image debug binding has four field-specific
+dynamic-asset approvals whose update-to-spread dataflow is checked for staleness.
+
+`npm run check:storybook` passed with zero errors. `svelte-check` 4.7.6 retained
+one existing `emptyRules` CSS warning in `ContentSection.stories.svelte`; the
+Phase 1 threshold is errors. Isolated machine-verbose fixtures produced exactly
+one TypeScript diagnostic (`source: ts`, code 2322) for invalid CSF args and
+exactly one for invalid direct component props. The narrowly asserted malformed
+runtime fixture passed, demonstrating the documented assertion limitation.
+
+`npm run test:storybook-checks` passed 100 focused tests. A narrow hardening pass
+made malformed registry entries deterministic diagnostics instead of internal
+failures, rejected wholly dynamic args, resolved supported named imported const
+objects, made multi-component exceptions sensitive to their direct imports,
+made asset directives occurrence-local and stale when unmatched, resolved static
+asset expressions in local and imported argument objects, required approval for
+unresolved asset spreads, required field-sensitive approvals for dynamic assets,
+parsed the exported Storybook configuration and static and dynamic runtime import
+kinds, diagnosed deleted tracked sources and dependency or registry paths, rejected
+extra or unsupported same-source index entries, and removed each focused test's
+temporary repository after the run. The final review-hardening pass also covered
+runtime re-exports and CommonJS edges, ignored type-only edges, parsed network
+calls and misplaced CSF markers without regex decoys, checked preview dependencies
+and imported-helper assets, required documentation for native attributes actually
+used as args, rejected invalid Story identifiers and unresolved config structure,
+enforced canonical registry paths and live exception targets, and detected duplicate
+Docs IDs. A temporary-config
+Storybook 10.5.0 build captured `MyStory1` as `my-story-1` and `HTTPStatus` as
+`http-status`. It also found that Svelte CSF 5.1.2 accepts but does not propagate
+`defineMeta.id`; no production family currently uses an explicit metadata ID,
+and same-build comparison will reject a future mismatch. The capture records
+the Storybook, Svelte CSF, Svelte-Vite, and `@storybook/csf` versions and becomes
+stale on any mismatch.
+
+A final contract-boundary audit then closed the remaining review gaps: individual
+story control lists are checked, forwarded-native documentation must correspond
+to a forwarding component contract, Image debug approvals use AST-confirmed
+update-to-render dataflow, and misplaced CSF detection covers supported module
+extensions and bound default metadata. Protected IDs are matched case-sensitively,
+one imported asset literal consumes one directive even when reused, unresolved
+story-helper assets require approval, and public component asset inputs remain
+validated at their story uses. The same pass added extensionless module-variant
+resolution, imported snippet and static `Pick`/`Omit` prop composition, live-use
+checks for typing approvals, absence checks for primary-metadata exceptions, and
+fail-fast handling for unsupported generated-index versions.
+Runtime hardening also follows Vite's installed extension order, reports shared
+dependency failures once, distinguishes browser-global network APIs from local
+methods with the same names, and prevents browser-safety approvals from waiving
+known Astro server-only imports.
+
+An outside review on September 10 reproduced false passes in the static source
+model despite the earlier green suite. The stabilization response defined the
+checker as a bounded analyzer and documented its supported syntax. Prop contracts
+now fail closed for mapped, computed, cyclic, disconnected, or otherwise
+unresolved type forms while retaining project-owned `*Attributes` types and
+supported local default/named imports. Metadata and imported constants use their
+actual immutable lexical scope rather than recursively collected names. Asset
+directives and argType omissions come from parsed comments, so string and
+multiline-template decoys are inert; remote and CSS/style fixture assets are
+checked. Direct browser-global network detection honors local bindings.
+Aliased, destructured, wrapped, and otherwise indirect network calls remain
+prohibited by contributor policy but are explicitly outside the mechanical
+guarantee. Typing and native-forwarding approvals require an actual
+value/dataflow use, and Image's
+dynamic approvals are kept live only by event-driven scenario updates reaching
+the single rendered Image spread. Each reproduced false pass has a focused
+regression fixture, including unsupported cases that must diagnose rather than
+silently return partial results.
+
+The final narrow hardening pass exercised adjacent paths inside that bounded
+contract. It stopped cyclic local asset aliases from recursing internally,
+preserved every projection when one base prop type is reused through multiple
+`Pick` branches, and tied native forwarding to the resolved props contract
+rather than an unrelated `svelte/elements` import. It also extended lexical
+live-network detection into Svelte template expressions and limited the Image
+approval proof to the direct setter-body assignment instead of accepting a dead
+nested assignment. Each case has a focused regression assertion within the
+existing test suite.
+
+The final correction-and-scope-reduction pass invalidated every mutated
+top-level configuration constant, including dependencies referenced by the
+exported object. It also retained literal exclusions from native `Omit`
+contracts and made native `Pick` an explicit `SB_PROP_UNRESOLVED` boundary
+instead of treating a narrowed set as a broad forwarding universe. General
+network-alias tracking was deliberately not added: the standard now describes
+the direct references checked mechanically and leaves indirect behavior to the
+existing contributor review prohibition.
+
+`npm run verify:storybook`, `npm run check`, and `npm run build` passed in the
+working checkout after stabilization. A detached local Git worktree created from
+the same base, overlaid with the complete change set, and staged then passed
+`npm ci` and `npm run verify:storybook`; this proved tracked-only registry paths
+and discovery in a clean Git checkout. Each unified verification
+performed exactly one Storybook build and validated only its version-5 index.
+Build output had the existing Vite large-chunk warning. All verification build
+and disposable-worktree artifacts were removed. The required commands and the
+specific supported, rejected, and unsupported contract cases recorded above
+passed; this evidence does not claim complete analysis of arbitrary source
+syntax.
+
+### Focused Phase 1 manual acceptance — September 10, 2026
+
+The frozen Phase 1 acceptance pass used the local Storybook 10.5.0 development
+build and inspected Button, Brand/Logo, Image, and NavigationDrawer. All four
+families exposed generated Docs pages. Button showed the curated prop table and
+variant choices, and changing the primary story's label control updated its
+rendered accessible button name. Brand/Logo documented the union of the Logo
+and LogoLink inputs; the linked and standalone examples retained their intended
+accessible names, and blank href and label examples both resolved to the home
+link with the default accessible name.
+
+Image exposed the expected source, alternative-text, layout, and fallback
+controls. Its dynamic debug story was exercised through primary failure,
+successful fallback loading, terminal fallback failure, and repair; the visible
+diagnostics changed respectively to `fallback-loaded`, `failed`, and
+`fallback-loaded`, with the repaired fallback resolving to the local responsive
+asset. NavigationDrawer Docs and its seven curated controls rendered. In the
+named Compact viewport, Storybook reported 430×932, the standalone drawer showed
+both navigation groups and all six links without clipping, and changing the
+dialog-label control updated the rendered dialog's accessible name.
+
+This was a focused manual pass in one local browser, not a catalog-wide review,
+cross-browser check, automated browser test, accessibility audit, or visual
+regression baseline. Only the Button label and NavigationDrawer dialog-label
+controls and the named Image fallback transitions above were exercised. The
+Brand/Logo family uses fixed examples for two component contracts rather than a
+single args-driven renderer, so its family-level `argTypes` were inspected as
+documentation and were not accepted as unified interactive controls. The local
+development server emitted the expected validation warnings for the intentional
+Button, LogoLink, and Image fallback examples.
 
 ## Manual findings
 
@@ -96,4 +235,4 @@ The phase completion summary records representative review scope even if there w
 
 ## Planning revision verification
 
-The original report was read and reconciled against the current sources; all A–J points and six numbered omissions have a disposition above. The subsequent argTypes, type-checking, and portability feedback is incorporated. Phase 0 changed configuration, documentation, and dependencies as recorded above; stories and CI remain unchanged, and later rollout completion is not asserted here.
+The original report was read and reconciled against the current sources; all A–J points and six numbered omissions have a disposition above. The subsequent argTypes, type-checking, and portability feedback is incorporated. Phase 0 changed configuration, documentation, and dependencies as recorded above. Phase 1 added focused story validation and the documented argTypes changes without changing CI or deployment behavior; completion of later rollout phases is not asserted here.

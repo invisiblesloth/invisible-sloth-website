@@ -1,10 +1,10 @@
 # Storybook Guidelines Roadmap
 
-Status: rollout roadmap. Phase 0 is complete; later phases remain planned. The contributor standard and exception registry now exist, while the new commands described below do not exist yet.
+Status: rollout roadmap. Phases 0 and 1 are complete; later phases remain planned.
 
 ## Problem and intended outcome
 
-Storybook should provide reliable component documentation with low maintenance overhead. Phase 0 repaired its named viewports and established contributor policy; some component descriptions still need work, and neither story type-checking coverage nor hand-maintained prop documentation has an enforced verification path. The previous roadmap would have added duplicate catalog bookkeeping and new site deployment blockers.
+Storybook should provide reliable component documentation with low maintenance overhead. Phase 0 repaired its named viewports and established contributor policy; Phase 1 added enforced story type-checking and focused validation for hand-maintained prop documentation. Some component descriptions still need later alignment work. The previous roadmap would have added duplicate catalog bookkeeping and new site deployment blockers.
 
 The rollout is complete when contributors can identify documented component contracts, review relevant responsive and accessible behavior with working tools, and catch meaningful drift without maintaining a second catalog. Completion also requires clean-install verification, resolution or explicit disposition of material manual findings, and independent quality checks that do not become site deployment prerequisites.
 
@@ -13,7 +13,7 @@ The rollout is complete when contributors can identify documented component cont
 - Astro 7 static site, Svelte 5 interactive islands, Tailwind CSS 4, Storybook 10 with `@storybook/svelte-vite` and Svelte CSF 5, Node 22, and npm 10. Version constraints and package-manager declarations live in [package.json](../package.json), resolved dependencies in [package-lock.json](../package-lock.json), and the runtime pin in [.nvmrc](../.nvmrc).
 - The September 3, 2026 audit reported 35 Svelte CSF story files, 258 story entries, and 35 Docs entries. These are dated observations, not required totals.
 - Preview setup includes global styles, system/light/dark themes, enhancement scripts, and working 430/744/1024/1512px viewports verified in Phase 0.
-- Phase 0 removed the unused Chromatic addon. No visual-regression service, Storybook browser test runner, accessibility CI, or `svelte-check` command is configured. Existing focused Node checker tests are separate from browser testing.
+- Phase 0 removed the unused Chromatic addon. Phase 1 adds focused `svelte-check` and Node validator commands, not a visual-regression service, browser test runner, accessibility CI, or CI workflow.
 - Deployment builds both the site and Storybook, then copies Storybook into `dist/storybook`.
 - [Component policies](../src/components/README.md) govern component boundaries and extension tiers. Their examples are not an exhaustive component-to-tier registry. Ignored local agent guidance is not a tracked Storybook authority.
 
@@ -26,7 +26,7 @@ The rollout is complete when contributors can identify documented component cont
 | `.storybook/inventory.json` | Narrow exceptions, judgment-based import approvals, and protected IDs | Phase 0, after the standard; complete |
 | [Inventory guide](./storybook-component-inventory.md) | Registry purpose and maintenance | Planning and rollout; Phase 0 schema complete |
 | [Alignment record](./storybook-alignment-plan.md) | Report dispositions, implementation evidence, and manual findings | Planning and rollout |
-| Internal validation scripts | Source/type/config and generated-index checks, with focused checker tests | Phase 1 |
+| Internal validation scripts | Source/type/config and generated-index checks, with focused checker tests | Phase 1; complete |
 
 These artifacts must not duplicate one another. Sources and the generated `storybook-static/index.json` supply catalog facts; the generated index is not checked in or edited by hand.
 
@@ -65,13 +65,13 @@ Write `docs/storybook-standard.md` before encoding its exceptions. Cover eligibi
 
 Use the existing TypeScript/Svelte parsing tools for source checks and add `svelte-check` for demonstrated Svelte type-checking coverage. Keep source and generated-index evidence separate internally, with only three new public commands:
 
-| Planned command | Responsibility |
+| Command | Responsibility |
 |---|---|
 | `npm run check:storybook` | Svelte checking and source/config validation |
 | `npm run test:storybook-checks` | Focused checker tests using the existing Node test pattern |
 | `npm run verify:storybook` | Source/type checks, checker tests, one Storybook build, then generated-index validation |
 
-Do not add separate public npm commands for every internal validation stage. These commands remain planned until implemented; the existing deployment keeps using `build-storybook`.
+Do not add separate public npm commands for every internal validation stage. The existing deployment keeps using `build-storybook`; none of these quality gates is inserted into that chain.
 
 **Documentation checks**
 
@@ -99,7 +99,13 @@ Validate root-relative assets and `srcset` candidates against `public/` where st
 
 Generated-index validation must consume the successful build from the same `verify:storybook` invocation. A failed build must stop verification; an existing `storybook-static/index.json` is not fallback evidence.
 
-**Exit:** positive and negative fixtures demonstrate useful failures, both typed-input paths are verified, and intentional contract examples remain supported without routine catalog bookkeeping.
+**Exit:** positive and negative fixtures demonstrate useful failures, both typed-input paths are verified, and intentional contract examples remain supported without routine catalog bookkeeping. The bounded supported forms in the contributor standard have valid, invalid, and unsupported boundary coverage where relevant; incomplete resolution cannot silently pass; every reproduced contract case is either corrected or explicitly excluded from the mechanical guarantee; and the required commands pass in a clean Git checkout. A request to recognize syntax outside that contract is a deliberate scope decision, not an implied Phase 1 regression.
+
+Phase 1 was implemented on September 8 and stabilized through September 10,
+2026 against base
+`24800bf40e5185e709953e5367767ff7df25145a`. Findings and command evidence are
+recorded in the [alignment record](./storybook-alignment-plan.md). Phase 1 did
+not add CI, browser testing, publication separation, or deployment dependencies.
 
 ### Phase 2 — Existing story alignment
 
@@ -136,7 +142,7 @@ Upgrade triggers are Storybook major changes, renderer/CSF changes, and generate
 
 ## Validation and responsibility boundaries
 
-For future Storybook-system code changes, run `npm run check`, `npm run build`, and `npm run build-storybook`. Once Phase 1 exists, use `npm run verify:storybook` for unified Storybook verification instead of building Storybook twice locally.
+For future Storybook-system code changes, run `npm run check`, `npm run build`, and `npm run verify:storybook`; the unified Storybook command already performs its one required Storybook build.
 
 Local `npm run check:rich-text` is targeted to prose components/stories, links, Markdown rendering, or rich-text CSS changes. Deployment continues running it unconditionally after the site build. Run `npm run test:tokens` for token definitions, reconciliation behavior, or token-facing styles. Run `npm ci` in CI, a fresh clone, or a disposable validation environment; do not replace the developer's installation merely to collect rollout evidence.
 

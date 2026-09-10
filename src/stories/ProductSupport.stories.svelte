@@ -1,7 +1,7 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import ProductSupport from '../components/ProductSupport.svelte';
-  import type { ProductSupportDocumentLink } from '../components/ProductSupport.svelte';
+  import type { ProductSupportDocumentLink, ProductSupportProps } from '../components/ProductSupport.svelte';
 
   const headingLevelOptions = ['h2', 'h3', 'h4', 'h5', 'h6'] as const;
   const documentsHeadingLevelOptions = ['h3', 'h4', 'h5', 'h6'] as const;
@@ -61,7 +61,7 @@
     documentsHeading: 'Tracer App Documents',
     documents: defaultDocuments,
     headingLevel: 'h2',
-  };
+  } satisfies ProductSupportProps;
 
   const { Story } = defineMeta({
     title: 'Organisms/ProductSupport',

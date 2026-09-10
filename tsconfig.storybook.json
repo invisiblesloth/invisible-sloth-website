@@ -1,0 +1,28 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
+    "types": ["astro/client"]
+  },
+  "include": [
+    ".storybook/main.ts",
+    ".storybook/preview.ts",
+    "src/stories/**/*.svelte",
+    "src/components/**/*.svelte",
+    "src/icons/**/*.svelte",
+    "src/lib/**/*.ts",
+    "src/lib/**/*.js",
+    "src/lib/**/*.d.ts",
+    "src/types/**/*.ts",
+    "src/scripts/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "storybook-static",
+    "src/lib/projectContent.ts",
+    "scripts/storybook-checks/fixtures"
+  ]
+}

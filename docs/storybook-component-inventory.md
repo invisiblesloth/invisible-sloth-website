@@ -1,6 +1,6 @@
 # Storybook Exception and Protected-ID Registry Guide
 
-Status: Phase 0 complete. The [contributor standard](./storybook-standard.md) precedes and governs `.storybook/inventory.json`; automated registry checking remains planned for Phase 1.
+Status: schema version 1 and its focused validator are implemented. The [contributor standard](./storybook-standard.md) precedes and governs `.storybook/inventory.json`.
 
 ## Purpose and authority
 
@@ -11,7 +11,7 @@ The retained inventory filename holds a small exception/protected-ID registry, n
 The registry uses `schemaVersion: 1` and exactly three top-level arrays:
 `exceptions`, `judgmentApprovals`, and `protectedIds`. Unknown top-level fields
 and unknown entry fields are invalid. All string fields must be non-empty after
-trimming, entry IDs must be unique within their array, and source/component paths
+trimming, entry IDs must be unique across the registry, and source/component paths
 are repository-relative POSIX paths that must resolve to tracked files.
 
 Every exception requires `id`, `rule`, `storyTitle`, `source`, `reason`, and
@@ -21,19 +21,32 @@ shapes:
 - `component-coverage` requires a non-empty `components` array.
 - `primary-component-metadata` omits `components`.
 
+Exception sources must match the production story glob. Each component in a
+coverage exception must be unique and must resolve to an eligible, tracked
+top-level Svelte component.
+
 Unknown rule values are invalid. Adding a rule or changing either shape changes
 the registry interpretation and requires a `schemaVersion` bump, an update to
-this guide, and an update to the Phase 1 checker once it exists.
+this guide, and an update to the validator.
 
 Every judgment approval requires `id`, `kind`, `target`, `scope`, `reason`, and
 `reviewTrigger`. `kind` is closed to `browser-safe-import`, `dynamic-asset`, and
 `typing-limitation`; adding a kind requires the same versioned schema update.
+Approvals are matched to the exact source and target consumed by their rule;
+unmatched approvals are stale. A browser-safe approval names its bare runtime
+specifier, a dynamic-asset approval names the unresolved binding field or
+expression, and a typing limitation names a current double-asserted binding used
+as an actual metadata/story args value or directly rendered component input.
+Property-key mentions, arbitrary rendered text, ambiguous module/instance
+bindings, and unrelated expressions do not keep a typing approval live.
 Every protected-ID entry contains only `id`, `reason`, and a tracked `reference`,
-where `id` is the generated Storybook story or Docs ID being protected.
+where `id` is the exact, case-sensitive generated Storybook story or Docs ID
+being protected.
 
-The initial registry contains only the Brand/Logo multi-component coverage and
-the Typography primary-component-metadata exception. Judgment approvals and
-protected IDs start empty.
+The registry contains the Brand/Logo multi-component coverage, the Typography
+primary-component-metadata exception, and four field-specific dynamic-asset
+approvals for the Image debug story's proven update-to-spread dataflow.
+Protected IDs remain empty.
 
 Store a schema version, narrow approved exceptions, and explicitly protected IDs. An exception identifies the relevant component, story, input, or rule and explains why the normal check does not apply. Include only the identity needed to resolve that exception; do not list every family merely to establish coverage.
 
@@ -51,7 +64,10 @@ Do not store story counts, a complete family/path/subject catalog, Atomic orderi
 
 ## Coverage and component contracts
 
-The source checker will derive primary coverage from story component metadata and use explicit exceptions for multi-component families. Importing a component incidentally is not sufficient evidence of documentation. Story filenames need not match component names.
+The source checker derives primary coverage from story component metadata and uses explicit exceptions for multi-component families. Importing a component incidentally is not sufficient evidence of documentation. Story filenames need not match component names. A multi-component coverage exception also makes exactly those components the family's prop-documentation subjects. The Typography foundation exception does not create a prop contract for its preview helper.
+Every component named by a multi-component coverage exception must remain a
+direct runtime import of that story; removing or renaming that edge makes the
+exception stale.
 
 `ProjectListSurface` is already the primary component of `Organisms/ProjectList`; `LogoLink` already has linked and fallback examples in `Brand/Logo`. These families need a contract-completeness review, not duplicate families. `Container` and `HomepageProjectList` are Astro components and remain outside direct Svelte Storybook eligibility.
 
@@ -79,4 +95,4 @@ Check root-relative asset literals and `srcset` candidates against `public/` whe
 
 When adding or changing a story, update its documentation and fixtures first. Update the registry only when an exception, judgment-based approval, or protected reference changes. Remove obsolete exceptions when their source disappears or the normal rule becomes sufficient; the checker must flag stale targets.
 
-After Phase 1, run `npm run check:storybook` for source/type validation and `npm run verify:storybook` for source/type checks, checker tests, one build, and generated-index validation. Never edit generated `storybook-static/index.json` by hand. New quality checks remain independent of site deployment under the roadmap's CI boundary.
+Run `npm run check:storybook` for source/type validation and `npm run verify:storybook` for source/type checks, checker tests, one build, and generated-index validation. Registry failures use stable `SB_REGISTRY_*` diagnostics for malformed JSON, closed-schema violations, unknown fields/rules/kinds, duplicate IDs, missing tracked paths, and stale entries. Never edit generated `storybook-static/index.json` by hand. New quality checks remain independent of site deployment under the roadmap's CI boundary.

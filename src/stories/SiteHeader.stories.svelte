@@ -41,6 +41,7 @@
         description:
           'Alt text used only for the standalone logo when homeHref is empty. Linked logos use homeLabel on the link.',
       },
+      class: { control: false, description: 'Optional root header class hook.' },
     },
   });
 </script>

@@ -20,7 +20,7 @@
       },
     },
     argTypes: {
-      onclick: { action: 'onclick called' },
+      onclick: { action: 'onclick called', description: 'Activation callback for button and link modes.' },
       label: {
         control: 'text',
         description: 'Tag label text',

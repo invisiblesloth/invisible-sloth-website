@@ -108,6 +108,11 @@
         description:
           'Optional root ul class hook; existing broader list attributes also forward to the root.',
       },
+      role: {
+        control: false,
+        description: 'Forwarded native list role; documented but not exposed as a control.',
+        table: { category: 'Forwarded native attribute' },
+      },
     },
   });
 </script>

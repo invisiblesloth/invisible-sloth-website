@@ -42,7 +42,7 @@
       },
     },
     argTypes: {
-      onclick: { action: 'onclick called' },
+      onclick: { action: 'onclick called', description: 'Activation callback for button and link modes.' },
       variant: {
         control: 'select',
         options: BUTTON_VARIANTS,
@@ -127,6 +127,14 @@
       style: {
         control: false,
         description: 'Not forwarded. Use Button variants and design tokens instead.',
+      },
+      name: {
+        control: false,
+        description: 'Rejected in link mode and only forwarded by the button-safe attribute allowlist.',
+      },
+      download: {
+        control: false,
+        description: 'Forwarded by the link-safe attribute allowlist and rejected in button mode.',
       },
     },
   });

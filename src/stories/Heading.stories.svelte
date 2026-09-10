@@ -54,6 +54,11 @@
         description:
           'Optional rendered-heading class hook for layout hooks, global utilities, and global selectors.',
       },
+      id: {
+        control: false,
+        description: 'Forwarded native element ID; documented for the forwarding example.',
+        table: { category: 'Forwarded native attribute' },
+      },
     },
   });
 </script>

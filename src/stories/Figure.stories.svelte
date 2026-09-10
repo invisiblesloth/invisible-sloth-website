@@ -85,12 +85,14 @@
       },
       caption: {
         control: false,
+        description: 'Optional caption snippet; fixed stories demonstrate authored markup.',
         table: {
           disable: true,
         },
       },
       credit: {
         control: false,
+        description: 'Optional credit snippet; fixed stories demonstrate authored markup.',
         table: {
           disable: true,
         },
@@ -149,6 +151,7 @@
   args={{
     imageProps: {
       ...defaultImageProps,
+      // storybook-check: allow-missing-asset -- Deliberately exercises Figure's Image fallback.
       src: '/assets/does-not-exist.webp',
       srcset: '',
       sizes: '',

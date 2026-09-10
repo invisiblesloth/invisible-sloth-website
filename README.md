@@ -47,15 +47,18 @@ All commands are run from the project root:
 | :--- | :--- |
 | `npm run storybook` | Start Storybook dev server at `localhost:6006` |
 | `npm run build-storybook` | Build static Storybook for deployment |
+| `npm run check:storybook` | Validate Storybook source/configuration and run focused Svelte type checking |
+| `npm run test:storybook-checks` | Run focused Node tests for Storybook validators and type fixtures |
+| `npm run verify:storybook` | Run both validation gates, build Storybook once, and validate that build's generated index |
 
-Current component guidance lives in [component policies](./src/components/README.md), and Storybook contributors should follow the [Storybook contributor standard](./docs/storybook-standard.md). The [guidelines roadmap](./docs/storybook-guidelines-plan.md), [alignment record](./docs/storybook-alignment-plan.md), and [exception registry guide](./docs/storybook-component-inventory.md) describe rollout sequencing, evidence, and registry maintenance. New Storybook verification commands remain planned for Phase 1 and are not available yet.
+Current component guidance lives in [component policies](./src/components/README.md), and Storybook contributors should follow the [Storybook contributor standard](./docs/storybook-standard.md). The [guidelines roadmap](./docs/storybook-guidelines-plan.md), [alignment record](./docs/storybook-alignment-plan.md), and [exception registry guide](./docs/storybook-component-inventory.md) describe rollout sequencing, evidence, and registry maintenance.
 
 ### Utilities
 
 | Command | Action |
 | :--- | :--- |
 | `npm run astro ...` | Run Astro CLI commands |
-| `npm run check` | Run Astro checks; planned Svelte story checks are separate |
+| `npm run check` | Run Astro checks; Storybook validation remains separate |
 | `npm run check:legal` | Check legal-page structure and built metadata |
 | `npm run tokens:reconcile -- <export.json>` | Reconcile a Figma token export |
 | `npm run tokens:check -- <export.json>` | Check generated color tokens against an export |

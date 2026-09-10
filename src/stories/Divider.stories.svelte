@@ -35,6 +35,10 @@
         control: 'boolean',
         description: 'Hide divider from assistive technologies when purely decorative',
       },
+      class: {
+        control: false,
+        description: 'Optional root class hook for layout and global selectors.',
+      },
     },
   });
 </script>

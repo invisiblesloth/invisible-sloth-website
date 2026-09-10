@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let title: string | undefined;
+  export let title: string | undefined = undefined;
 </script>
 
 <svg
@@ -25,4 +25,3 @@
     display: block;
   }
 </style>
-

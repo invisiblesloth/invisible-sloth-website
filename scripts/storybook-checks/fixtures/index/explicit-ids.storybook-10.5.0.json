@@ -1,0 +1,24 @@
+{
+  "toolchain": {
+    "storybook": "10.5.0",
+    "@storybook/addon-svelte-csf": "5.1.2",
+    "@storybook/svelte-vite": "10.5.0",
+    "@storybook/csf": "0.1.13"
+  },
+  "indexVersion": 5,
+  "entries": {
+    "fixtures-explicit-export-names--my-story-1": {
+      "name": "Numbered export",
+      "exportName": "MyStory1"
+    },
+    "fixtures-explicit-export-names--http-status": {
+      "name": "Acronym export",
+      "exportName": "HTTPStatus"
+    },
+    "fixtures-explicit-meta-id--default-state": {
+      "name": "Default",
+      "exportName": "DefaultState",
+      "note": "addon-svelte-csf 5.1.2 does not propagate defineMeta.id into Storybook's generated index"
+    }
+  }
+}

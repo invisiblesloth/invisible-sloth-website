@@ -60,6 +60,10 @@
       fallbackHeight: 683,
     },
     argTypes: {
+      class: {
+        control: false,
+        description: 'Optional root image-frame class hook for layout and global selectors.',
+      },
       src: {
         control: 'text',
         description: 'Image source URL or site-relative asset path.',
@@ -213,6 +217,7 @@
   };
 
   const brokenPrimary = {
+    // storybook-check: allow-missing-asset -- Deliberately exercises primary-load failure.
     src: '/assets/debug-primary-does-not-exist.webp',
     srcset: '',
     sizes: '',
@@ -222,6 +227,7 @@
   };
 
   const brokenFallback = {
+    // storybook-check: allow-missing-asset -- Deliberately exercises fallback-load failure.
     fallbackSrc: '/assets/debug-fallback-does-not-exist.webp',
     fallbackSrcset: '',
     fallbackSizes: '',
@@ -399,6 +405,7 @@
 <Story
   name="Broken Source Uses Fallback"
   args={{
+    // storybook-check: allow-missing-asset -- Deliberately exercises the configured fallback.
     src: '/assets/does-not-exist.webp',
     srcset: '',
     sizes: '',
@@ -409,10 +416,12 @@
 <Story
   name="Broken Source And Fallback"
   args={{
+    // storybook-check: allow-missing-asset -- Deliberately exercises primary-load failure.
     src: '/assets/does-not-exist.webp',
     srcset: '',
     sizes: '',
     alt: 'Unavailable image with unavailable fallback',
+    // storybook-check: allow-missing-asset -- Deliberately exercises terminal fallback failure.
     fallbackSrc: '/assets/fallback-does-not-exist.webp',
     fallbackSrcset: '',
     fallbackSizes: '',
@@ -511,6 +520,7 @@
             onclick={() =>
               setDebugScenario('Active fallback -> primary wins same update', {
                 ...primaryImage,
+                // storybook-check: allow-missing-asset -- Deliberately proves a new primary wins this update.
                 fallbackSrc: '/assets/debug-next-fallback-does-not-exist.webp',
                 fallbackSrcset: '',
                 fallbackSizes: '',

@@ -96,6 +96,7 @@
       },
       class: {
         control: false,
+        description: 'Optional root navigation class hook for layout and global selectors.',
         table: { disable: true },
       },
     },

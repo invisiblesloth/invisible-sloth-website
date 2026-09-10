@@ -34,7 +34,7 @@
       variant: 'filled-primary',
     },
     argTypes: {
-      onclick: { action: 'onclick called' },
+      onclick: { action: 'onclick called', description: 'Activation callback for button and link modes.' },
       icon: {
         control: false,
         description: 'Required Svelte snippet rendered as decorative icon content.',
@@ -45,6 +45,7 @@
       },
       shape: {
         control: false,
+        description: 'Fixed to the icon-only Button shape for this family.',
         table: {
           type: { summary: 'label | icon' },
           defaultValue: { summary: 'icon' },
@@ -59,6 +60,12 @@
           defaultValue: { summary: 'filled-primary' },
         },
       },
+      type: { control: 'select', options: ['button', 'submit', 'reset'], description: 'HTML button type.' },
+      label: { control: 'text', description: 'Required accessible name for the icon-only control.' },
+      disabled: { control: 'boolean', description: 'Disables button or link activation.' },
+      href: { control: 'text', description: 'Optional URL that selects link rendering.' },
+      target: { control: 'text', description: 'Optional link target.' },
+      rel: { control: 'text', description: 'Optional link relationship tokens.' },
     },
   });
 </script>

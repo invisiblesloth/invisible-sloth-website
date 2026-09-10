@@ -34,6 +34,7 @@
       },
       class: {
         control: false,
+        description: 'Optional root time-element class hook for layout and global selectors.',
         table: {
           disable: true,
         },

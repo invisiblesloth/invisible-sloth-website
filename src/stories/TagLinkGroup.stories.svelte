@@ -65,6 +65,10 @@
         description:
           'Passed through to the internal TagGroup root div; not exposed as a theming control.',
       },
+      wrapper: {
+        control: false,
+        description: 'Optional composition snippet wrapping the rendered tag group.',
+      },
     },
     args: {
       tags: defaultTags,

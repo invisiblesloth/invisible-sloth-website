@@ -76,6 +76,7 @@
       },
       class: {
         control: false,
+        description: 'Optional root byline class hook for layout and global selectors.',
         table: {
           disable: true,
         },

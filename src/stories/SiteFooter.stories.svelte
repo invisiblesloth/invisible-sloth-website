@@ -67,6 +67,7 @@
         control: 'text',
         description: 'Copyright notice text.',
       },
+      class: { control: false, description: 'Optional root footer class hook.' },
     },
   });
 </script>

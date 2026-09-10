@@ -83,6 +83,9 @@
         control: 'text',
         description: 'Accessible label for the rendered nav element.',
       },
+      onnavigate: { action: 'navigated', description: 'Current navigation callback prop.' },
+      onNavigate: { action: 'navigated (legacy)', description: 'Supported legacy navigation callback alias.' },
+      class: { control: false, description: 'Optional root nav class hook.' },
     },
   });
 </script>
