@@ -1,5 +1,21 @@
 export const UNRESOLVED = Symbol('unresolved');
 
+// Values inherited from the module keep that scope for their own dependencies.
+// Unresolved local bindings still shadow the parent through localBindings.
+export function createConstantScope(parent, local, localBindings) {
+  const constants = new Map([
+    ...[...parent].filter(([name]) => !localBindings.has(name)),
+    ...local,
+  ]);
+  constants.scopeFor = (name) => localBindings.has(name) ? constants : parent;
+  return constants;
+}
+
+export function resolveConstant(name, constants) {
+  const scope = constants.scopeFor?.(name) ?? constants;
+  return { node: scope.get(name), constants: scope };
+}
+
 export function propertyName(node) {
   if (!node) return null;
   if (node.type === 'Identifier') return node.name;
@@ -12,8 +28,9 @@ export function evaluateStatic(node, constants = new Map(), seen = new Set()) {
   if (node.type === 'Literal') return node.value;
   if (node.type === 'Identifier') {
     if (node.name === 'undefined') return undefined;
-    if (!constants.has(node.name) || seen.has(node.name)) return UNRESOLVED;
-    return evaluateStatic(constants.get(node.name), constants, new Set([...seen, node.name]));
+    const binding = resolveConstant(node.name, constants);
+    if (!binding.node || seen.has(binding.node)) return UNRESOLVED;
+    return evaluateStatic(binding.node, binding.constants, new Set([...seen, binding.node]));
   }
   if (node.type === 'TSAsExpression' || node.type === 'TSTypeAssertion' || node.type === 'TSNonNullExpression' || node.type === 'TSSatisfiesExpression') {
     return evaluateStatic(node.expression, constants, seen);
@@ -69,8 +86,9 @@ export function staticObjectKeys(node, constants = new Map(), seen = new Set()) 
     return staticObjectKeys(node.expression, constants, seen);
   }
   if (node.type === 'Identifier') {
-    if (!constants.has(node.name) || seen.has(node.name)) return { keys: [], unresolved: true };
-    return staticObjectKeys(constants.get(node.name), constants, new Set([...seen, node.name]));
+    const binding = resolveConstant(node.name, constants);
+    if (!binding.node || seen.has(binding.node)) return { keys: [], unresolved: true };
+    return staticObjectKeys(binding.node, binding.constants, new Set([...seen, binding.node]));
   }
   if (node.type !== 'ObjectExpression') return { keys: [], unresolved: true };
   const keys = [];

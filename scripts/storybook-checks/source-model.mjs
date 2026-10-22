@@ -4,7 +4,7 @@ import ts from 'typescript';
 import { parse } from 'svelte/compiler';
 import { sanitize, storyNameFromExport, toId } from '@storybook/csf';
 import { canonicalRepoPath, getGitInventory, resolveLocalImport } from './paths.mjs';
-import { evaluateStatic, propertyName, staticObjectKeys, UNRESOLVED } from './static-value.mjs';
+import { createConstantScope, evaluateStatic, propertyName, resolveConstant, staticObjectKeys, UNRESOLVED } from './static-value.mjs';
 import { diagnostic } from './diagnostics.mjs';
 
 const STORY_RE = /^src\/stories\/(?:.+\/)?[^/]+\.stories\.svelte$/;
@@ -251,7 +251,7 @@ function collectOwnedProps(source, ast, file, root, diagnostics, required = true
   let hasNativeContract = false;
   const nativeExcludedProps = new Set();
   const contextCache = new Map();
-  const addMembers = (members, sourceFile = script) => {
+  const addMembers = (members, sourceFile = script, props = output) => {
     for (const member of members ?? []) {
       if (ts.isIndexSignatureDeclaration(member)) {
         const parameter = member.parameters?.[0];
@@ -272,7 +272,7 @@ function collectOwnedProps(source, ast, file, root, diagnostics, required = true
       const compact = typeText.replace(/\s+/g, '');
       const snippet = /(^|[|<(])Snippet(?:<[^>]*>)?([|>)\[]|$)/.test(compact) &&
         compact.split('|').every((part) => /^(Snippet(?:<.*>)?|undefined|null)$/.test(part));
-      output.set(name, { name, snippet, node: member });
+      props.set(name, { name, snippet, node: member });
     }
   };
   const loadTypeContext = (fromFile, specifier) => {
@@ -305,8 +305,8 @@ function collectOwnedProps(source, ast, file, root, diagnostics, required = true
   };
   const importedTypeIdentity = (name, context) => context.importedTypes.get(name);
   const isSvelteNativeType = (type, context) => {
-    if (ts.isTypeReferenceNode(type)) {
-      const name = entityName(type.typeName);
+    if (ts.isTypeReferenceNode(type) || ts.isExpressionWithTypeArguments(type)) {
+      const name = entityName(ts.isTypeReferenceNode(type) ? type.typeName : type.expression);
       const imported = importedTypeIdentity(name, context);
       return imported?.specifier === 'svelte/elements' && (imported.importedName === 'SvelteHTMLElements' || /HTML.*Attributes$/.test(imported.importedName));
     }
@@ -322,15 +322,15 @@ function collectOwnedProps(source, ast, file, root, diagnostics, required = true
     if (ts.isTypeAliasDeclaration(type)) return containsNativeType(type.type, context, visiting);
     if (ts.isInterfaceDeclaration(type)) {
       return (type.heritageClauses ?? []).some((clause) =>
-        clause.types.some((inherited) => containsNativeType(inherited.expression, context, visiting))
+        clause.types.some((inherited) => containsNativeType(inherited, context, visiting))
       );
     }
     if (ts.isIntersectionTypeNode(type) || ts.isUnionTypeNode(type)) {
       return type.types.some((item) => containsNativeType(item, context, visiting));
     }
     if (ts.isParenthesizedTypeNode(type)) return containsNativeType(type.type, context, visiting);
-    if (ts.isTypeReferenceNode(type)) {
-      const name = entityName(type.typeName);
+    if (ts.isTypeReferenceNode(type) || ts.isExpressionWithTypeArguments(type)) {
+      const name = entityName(ts.isTypeReferenceNode(type) ? type.typeName : type.expression);
       if (['Omit', 'Pick', 'Partial', 'Required', 'Readonly'].includes(name)) {
         return containsNativeType(type.typeArguments?.[0], context, visiting);
       }
@@ -358,39 +358,54 @@ function collectOwnedProps(source, ast, file, root, diagnostics, required = true
     }
     return false;
   };
-  const resolve = (type, context = rootContext) => {
+  const resolve = (type, context = rootContext, props = output) => {
     if (!type) return;
-    if (ts.isTypeAliasDeclaration(type)) return resolve(type.type, context);
+    if (ts.isTypeAliasDeclaration(type)) return resolve(type.type, context, props);
     if (ts.isInterfaceDeclaration(type)) {
-      addMembers(type.members, context.script);
-      for (const clause of type.heritageClauses ?? []) for (const inherited of clause.types) resolve(inherited.expression, context);
+      addMembers(type.members, context.script, props);
+      for (const clause of type.heritageClauses ?? []) for (const inherited of clause.types) resolve(inherited, context, props);
       return;
     }
-    if (ts.isTypeLiteralNode(type)) return addMembers(type.members, context.script);
-    if (ts.isIntersectionTypeNode(type) || ts.isUnionTypeNode(type)) return type.types.forEach((item) => resolve(item, context));
-    if (ts.isParenthesizedTypeNode(type)) return resolve(type.type, context);
-    if (ts.isTypeReferenceNode(type)) {
-      const name = entityName(type.typeName);
+    if (ts.isTypeLiteralNode(type)) return addMembers(type.members, context.script, props);
+    if (ts.isIntersectionTypeNode(type)) return type.types.forEach((item) => resolve(item, context, props));
+    if (ts.isUnionTypeNode(type)) {
+      const unionProps = new Map();
+      for (const item of type.types) {
+        // Resolve each branch before merging so projections cannot erase or
+        // reclassify a property contributed by another branch.
+        const branchProps = new Map();
+        resolve(item, context, branchProps);
+        for (const [name, prop] of branchProps) {
+          const previous = unionProps.get(name);
+          unionProps.set(name, { ...prop, snippet: prop.snippet && (previous?.snippet ?? true) });
+        }
+      }
+      for (const [name, prop] of unionProps) props.set(name, prop);
+      return;
+    }
+    if (ts.isParenthesizedTypeNode(type)) return resolve(type.type, context, props);
+    if (ts.isTypeReferenceNode(type) || ts.isExpressionWithTypeArguments(type)) {
+      const name = entityName(ts.isTypeReferenceNode(type) ? type.typeName : type.expression);
       if (name === 'Omit' || name === 'Pick') {
         const nativeBase = containsNativeType(type.typeArguments?.[0], context);
         if (name === 'Pick' && nativeBase) {
           unresolved.add(`Pick over native attributes ${type.getText(context.script)}`);
           return;
         }
-        const existing = new Set(output.keys());
-        resolve(type.typeArguments?.[0], context);
+        const existing = new Set(props.keys());
+        resolve(type.typeArguments?.[0], context, props);
         const selected = literalTypeKeys(type.typeArguments?.[1]);
         if (!selected.complete) unresolved.add(`${name} key set ${type.typeArguments?.[1]?.getText(context.script) ?? '<missing>'}`);
         if (name === 'Omit' && nativeBase && selected.complete) {
           for (const key of selected.keys) nativeExcludedProps.add(key);
         }
-        for (const key of [...output.keys()]) {
+        for (const key of [...props.keys()]) {
           if (existing.has(key)) continue;
-          if ((name === 'Omit' && selected.keys.has(key)) || (name === 'Pick' && !selected.keys.has(key))) output.delete(key);
+          if ((name === 'Omit' && selected.keys.has(key)) || (name === 'Pick' && !selected.keys.has(key))) props.delete(key);
         }
         return;
       }
-      if (name === 'Partial' || name === 'Required' || name === 'Readonly') return resolve(type.typeArguments?.[0], context);
+      if (name === 'Partial' || name === 'Required' || name === 'Readonly') return resolve(type.typeArguments?.[0], context, props);
       if (isSvelteNativeType(type, context)) {
         hasNativeContract = true;
         return;
@@ -401,11 +416,11 @@ function collectOwnedProps(source, ast, file, root, diagnostics, required = true
         return;
       }
       active.add(identity);
-      if (context.aliases.has(name)) resolve(context.aliases.get(name), context);
+      if (context.aliases.has(name)) resolve(context.aliases.get(name), context, props);
       else if (context.importedTypes.has(name)) {
         const imported = context.importedTypes.get(name);
         const importedContext = loadTypeContext(context.file, imported.specifier);
-        if (importedContext?.aliases.has(imported.importedName)) resolve(importedContext.aliases.get(imported.importedName), importedContext);
+        if (importedContext?.aliases.has(imported.importedName)) resolve(importedContext.aliases.get(imported.importedName), importedContext, props);
         else unresolved.add(`${context.file}:${name}`);
       } else unresolved.add(`${context.file}:${name}`);
       active.delete(identity);
@@ -422,11 +437,11 @@ function collectOwnedProps(source, ast, file, root, diagnostics, required = true
         return;
       }
       active.add(identity);
-      if (context.aliases.has(type.text)) resolve(context.aliases.get(type.text), context);
+      if (context.aliases.has(type.text)) resolve(context.aliases.get(type.text), context, props);
       else if (context.importedTypes.has(type.text)) {
         const imported = context.importedTypes.get(type.text);
         const importedContext = loadTypeContext(context.file, imported.specifier);
-        if (importedContext?.aliases.has(imported.importedName)) resolve(importedContext.aliases.get(imported.importedName), importedContext);
+        if (importedContext?.aliases.has(imported.importedName)) resolve(importedContext.aliases.get(imported.importedName), importedContext, props);
         else unresolved.add(`${context.file}:${type.text}`);
       } else unresolved.add(`${context.file}:${type.text}`);
       active.delete(identity);
@@ -854,15 +869,38 @@ function parseFile(root, file, diagnostics) {
         for (const [key, value] of item.bindings) bindingImports.set(key, value);
         for (const [key, value] of item.importedNames) bindingImportedNames.set(key, value);
       }
-      return { constants: program ? collectConstants(program) : new Map(), imports, bindingImports, bindingImportedNames };
+      // A binding still shadows the module scope when its value cannot be
+      // resolved (for example, let or a subsequently mutated const).
+      const bindings = new Set(bindingImports.keys());
+      const addBinding = (pattern) => {
+        if (!pattern) return;
+        if (pattern.type === 'Identifier') bindings.add(pattern.name);
+        else if (pattern.type === 'ObjectPattern' || pattern.type === 'ArrayPattern') {
+          for (const item of pattern.properties ?? pattern.elements ?? []) {
+            addBinding(item?.type === 'Property' ? item.value : item);
+          }
+        } else if (pattern.type === 'RestElement') addBinding(pattern.argument);
+        else if (pattern.type === 'AssignmentPattern') addBinding(pattern.left);
+      };
+      for (const statement of program?.body ?? []) {
+        const declaration = statement.type === 'ExportNamedDeclaration' ? statement.declaration : statement;
+        if (declaration?.type === 'VariableDeclaration') {
+          for (const item of declaration.declarations) addBinding(item.id);
+        } else if (declaration?.type === 'FunctionDeclaration' || declaration?.type === 'ClassDeclaration') addBinding(declaration.id);
+      }
+      return { constants: program ? collectConstants(program) : new Map(), imports, bindingImports, bindingImportedNames, bindings };
     };
     const moduleContext = makeContext(ast.module?.content);
     const instanceContext = makeContext(ast.instance?.content);
+    const mergeContextMap = (field) => new Map([
+      ...[...moduleContext[field]].filter(([name]) => !instanceContext.bindings.has(name)),
+      ...instanceContext[field],
+    ]);
     const templateContext = {
-      constants: new Map([...moduleContext.constants, ...instanceContext.constants]),
+      constants: createConstantScope(moduleContext.constants, instanceContext.constants, instanceContext.bindings),
       imports: [...moduleContext.imports, ...instanceContext.imports],
-      bindingImports: new Map([...moduleContext.bindingImports, ...instanceContext.bindingImports]),
-      bindingImportedNames: new Map([...moduleContext.bindingImportedNames, ...instanceContext.bindingImportedNames]),
+      bindingImports: mergeContextMap('bindingImports'),
+      bindingImportedNames: mergeContextMap('bindingImportedNames'),
     };
     return {
       root,
@@ -968,8 +1006,10 @@ function collectAssetReferences(record, meta, storyNodes) {
     while (node && ['TSAsExpression', 'TSTypeAssertion', 'TSNonNullExpression', 'TSSatisfiesExpression'].includes(node.type)) node = node.expression;
     if (!node) return false;
     if (node.type === 'Identifier') {
-      if (resolving.has(node.name) || !context.constants.has(node.name)) return false;
-      return scanObject(context.constants.get(node.name), context, new Set([...resolving, node.name]));
+      const binding = resolveConstant(node.name, context.constants);
+      if (!binding.node || resolving.has(binding.node)) return false;
+      const bindingContext = binding.constants === record.moduleContext.constants ? record.moduleContext : context;
+      return scanObject(binding.node, bindingContext, new Set([...resolving, binding.node]));
     }
     if (node.type !== 'ObjectExpression') return false;
     if (objectResults.has(node)) return objectResults.get(node);
@@ -1139,7 +1179,10 @@ function parseArgTypes(node, constants, diagnostics, file) {
     const value = evaluateStatic(valueNode, constants, seen);
     if (value !== UNRESOLVED) return value;
     while (valueNode && ['TSAsExpression', 'TSTypeAssertion', 'TSNonNullExpression', 'TSSatisfiesExpression'].includes(valueNode.type)) valueNode = valueNode.expression;
-    if (valueNode?.type === 'Identifier' && constants.has(valueNode.name) && !seen.has(valueNode.name)) return partialValue(constants.get(valueNode.name), new Set([...seen, valueNode.name]));
+    if (valueNode?.type === 'Identifier') {
+      const binding = resolveConstant(valueNode.name, constants);
+      if (binding.node && !seen.has(binding.node)) return partialValue(binding.node, new Set([...seen, binding.node]));
+    }
     if (valueNode?.type !== 'ObjectExpression') return UNRESOLVED;
     const output = {};
     for (const property of valueNode.properties) {
@@ -1171,7 +1214,10 @@ function parseArgTypes(node, constants, diagnostics, file) {
 
 function resolveLocalExpression(node, constants, seen = new Set()) {
   while (node && ['TSAsExpression', 'TSTypeAssertion', 'TSNonNullExpression', 'TSSatisfiesExpression'].includes(node.type)) node = node.expression;
-  if (node?.type === 'Identifier' && constants.has(node.name) && !seen.has(node.name)) return resolveLocalExpression(constants.get(node.name), constants, new Set([...seen, node.name]));
+  if (node?.type === 'Identifier') {
+    const binding = resolveConstant(node.name, constants);
+    if (binding.node && !seen.has(binding.node)) return resolveLocalExpression(binding.node, binding.constants, new Set([...seen, binding.node]));
+  }
   return node;
 }
 

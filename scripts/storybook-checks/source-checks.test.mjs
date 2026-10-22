@@ -62,6 +62,139 @@ test('recognizes snippet inputs inherited through imported composition types', (
   assert(!codes(inheritedDiagnostics).includes('SB_ARGTYPE_MISSING'));
 });
 
+test('keeps template bindings unresolved when they shadow module constants or imports', () => {
+  const moduleBindings = [
+    "const args = { label: 'module' };",
+    "import { args } from '../lib/defaultArgs.ts';",
+  ];
+  const storyFor = (moduleBinding, instanceBinding = '') => `<script module>
+    import { defineMeta } from '@storybook/addon-svelte-csf';
+    import Thing from '../components/Thing.svelte';
+    ${moduleBinding}
+    const { Story } = defineMeta({ title: 'Atoms/Thing', component: Thing, tags: ['autodocs'], args,
+      argTypes: { label: { description: 'Label' }, count: { description: 'Count' } } });
+  </script><script>${instanceBinding}</script><Story name="Default" args={args} />`;
+  const check = (moduleBinding, instanceBinding) => validateSource({ root: makeRepository({
+    story: storyFor(moduleBinding, instanceBinding),
+    extras: { 'src/lib/defaultArgs.ts': "export const args = { label: 'module' };" },
+  }) }).diagnostics;
+
+  for (const moduleBinding of moduleBindings) {
+    assert.deepEqual(check(moduleBinding, ''), []);
+    assert.deepEqual(check(moduleBinding, "const args = { label: 'instance' };"), []);
+    for (const instanceBinding of [
+      "let args = { label: 'instance', typo: true };",
+      "const args = { label: 'instance' }; args.typo = true;",
+      "let { args } = { args: { label: 'instance', typo: true } };",
+    ]) {
+      const diagnostics = check(moduleBinding, instanceBinding);
+      assert.deepEqual(codes(diagnostics), ['SB_ARGS_UNRESOLVED'], instanceBinding);
+      assert.equal(diagnostics[0].file, 'src/stories/Thing.stories.svelte');
+      assert.match(diagnostics[0].message, /Story "Default" args/);
+    }
+    assert.deepEqual(codes(check(moduleBinding, "const args = { label: 'instance', typo: true };")), ['SB_ARG_UNSUPPORTED']);
+  }
+});
+
+test('requires union prop documentation regardless of snippet branch order', () => {
+  const story = `<script module>
+    import { defineMeta } from '@storybook/addon-svelte-csf';
+    import Thing from '../components/Thing.svelte';
+    const { Story } = defineMeta({ title: 'Atoms/Thing', component: Thing, tags: ['autodocs'],
+      argTypes: { label: { description: 'Label' } } });
+  </script><Story name="Default" />`;
+  const componentFor = (union) => `<script module lang="ts">
+    import type { Snippet } from 'svelte';
+    type Plain = { label: string; content?: string };
+    type Rich = { label: string; content?: Snippet };
+    type NullableRich = { label: string; content?: Snippet | null };
+    export type ThingProps = ${union};
+  </script><script lang="ts">let { label, content }: ThingProps = $props();</script><p>{label}</p>`;
+  for (const union of ['Plain | Rich', 'Rich | Plain', 'Readonly<Plain> | Partial<Rich>', '(Rich | NullableRich) | Plain']) {
+    const component = componentFor(union);
+    const diagnostics = validateSource({ root: makeRepository({ component, story }) }).diagnostics;
+    assert.deepEqual(codes(diagnostics), ['SB_ARGTYPE_MISSING'], union);
+    assert.equal(diagnostics[0].file, 'src/stories/Thing.stories.svelte');
+    assert.match(diagnostics[0].message, /Explicit prop "content"/);
+    const documentedStory = story.replace("label: { description: 'Label' }", "label: { description: 'Label' }, content: { description: 'Text or snippet' }");
+    assert.deepEqual(validateSource({ root: makeRepository({ component, story: documentedStory }) }).diagnostics, []);
+  }
+  for (const union of ['Rich | NullableRich', 'NullableRich | Rich', "Pick<Plain, 'label'> | Rich"]) {
+    assert.deepEqual(validateSource({ root: makeRepository({ component: componentFor(union), story }) }).diagnostics, [], union);
+  }
+});
+
+test('resolves module constant dependencies in their declaration scope', () => {
+  const storyFor = (instanceBinding, storyArgs = 'defaults') => `<script module>
+    import { defineMeta } from '@storybook/addon-svelte-csf';
+    import Thing from '../components/Thing.svelte';
+    const args = { label: 'module' };
+    const defaults = args;
+    const name = 'Default';
+    const storyName = name;
+    const { Story } = defineMeta({ title: 'Atoms/Thing', component: Thing, tags: ['autodocs'],
+      argTypes: { label: { description: 'Label' }, count: { description: 'Count' } } });
+  </script><script>${instanceBinding}</script><Story name={storyName} args={${storyArgs}} />`;
+  for (const binding of [
+    "let args = { typo: true }; let name = 'Wrong';",
+    "const args = { typo: true }; const name = 'Wrong';",
+    "const args = {}; args.typo = true; const name = 'Wrong';",
+  ]) {
+    const result = validateSource({ root: makeRepository({ story: storyFor(binding) }) });
+    assert.deepEqual(result.diagnostics, [], binding);
+    assert.equal(result.model.stories[0].stories[0].name, 'Default');
+  }
+  // Reusing the dependency's name in the inner scope is not an alias cycle.
+  assert.deepEqual(validateSource({ root: makeRepository({ story: storyFor('const args = defaults;', 'args') }) }).diagnostics, []);
+  const cyclic = storyFor('').replace("const args = { label: 'module' };", 'const args = defaults;');
+  assert.deepEqual(codes(validateSource({ root: makeRepository({ story: cyclic }) }).diagnostics), ['SB_ARGS_UNRESOLVED']);
+
+  const assetStory = storyFor("const source = '/missing-instance.svg';")
+    .replace('const defaults = args;', "const defaults = args; const source = '/present.svg'; const asset = source;")
+    .replace('<Story name={storyName} args={defaults} />', '<Story name={storyName} args={defaults}><img src={asset} alt="Fixture" /></Story>');
+  const extras = { 'public/present.svg': '<svg xmlns="http://www.w3.org/2000/svg" />' };
+  assert.deepEqual(validateSource({ root: makeRepository({ story: assetStory, extras }) }).diagnostics, []);
+  const missingModuleAsset = assetStory.replace("const source = '/present.svg';", "const source = '/missing-module.svg';")
+    .replace("const source = '/missing-instance.svg';", "const source = '/present.svg';");
+  assert.deepEqual(codes(validateSource({ root: makeRepository({ story: missingModuleAsset, extras }) }).diagnostics), ['SB_ASSET_MISSING']);
+});
+
+test('resolves native interface heritage and preserves projection restrictions', () => {
+  const componentFor = (propsType) => `<script module lang="ts">
+    import type { HTMLAttributes as NativeAttributes } from 'svelte/elements';
+    interface NativeBase extends NativeAttributes<HTMLDivElement> {}
+    ${propsType}
+  </script><script lang="ts">let { label, ...rest }: ThingProps = $props();</script><div {...rest}>{label}</div>`;
+  const story = `<script module>
+    import { defineMeta } from '@storybook/addon-svelte-csf';
+    import Thing from '../components/Thing.svelte';
+    const { Story } = defineMeta({ title: 'Atoms/Thing', component: Thing, tags: ['autodocs'],
+      args: { label: 'Example', role: 'status' },
+      argTypes: { label: { description: 'Label' }, role: { control: false, description: 'Native role', table: { category: 'Forwarded native attribute' } } } });
+  </script><Story name="Default" />`;
+  for (const base of ['NativeAttributes<HTMLDivElement>', 'NativeBase']) {
+    const component = componentFor(`export interface ThingProps extends ${base} { label: string }`);
+    assert.deepEqual(validateSource({ root: makeRepository({ component, story }) }).diagnostics, [], base);
+    const missingLabel = story.replace("label: { description: 'Label' }, ", '').replace("label: 'Example', ", '');
+    assert.deepEqual(codes(validateSource({ root: makeRepository({ component, story: missingLabel }) }).diagnostics), ['SB_ARGTYPE_MISSING']);
+  }
+  const omitted = componentFor("export interface ThingProps extends Omit<NativeBase, 'role'> { label: string }");
+  assert.deepEqual(codes(validateSource({ root: makeRepository({ component: omitted, story }) }).diagnostics), ['SB_ARGTYPE_OBSOLETE']);
+  const narrowed = componentFor("export type ThingProps = Pick<NativeBase, 'id'> & { label: string };");
+  const minimalStory = story.replace("label: 'Example', role: 'status'", "label: 'Example'")
+    .replace(", role: { control: false, description: 'Native role', table: { category: 'Forwarded native attribute' } }", '');
+  assert.deepEqual(codes(validateSource({ root: makeRepository({ component: narrowed, story: minimalStory }) }).diagnostics), ['SB_PROP_UNRESOLVED']);
+
+  const imported = componentFor('export interface ThingProps extends NativeBase { label: string }')
+    .replace('interface NativeBase extends NativeAttributes<HTMLDivElement> {}', "import type { NativeBase } from '../types/native';");
+  assert.deepEqual(validateSource({ root: makeRepository({ component: imported, story, extras: {
+    'src/types/native.ts': "import type { HTMLAttributes } from 'svelte/elements'; export interface NativeBase extends HTMLAttributes<HTMLDivElement> {}",
+  } }) }).diagnostics, []);
+  const cyclic = componentFor('interface Loop extends NativeBase {} export interface ThingProps extends Loop { label: string }')
+    .replace('interface NativeBase extends NativeAttributes<HTMLDivElement> {}', 'interface NativeBase extends Loop {}');
+  assert.deepEqual(codes(validateSource({ root: makeRepository({ component: cyclic, story: minimalStory }) }).diagnostics), ['SB_PROP_UNRESOLVED']);
+});
+
 test('respects composed Pick and Omit prop surfaces', () => {
   const component = `<script module lang="ts">type Base = { hidden: string; kept: string; ignored: string }; export type ThingProps = Omit<Pick<Base, 'hidden' | 'kept'>, 'hidden'>;</script><script lang="ts">let { kept }: ThingProps = $props();</script><p>{kept}</p>`;
   const story = `<script module>import { defineMeta } from '@storybook/addon-svelte-csf'; import Thing from '../components/Thing.svelte'; const { Story } = defineMeta({ title: 'Atoms/Thing', component: Thing, tags: ['autodocs'], argTypes: { kept: { description: 'Kept value' } } });</script><Story name="Default" />`;
