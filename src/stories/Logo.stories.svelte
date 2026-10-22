@@ -10,20 +10,21 @@
     title: 'Brand/Logo',
     tags: ['autodocs'],
     parameters: {
+      controls: { disable: true },
       docs: {
         description: {
           component:
-            'Invisible Sloth logo primitives with system and manual theme support. `Logo` renders the standalone brand mark, while `LogoLink` renders linked brand navigation.',
+            'Invisible Sloth logo primitives with system and manual theme support. `Logo` renders the standalone brand mark, while `LogoLink` renders linked brand navigation. Both share variant and size. alt and decorative belong to Logo; href, label, and the root class hook belong to LogoLink. These fixed examples document both contracts without a unified args-driven renderer. This fixed example does not consume Storybook args; controls are disabled.',
         },
       },
     },
     argTypes: {
-      variant: { control: 'select', options: ['technical', 'standard'], description: 'Logo artwork variant.' },
-      size: { control: 'text', description: 'Rendered logo size.' },
-      alt: { control: 'text', description: 'Alternative text for a non-decorative standalone logo.' },
-      decorative: { control: 'boolean', description: 'Marks a standalone logo as decorative.' },
-      href: { control: 'text', description: 'Destination used by LogoLink.' },
-      label: { control: 'text', description: 'Accessible link name used by LogoLink.' },
+      variant: { control: false, options: ['technical', 'standard'], description: 'Shared artwork variant; defaults to standard. Unsupported variants fall back to standard with a development warning.' },
+      size: { control: false, description: 'Shared size: sm (48px), md (96px, the default), lg (160px), xl (192px), or a CSS size string. Blank sizes fall back to md.' },
+      alt: { control: false, description: 'Logo-only image name when non-decorative. Blank text falls back to the default logo description with a development warning.' },
+      decorative: { control: false, description: 'Logo-only flag hiding the mark from assistive technology and removing its image role and label. LogoLink always uses a decorative nested mark.' },
+      href: { control: false, description: 'LogoLink-only destination. Blank values fall back to / with a development warning; use Logo for an unlinked mark.' },
+      label: { control: false, description: 'LogoLink-only accessible link name. Omitted or blank values fall back to Invisible Sloth home and warn in development.' },
       class: { control: false, description: 'Optional LogoLink root class hook; standalone Logo does not expose it.' },
     },
   });

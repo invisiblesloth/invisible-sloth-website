@@ -269,7 +269,17 @@
   {/snippet}
 </Story>
 
-<Story name="Passthrough Attributes">
+<Story
+  name="Passthrough Attributes"
+  parameters={{
+    controls: { disable: true },
+    docs: {
+      description: {
+        story: 'This fixed example does not consume Storybook args; controls are disabled.',
+      },
+    },
+  }}
+>
   {#snippet template()}
     <div class="feature-list-story">
       <FeatureList

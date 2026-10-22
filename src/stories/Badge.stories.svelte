@@ -10,15 +10,23 @@
     title: 'Atoms/Badge',
     component: Badge,
     tags: ['autodocs'],
+    parameters: {
+      docs: {
+        description: {
+          component:
+            'Non-interactive label with semantic color variants. Badge supports only variant and label; it does not forward root attributes. Runtime string variants are trimmed and lowercased; unsupported variants fall back to default with a deduplicated client-development warning. An omitted label defaults to Label; blank labels remain blank.',
+        },
+      },
+    },
     argTypes: {
       variant: {
         control: 'select',
         options: BADGE_VARIANTS,
-        description: 'Badge color variant',
+        description: 'Color variant. Runtime strings are trimmed and lowercased; unsupported variants fall back to default.',
       },
       label: {
         control: 'text',
-        description: 'Badge text label',
+        description: 'Visible text and title. Defaults to Label when omitted; blank labels are not replaced.',
       },
     },
   });

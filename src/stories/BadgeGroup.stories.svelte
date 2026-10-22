@@ -1,4 +1,4 @@
-<script module>
+<script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import BadgeGroup from '../components/BadgeGroup.svelte';
   import Badge from '../components/Badge.svelte';
@@ -36,10 +36,12 @@
 </style>
 
 <Story name="Default">
-  <BadgeGroup>
-    <Badge variant="playdate" label="Playdate" />
-    <Badge variant="default" label="In Progress" />
-  </BadgeGroup>
+  {#snippet template()}
+    <BadgeGroup>
+      <Badge variant="playdate" label="Playdate" />
+      <Badge variant="default" label="In Progress" />
+    </BadgeGroup>
+  {/snippet}
 </Story>
 
 <Story
@@ -53,8 +55,10 @@
     },
   }}
 >
-  <BadgeGroup class="badge-group-story__root-hook">
-    <Badge variant="playdate" label="Playdate" />
-    <Badge variant="default" label="In Progress" />
-  </BadgeGroup>
+  {#snippet template()}
+    <BadgeGroup class="badge-group-story__root-hook">
+      <Badge variant="playdate" label="Playdate" />
+      <Badge variant="default" label="In Progress" />
+    </BadgeGroup>
+  {/snippet}
 </Story>

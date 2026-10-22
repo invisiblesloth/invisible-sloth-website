@@ -39,7 +39,7 @@
       docs: {
         description: {
           component:
-            'Featured project card. Parent layouts own outer width and rail behavior; the root `class` hook lands on the root div for layout/global selectors only.',
+            'Featured project card. Parent layouts own outer width and rail behavior; the root `class` hook lands on the root div for layout/global selectors only. Authored children take precedence over the plain description fallback. Default demonstrates rich children; edit the description control in Plain Description Fallback to exercise plain text.',
         },
       },
     },
@@ -86,7 +86,18 @@
   });
 </script>
 
-<Story name="Default">
+<Story
+  name="Default"
+  parameters={{
+    controls: { include: ['title', 'subhead', 'headingLevel', 'badges', 'button'] },
+    docs: {
+      description: {
+        story:
+          'Authored rich children take precedence over the plain description fallback. Edit description in Plain Description Fallback instead.',
+      },
+    },
+  }}
+>
   {#snippet template(args)}
     <ProjectCard {...args}>
       <p>
@@ -103,19 +114,39 @@
   {/snippet}
 </Story>
 
-<Story name="Semantic Heading Level">
+<Story
+  name="Semantic Heading Level"
+  parameters={{
+    controls: { include: ['title', 'subhead', 'description', 'badges', 'button'] },
+  }}
+>
   {#snippet template(args)}
     <ProjectCard {...args} headingLevel={3} />
   {/snippet}
 </Story>
 
-<Story name="Invalid Heading Level Fallback">
+<Story
+  name="Invalid Heading Level Fallback"
+  parameters={{
+    controls: { include: ['title', 'subhead', 'description', 'badges', 'button'] },
+  }}
+>
   {#snippet template(args)}
     <ProjectCard {...args} headingLevel={invalidRuntimeHeadingLevel} />
   {/snippet}
 </Story>
 
-<Story name="CTA Icon Policy">
+<Story
+  name="CTA Icon Policy"
+  parameters={{
+    controls: { disable: true },
+    docs: {
+      description: {
+        story: 'This fixed example does not consume Storybook args; controls are disabled.',
+      },
+    },
+  }}
+>
   {#snippet template()}
     <div class="project-card-story-stack">
       <ProjectCard

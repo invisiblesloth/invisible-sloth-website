@@ -1,4 +1,4 @@
-<script module>
+<script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import Tag from '../components/Tag.svelte';
   import TagGroup from '../components/TagGroup.svelte';
@@ -37,13 +37,15 @@
 </style>
 
 <Story name="Wrapping And Gaps">
-  <div class="tag-group-story">
-    <TagGroup>
-      <Tag label="Primary Tag" />
-      <Tag label="Secondary Tag" />
-      <Tag label="Longer Tag Label" />
-      <Tag label="Compact" />
-      <Tag label="Another Tag" />
-    </TagGroup>
-  </div>
+  {#snippet template()}
+    <div class="tag-group-story">
+      <TagGroup>
+        <Tag label="Primary Tag" />
+        <Tag label="Secondary Tag" />
+        <Tag label="Longer Tag Label" />
+        <Tag label="Compact" />
+        <Tag label="Another Tag" />
+      </TagGroup>
+    </div>
+  {/snippet}
 </Story>

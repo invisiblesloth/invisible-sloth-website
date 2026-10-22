@@ -11,6 +11,12 @@
     component: Divider,
     tags: ['autodocs'],
     parameters: {
+      docs: {
+        description: {
+          component:
+            'Separator primitive: horizontal renders an hr, while vertical renders a div with separator role and vertical aria-orientation. Set ariaHidden for purely decorative separators. Default is 1px and Double is 2px; invalid runtime orientation and thickness fall back to horizontal and Default with development warnings. Parents own spacing, insets, and container sizing. Vertical dividers need a flex/grid parent with a definite cross-size or may have zero height. The class prop is a root hook for global utilities and selectors, not general native-attribute forwarding.',
+        },
+      },
       controls: {
         include: ['orientation', 'thickness', 'ariaHidden'],
       },

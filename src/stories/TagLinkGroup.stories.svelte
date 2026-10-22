@@ -196,7 +196,17 @@
   }}
 />
 
-<Story name="Passthrough Attributes">
+<Story
+  name="Passthrough Attributes"
+  parameters={{
+    controls: { disable: true },
+    docs: {
+      description: {
+        story: 'This fixed example does not consume Storybook args; controls are disabled.',
+      },
+    },
+  }}
+>
   {#snippet template()}
     <div class="tag-link-group-story">
       <TagLinkGroup
@@ -212,10 +222,11 @@
 <Story
   name="Wrapped Presence And Absence"
   parameters={{
+    controls: { disable: true },
     docs: {
       description: {
         story:
-          'The wrapper receives a renderable group snippet and is only rendered when valid tags exist.',
+          'The wrapper receives a renderable group snippet and is only rendered when valid tags exist. This fixed example does not consume Storybook args; controls are disabled.',
       },
     },
   }}

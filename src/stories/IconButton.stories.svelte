@@ -37,7 +37,7 @@
       onclick: { action: 'onclick called', description: 'Activation callback for button and link modes.' },
       icon: {
         control: false,
-        description: 'Required Svelte snippet rendered as decorative icon content.',
+        description: 'Decorative Svelte snippet for the requested icon shape. If omitted, Button warns in development and renders a label-shaped fallback.',
         table: {
           type: { summary: 'Snippet' },
           defaultValue: { summary: 'undefined' },
@@ -61,7 +61,7 @@
         },
       },
       type: { control: 'select', options: ['button', 'submit', 'reset'], description: 'HTML button type.' },
-      label: { control: 'text', description: 'Required accessible name for the icon-only control.' },
+      label: { control: 'text', description: 'Accessible name for the icon-only control. Omitted or blank labels fall back to Button; blank labels warn in development.' },
       disabled: { control: 'boolean', description: 'Disables button or link activation.' },
       href: { control: 'text', description: 'Optional URL that selects link rendering.' },
       target: { control: 'text', description: 'Optional link target.' },
@@ -111,7 +111,17 @@
   {/snippet}
 </Story>
 
-<Story name="Variant Matrix">
+<Story
+  name="Variant Matrix"
+  parameters={{
+    controls: { disable: true },
+    docs: {
+      description: {
+        story: 'This fixed example does not consume Storybook args; controls are disabled.',
+      },
+    },
+  }}
+>
   {#snippet template()}
     <div class="icon-button-story-grid">
       {#each iconVariantExamples as example}
@@ -121,7 +131,17 @@
   {/snippet}
 </Story>
 
-<Story name="Disabled Variant Matrix">
+<Story
+  name="Disabled Variant Matrix"
+  parameters={{
+    controls: { disable: true },
+    docs: {
+      description: {
+        story: 'This fixed example does not consume Storybook args; controls are disabled.',
+      },
+    },
+  }}
+>
   {#snippet template()}
     <div class="icon-button-story-grid">
       {#each iconVariantExamples as example}

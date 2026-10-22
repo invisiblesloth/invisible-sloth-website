@@ -111,7 +111,17 @@
   }}
 />
 
-<Story name="All Levels">
+<Story
+  name="All Levels"
+  parameters={{
+    controls: { disable: true },
+    docs: {
+      description: {
+        story: 'This fixed example does not consume Storybook args; controls are disabled.',
+      },
+    },
+  }}
+>
   {#snippet template()}
     <div style="display: flex; flex-direction: column; gap: 0;">
       <Heading level="h1" text="H1 - Primary Heading" />
@@ -162,7 +172,11 @@
   {/snippet}
 </Story>
 
-<Story name="Text Precedence" args={{ level: 'h2' }}>
+<Story
+  name="Text Precedence"
+  args={{ level: 'h2' }}
+  parameters={{ controls: { include: ['level', 'visualLevel'] } }}
+>
   {#snippet template(args)}
     <Heading {...args} text="Text prop wins over children">
       This children snippet is intentionally not rendered.

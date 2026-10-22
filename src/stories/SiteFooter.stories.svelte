@@ -34,6 +34,12 @@
     tags: ['autodocs'],
     parameters: {
       layout: 'fullscreen',
+      docs: {
+        description: {
+          component:
+            'Responsive footer with a centered logo, tagline, optional page-owned children, and copyright. The footer owns its internal rail and responsive spacing; children render between the tagline and copyright. A non-empty homeHref renders linked brand navigation named by homeLabel; an empty or whitespace-only homeHref renders a standalone logo named by logoAlt. The class prop is a root footer hook, without general attribute forwarding.',
+        },
+      },
       controls: {
         include: ['homeHref', 'homeLabel', 'logoAlt', 'tagline', 'copyrightText'],
       },
@@ -100,12 +106,8 @@
     },
   }}
 >
-  {#snippet template()}
-    <SiteFooter
-      homeHref="/"
-      tagline="We may be slow, but we're not slowing down!"
-      copyrightText="© Invisible Sloth, LLC"
-    >
+  {#snippet template(args)}
+    <SiteFooter {...args}>
       <ContactUs text={contactText} email={contactEmail} />
     </SiteFooter>
   {/snippet}
@@ -122,12 +124,8 @@
     },
   }}
 >
-  {#snippet template()}
-    <SiteFooter
-      homeHref="/"
-      tagline="We may be slow, but we're not slowing down!"
-      copyrightText="© Invisible Sloth, LLC"
-    >
+  {#snippet template(args)}
+    <SiteFooter {...args}>
       <ContactUs text={contactText} email={contactEmail} />
       <FooterLinks sections={footerSections} />
     </SiteFooter>

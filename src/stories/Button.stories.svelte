@@ -266,7 +266,17 @@
 
 <Story name="Filled Tertiary" args={{ label: 'Tertiary Button', variant: 'filled-tertiary' }} />
 
-<Story name="Label Variant Matrix">
+<Story
+  name="Label Variant Matrix"
+  parameters={{
+    controls: { disable: true },
+    docs: {
+      description: {
+        story: 'This fixed example does not consume Storybook args; controls are disabled.',
+      },
+    },
+  }}
+>
   {#snippet template()}
     <div class="button-story-grid">
       {#each labelVariantExamples as example}
@@ -276,7 +286,17 @@
   {/snippet}
 </Story>
 
-<Story name="Disabled Label Variant Matrix">
+<Story
+  name="Disabled Label Variant Matrix"
+  parameters={{
+    controls: { disable: true },
+    docs: {
+      description: {
+        story: 'This fixed example does not consume Storybook args; controls are disabled.',
+      },
+    },
+  }}
+>
   {#snippet template()}
     <div class="button-story-grid">
       {#each labelVariantExamples as example}
@@ -289,10 +309,11 @@
 <Story
   name="Interaction States"
   parameters={{
+    controls: { disable: true },
     docs: {
       description: {
         story:
-          'Standard Button interaction states across rest, hover-simulated, pressed-simulated, disabled, and icon-only paths. Switch the global Storybook theme toolbar between Light and Dark for theme checks.',
+          'Standard Button interaction states across rest, hover-simulated, pressed-simulated, disabled, and icon-only paths. Switch the global Storybook theme toolbar between Light and Dark for theme checks. This fixed example does not consume Storybook args; controls are disabled.',
       },
     },
   }}
@@ -453,10 +474,11 @@
 <Story
   name="Invalid Variant Fallback"
   parameters={{
+    controls: { disable: true },
     docs: {
       description: {
         story:
-          'Intentionally passes an invalid runtime variant. Button falls back to `filled-primary` and emits a dev-only warning.',
+          'Intentionally passes an invalid runtime variant. Button falls back to `filled-primary` and emits a dev-only warning. This fixed example does not consume Storybook args; controls are disabled.',
       },
     },
   }}
@@ -469,10 +491,11 @@
 <Story
   name="Invalid Shape Fallback"
   parameters={{
+    controls: { disable: true },
     docs: {
       description: {
         story:
-          'Intentionally passes an invalid runtime shape. Button falls back to `label` and emits a dev-only warning.',
+          'Intentionally passes an invalid runtime shape. Button falls back to `label` and emits a dev-only warning. This fixed example does not consume Storybook args; controls are disabled.',
       },
     },
   }}
@@ -485,10 +508,11 @@
 <Story
   name="Invalid Type Fallback"
   parameters={{
+    controls: { disable: true },
     docs: {
       description: {
         story:
-          'Intentionally passes an invalid runtime button type. Button falls back to `button` and emits a dev-only warning.',
+          'Intentionally passes an invalid runtime button type. Button falls back to `button` and emits a dev-only warning. This fixed example does not consume Storybook args; controls are disabled.',
       },
     },
   }}
@@ -501,10 +525,11 @@
 <Story
   name="Blank Label Fallback"
   parameters={{
+    controls: { disable: true },
     docs: {
       description: {
         story:
-          'Blank labels fall back to "Button" so empty accessible controls are not rendered.',
+          'Blank labels fall back to "Button" so empty accessible controls are not rendered. This fixed example does not consume Storybook args; controls are disabled.',
       },
     },
   }}
@@ -517,10 +542,11 @@
 <Story
   name="Forwarded Attributes"
   parameters={{
+    controls: { disable: true },
     docs: {
       description: {
         story:
-          '`id`, safe ARIA/data attributes, non-activation focus/hover events, and mode-specific native attributes are forwarded. `class`, `style`, ARIA naming overrides, and activation-adjacent rest-event handlers are stripped; activation is exposed through the explicit `onclick` prop.',
+          '`id`, safe ARIA/data attributes, non-activation focus/hover events, and mode-specific native attributes are forwarded. `class`, `style`, ARIA naming overrides, and activation-adjacent rest-event handlers are stripped; activation is exposed through the explicit `onclick` prop. This fixed example does not consume Storybook args; controls are disabled.',
       },
     },
   }}

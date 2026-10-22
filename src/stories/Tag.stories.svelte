@@ -1,4 +1,4 @@
-<script module>
+<script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import Tag from '../components/Tag.svelte';
 
@@ -140,12 +140,15 @@
 <Story
   name="Invalid Props Guard"
   parameters={{
+    controls: { disable: true },
     docs: {
       description: {
-        story: 'Intentionally passes unsupported `disabled` and `aria-disabled`. Tag strips them and emits deduplicated dev-only warnings.',
+        story: 'Intentionally passes unsupported `disabled` and `aria-disabled`. Tag strips them and emits deduplicated dev-only warnings. This fixed example does not consume Storybook args; controls are disabled.',
       },
     },
   }}
 >
-  <Tag href="https://invisiblesloth.com/" label="Invalid Disabled Link Usage" disabled aria-disabled="true" />
+  {#snippet template()}
+    <Tag href="https://invisiblesloth.com/" label="Invalid Disabled Link Usage" disabled aria-disabled="true" />
+  {/snippet}
 </Story>
