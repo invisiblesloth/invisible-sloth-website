@@ -446,7 +446,7 @@
       <div class="image-debug-story__panel">
         <p class="image-debug-story__scenario">Scenario: {debugScenario}</p>
 
-        <div class="image-debug-story__controls" aria-label="Image loading debug scenarios">
+        <div class="image-debug-story__controls" role="group" aria-label="Image loading debug scenarios">
           <button
             type="button"
             onclick={() => setDebugScenario('Loaded primary', { ...primaryImage, ...fallbackImage })}
