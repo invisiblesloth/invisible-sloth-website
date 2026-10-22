@@ -51,7 +51,7 @@ All commands are run from the project root:
 | `npm run test:storybook-checks` | Run focused Node tests for Storybook validators and type fixtures |
 | `npm run verify:storybook` | Run both validation gates, build Storybook once, and validate that build's generated index |
 
-Current component guidance lives in [component policies](./src/components/README.md), and Storybook contributors should follow the [Storybook contributor standard](./docs/storybook-standard.md). The [guidelines roadmap](./docs/storybook-guidelines-plan.md), [alignment record](./docs/storybook-alignment-plan.md), and [exception registry guide](./docs/storybook-component-inventory.md) describe rollout sequencing, evidence, and registry maintenance.
+Current component guidance lives in [component policies](./src/components/README.md). Follow the [Storybook contributor guide](./.storybook/README.md) for story authoring, validation, and exception registry maintenance.
 
 ### Utilities
 

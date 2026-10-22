@@ -13,7 +13,7 @@ const config: StorybookConfig = {
     "name": "@storybook/svelte-vite",
     "options": {
       // Svelte CSF stories are not ordinary components. Keep docgen disabled so
-      // Storybook does not parse them as such; see docs/storybook-standard.md.
+      // Storybook does not parse them as such; see .storybook/README.md.
       docgen: false
     }
   },
