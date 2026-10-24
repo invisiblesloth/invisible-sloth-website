@@ -16,7 +16,7 @@
       href: '/tracer/privacy',
     },
     {
-      label: 'Tracer App Terms of Use',
+      label: 'Tracer App License Information',
       href: '/tracer/terms',
     },
   ];
@@ -28,8 +28,8 @@
       href: '#tracer-app-privacy-policy-with-long-label',
     },
     {
-      label: 'Tracer App Terms of Use',
-      href: '#tracer-app-terms-of-use',
+      label: 'Tracer App License Information',
+      href: '#tracer-app-license-information',
     },
     {
       label:
@@ -257,7 +257,7 @@
         href: '  /tracer/privacy  ',
       },
       {
-        label: '  Tracer App Terms of Use  ',
+        label: '  Tracer App License Information  ',
         href: '  /tracer/terms  ',
       },
     ],

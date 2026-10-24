@@ -87,9 +87,9 @@ const ROUTES = [
   {
     path: '/tracer/terms/',
     output: 'dist/tracer/terms/index.html',
-    title: 'Tracer Terms of Use',
+    title: 'Tracer License Information',
     description:
-      'Terms of Use for Tracer, the local-only iOS time tracker from Invisible Sloth, LLC.',
+      'License information for Tracer, the iOS time tracker from Invisible Sloth, LLC.',
   },
 ];
 

@@ -233,7 +233,7 @@
                 <li>
                   <p>
                     Nested paragraph links such as
-                    <a href="https://invisiblesloth.com/tracer/terms">terms details</a>
+                    <a href="https://invisiblesloth.com/tracer/terms/">License Information</a>
                     stay in scope.
                   </p>
                 </li>

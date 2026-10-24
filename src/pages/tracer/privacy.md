@@ -9,115 +9,102 @@ canonicalUrl: https://invisiblesloth.com/tracer/privacy/
 
 ## The short version
 
-Tracer is a local-only time tracker. Everything you create in Tracer – your activities, time entries, and notes – stays on your device unless you choose to export, import, share, or send it somewhere else. Invisible Sloth, LLC does not automatically collect or receive your Tracer app data.
+Tracer is designed to keep your data local. It stores your activities, time entries, notes, and settings on your device, and Tracer's app code does not automatically send that data to us. If you contact support, we receive only what you choose to send.
+
+Information can still leave your device through:
+
+- a file you export;
+- information you copy to the system clipboard;
+- a share or message you choose to send; or
+- an Apple-controlled device backup.
+
+We receive information you export, share, or copy only if you choose to send it to us. Apple-controlled backups do not give us access.
+
+If you buy Tracer Plus, Apple handles the payment. Tracer checks your purchase on your device and does not send purchase details to us.
+
+When you use a TestFlight build, Apple automatically collects certain crash logs and usage data and shares them with us. Depending on how you were invited, we may also receive your name and email address without you submitting feedback. If you submit TestFlight feedback, we also receive your comments or screenshots and related app, device, and tester information that Apple provides.
+
+For App Store builds, Apple may also share crash reports and usage statistics with us if you enable sharing with app developers in iOS Settings, as described in Section 6.
+
+We do not sell information covered by this policy or use it for advertising.
 
 ---
 
 ## 1. What this policy covers
 
-This policy describes how Tracer, the iOS app published by Invisible Sloth, LLC, handles information. It covers the Tracer iOS app only. It does not cover Apple's App Store, TestFlight, or websites outside the app.
+This policy describes how Tracer, the iOS app published by Invisible Sloth, LLC ("Invisible Sloth," "we," "us," or "our"), handles information, including information you choose to send to Tracer support.
 
-## 2. Information you create in the app
+This is the Tracer app privacy policy. It does not describe how the invisiblesloth.com website handles information.
 
-When you use Tracer, you create data locally on your device:
+## 2. Information stored on your device
 
-- **Activities** – names, optional notes, colors, ordering, archive state, and related timestamps
-- **Time entries** – start times, end times, durations, time zones, source type, and optional notes
-- **App preferences** – settings you configure within the app
+Tracer stores the activities, time entries, notes, and settings you create on your device. An entry may include its times, duration, associated activity, notes, how it was created (with the timer or by hand), and the system time zones associated with its start and end times.
 
-This data belongs to you. It is stored in a local SQLite database on your iPhone. It is not automatically transmitted to Invisible Sloth, LLC or to any third party. It leaves your device only if you explicitly export or share it, or if you send it to someone through a support or feedback channel.
+## 3. How information can leave your device
 
-Tracer treats activity names, entry notes, and other user-created text as opaque content. The app does not categorize, analyze, or transmit that text to Invisible Sloth, LLC.
+Information can leave your device when you export a file, copy information to the clipboard, share it through iOS, or send a support message. Depending on your settings, Apple may also include Tracer's local app data in an iCloud backup or a device backup on your computer. Apple and the destinations you choose control how information is handled through these routes.
 
-## 3. Information we do not collect
+Tracer's app code does not automatically transmit your activities, time entries, notes, settings, app usage, location, advertising identifiers, or diagnostics to us. Tracer does not use Location Services to determine your precise or approximate location. It has no account or sign-in system, cloud sync, server backend, advertising SDK, analytics SDK, attribution SDK, or third-party crash-reporting SDK. Apple separately shares TestFlight information as described in Section 5 and may share App Store diagnostics and usage statistics according to your settings as described in Section 6.
 
-Tracer does not automatically collect, transmit, or receive:
+## 4. Data export, import, and sharing
 
-- Account information
-- Location data
-- Device identifiers or advertising IDs
-- Usage analytics or behavioral data
-- Crash reports or diagnostic data sent directly to Invisible Sloth, LLC
-- Contacts, photos, camera, or audio recording data
-- Information linked to your identity
+A JSON backup export can contain your Tracer activities, entries, notes, and related technical information. A CSV export contains entry information for use in other applications. Tracer does not password-protect or encrypt the contents of an exported file, so protect the file when choosing where to save or send it.
 
-Tracer has no accounts, no sign-up flow, no advertising SDK, no analytics SDK, no crash-reporting SDK, and no server backend.
+You choose the export destination through the iOS share sheet. We receive an export only if you deliberately send it to us. After a file leaves Tracer, the destination controls how it is stored, protected, and shared, and how long it is kept. Tracer reads imported JSON files on your device.
 
-## 4. Third-party code and SDKs
+## 5. Support and TestFlight information
 
-Tracer uses one third-party library:
+**Support and copied diagnostics:** When you choose to contact support, Tracer creates an editable email that may include the app version and build, iOS version, device model, and a prompt for your description. If you send it, we receive the email contents, your email address, any sender name included with your email, and anything you add, such as text, screenshots, exports, or other attachments. Your email provider sends the message to us, and our email provider handles it so we can receive and respond to it.
 
-- <a href="https://github.com/groue/GRDB.swift" target="_blank" rel="noopener noreferrer"><strong>GRDB</strong></a> – an open-source Swift library for reading and writing SQLite databases locally on your device. GRDB makes no network calls and collects no data. It is a file-access library, not a service.
+Tracer can also copy support or diagnostic information, including limited app, device, error, and time information, to the iOS clipboard. We receive copied information only if you choose to paste or send it to us. You choose whether and where to paste copied information. iOS controls its availability on the clipboard, including through Universal Clipboard.
 
-Tracer does not include analytics SDKs, crash-reporting SDKs, advertising SDKs, or other third-party SDKs that communicate over the network.
+**TestFlight:** When you use a TestFlight build, Apple automatically collects certain TestFlight crash logs and usage data and shares them with us. Apple's <a href="https://www.apple.com/legal/internet-services/itunes/testflight/sren/terms.html" target="_blank" rel="noopener noreferrer">TestFlight Terms of Service</a> state that you cannot opt out of this collection while using TestFlight. For testers invited by email, TestFlight also makes the invitation email address and the name entered with the invitation visible to us, even without submitted feedback. If you accept an invitation through a public link only, TestFlight does not show us your name or email address through that invitation.
 
-If we add third-party libraries in the future that affect data practices, we will update this policy and our App Privacy disclosure in App Store Connect before shipping those changes.
+If you submit TestFlight feedback, Apple also provides it to us. Feedback may contain comments, screenshots, device information, and personal information associated with your tester account or visible in a screenshot. Please review comments and screenshots before submitting them. Your activities, entries, notes, and settings reach us through TestFlight only if you include them in feedback.
 
-## 5. Data export, import, and sharing
+**How we use and share this information:** We use support and TestFlight information to answer requests, administer beta testing, troubleshoot problems, investigate security issues, communicate with testers when appropriate, and test and improve Tracer.
 
-Tracer includes data export and import.
+Our email provider processes support correspondence to provide email service. We may preserve or disclose support correspondence we actually hold when required by law or reasonably necessary to protect users, us, or the security of Tracer.
 
-- **JSON backup export** creates a backup file that includes your Tracer activities, entries, notes, timestamps, time zones, and backup metadata such as app version, build number, bundle identifier, platform, export time, and schema version.
-- **CSV export** creates a spreadsheet-friendly entries file with start time, end time, duration, activity name, and notes.
-- **JSON import** lets you choose a Tracer JSON backup file from your device and restore it into Tracer.
+Apple processes TestFlight information under its applicable terms and privacy notices and limits how we may use it. We do not share information received through TestFlight with third parties unless required by law. The broader reasons for sharing support emails described above do not apply to TestFlight information.
 
-When you export, Tracer presents the iOS share sheet. You choose where to send the exported file, such as Files, email, or another destination you select. Invisible Sloth, LLC has no visibility into where you send exports or what happens to them after they leave your device.
+**Retention and requests:** We keep support correspondence while it is needed to resolve the request and for a limited period afterward for follow-up, security, and legal recordkeeping. We periodically review and delete correspondence that is no longer needed. Our email provider determines how long it keeps its own backup and recovery copies.
 
-When you import, Tracer reads the JSON backup file you choose. Import does not send that file to Invisible Sloth, LLC.
+We keep any copies of TestFlight information that Invisible Sloth controls only as long as reasonably necessary to administer beta testing, investigate issues, communicate with testers when appropriate, improve Tracer, resolve disputes, or meet legal obligations. Apple separately controls how long information is kept in TestFlight and App Store Connect. Apple currently states that it retains beta feedback for one year and may retain crash-log and usage data until related bugs are resolved. See <a href="https://www.apple.com/legal/privacy/data/en/test-flight/" target="_blank" rel="noopener noreferrer">TestFlight &amp; Privacy</a>.
 
-Exported files may contain the activity names, time entries, notes, and other information you created in Tracer. Tracer export files are not encrypted by Tracer, so keep that in mind when choosing where to save or send them.
+Email us to request a copy of support or TestFlight information we hold about you, or to ask us to correct or delete it. We may need to verify your request. Applicable law, information we must keep, providers' retention practices, and technical limitations may affect what we can do. Apple separately handles requests about information it controls under its own policies.
 
-## 6. Apple platform services
+## 6. Apple platform services and local diagnostics
 
-Tracer is currently distributed for beta testing through TestFlight and may later be distributed through Apple's App Store. Apple operates those platforms under Apple's own terms and privacy policies.
+Apple operates the App Store, purchases, downloads, device backups, and related platform services under Apple's own terms and privacy policies.
 
-For TestFlight builds, Apple may process tester, feedback, diagnostic, crash, session, screenshot, comment, device, and operating-system information as part of TestFlight and App Store Connect. Depending on how feedback is submitted and how a tester was invited, some of that information may be visible to Invisible Sloth, LLC through Apple's App Store Connect tools so we can review beta feedback and investigate issues.
+**Tracer Plus purchases:** Tracer Plus is an optional in-app purchase. Apple processes the payment, and we never receive your payment information. To check whether you own Tracer Plus, including through Family Sharing, Tracer reads purchase details that Apple provides on your device, such as the product, the purchase date, and whether a purchase was refunded. Tracer uses those details only on your device and does not send them to us. Family Sharing shares Tracer Plus with your family members, not your records.
 
-That Apple platform processing is separate from Tracer's local app data storage. Tracer itself does not automatically send your activity, entry, note, or preference data to Invisible Sloth, LLC.
+Tracer records limited information about its operation and errors in the iOS logging system. Any later collection or retention of diagnostic information by iOS is controlled by iOS and Apple, according to your settings and Apple's practices.
 
-Apple's privacy practices are governed by <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer">Apple's Privacy Policy</a>.
+**App Store diagnostics and usage statistics:** If you choose to share analytics with app developers, Apple may provide us with crash reports and statistics about how Tracer is used. Apple describes this information as aggregated or in a form that does not personally identify you. We use it to diagnose problems and improve Tracer. You can turn off **Share With App Developers** in iOS **Settings → Privacy & Security → Analytics & Improvements**. This setting does not turn off TestFlight's automatic collection described in Section 5. See <a href="https://www.apple.com/legal/privacy/data/en/app-analytics/" target="_blank" rel="noopener noreferrer">Apple's App Analytics &amp; Privacy notice</a>.
+
+We retain copies of Apple-provided App Store diagnostic reports only while needed to investigate problems and improve Tracer, or meet legal obligations. Apple separately controls retention in its services. You can contact us about information we hold, although aggregated or non-identifying reports may not let us locate information associated with you.
+
+Apple's practices are governed by <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer">Apple's Privacy Policy</a>.
 
 ## 7. Data retention, deletion, and security
 
-Because Tracer stores its app data locally on your device, you control retention and deletion:
+**Data on your device:** You can delete specific entries or activities using the applicable in-app actions. **Delete All Tracer Records** in Settings deletes every activity and entry record, including the notes stored in those records, from Tracer's current local database after you confirm the action. It does not reset app settings, delete copies outside the current database, or affect your Tracer Plus purchase. **Delete App** in iOS removes Tracer and its related local app data from that device. **Offload App** removes the app but keeps its documents and data so they can be available if you reinstall it.
 
-- **Delete specific entries or activities** – use the in-app delete actions.
-- **Delete all Tracer data** – delete the app from your iPhone. iOS removes the app's local database and associated app files from your device when the app is uninstalled.
+**Copies outside Tracer:** Files you save or send remain under your control and the control of the selected destination. Deleting data in Tracer or deleting the app does not delete exports stored elsewhere or the source file you selected for import. Depending on your settings, iCloud Backup or a computer backup may include Tracer's local app data, and deleting the app does not necessarily remove historical backup copies.
 
-Invisible Sloth, LLC does not retain copies of your Tracer app data on a server. There is no Tracer account to close and no server-side deletion request needed.
+**Security:** For data stored by the app, Tracer relies on the iOS app sandbox and iOS data protection. Security also depends on your device and backup settings, clipboard behavior, and selected export, sharing, or support destinations. No storage or transmission method is completely secure.
 
-**Device backups:** If your device backs up to iCloud or to a computer through Finder, or through iTunes on earlier macOS versions, Tracer's local database may be included in those system-level backups. Those backups are managed by Apple and iOS, not by Tracer. Uninstalling the app removes Tracer data from your device, but historical backup copies may persist until you manage them through your iCloud or device backup settings.
+## 8. Children's privacy
 
-**Exported files:** Files you export from Tracer are controlled by you and by the destination you choose. Deleting Tracer does not delete exported files you saved elsewhere.
+Tracer is a general-audience app and is not designed for children under 13. If you believe a child under 13 sent personal information to support, contact us and we will take appropriate steps to delete it.
 
-**How we protect data:** Tracer data is stored locally in the iOS app sandbox, and Tracer does not automatically transmit this data to Invisible Sloth, LLC. The security of your data also depends on your device security settings, your backup settings, and the destinations you choose when exporting or sharing. No method of electronic storage or transmission is 100% secure.
+## 9. Changes to this policy
 
-## 8. Future features that may change this policy
+We will update this policy when Tracer's data practices materially change. When a change affects information collected or shared by the app, we will also update the applicable App Store privacy disclosures before releasing that change. The effective date and changelog below show when this policy was revised.
 
-We will update this document and the App Privacy disclosures in App Store Connect before shipping changes that affect data practices. Examples include:
-
-- Cloud sync or backup
-- Analytics, crash-reporting, advertising, or tracking SDKs
-- New third-party SDKs that collect data or make network calls
-- Website analytics, hosted forms, cookies, third-party embeds, or other website processing that changes how Tracer support or legal pages handle information
-
-## 9. Children's privacy
-
-Tracer is a general-audience app and is not directed to children under 13. We do not knowingly collect personal information from children under 13 through the Tracer app. If you have questions, contact us using the email address below.
-
-## 10. Regional privacy rights
-
-Depending on where you live, you may have privacy rights under local law, including California privacy laws, GDPR, or UK GDPR. Because Tracer stores app data locally on your device and does not automatically transmit that data to Invisible Sloth, LLC, requests to access, delete, or correct Tracer app data can usually be handled directly on your device.
-
-If you contact us for support, we will use the information you send to respond to your request.
-
-## 11. Changes to this policy
-
-This policy describes our current data practices. Where this policy describes security, it describes controls currently in the product.
-
-When we make material changes to this policy, we will update the effective date at the top. For changes that affect data practices, we will update App Store Connect privacy disclosures before shipping the corresponding app version. A short changelog is maintained at the bottom of this document.
-
-## 12. Contact
+## 10. Contact
 
 If you have questions about this policy or Tracer's privacy practices, contact us:
 
@@ -127,15 +114,15 @@ Email: [support@invisiblesloth.com](mailto:support@invisiblesloth.com)
 Related links:
 
 - [Tracer](/tracer/)
-- [Terms of Use](/tracer/terms/)
+- [License Information](/tracer/terms/)
 - [Support](/tracer/#support)
 
 ---
 
 ## Changelog
 
-**Effective date:** 2026-05-19  
-**Last updated:** 2026-05-27
+**Effective date:** October 23, 2026<br>
+**Last updated:** October 23, 2026
 
 <div class="legal-document__table-scroll">
   <table>
@@ -147,6 +134,11 @@ Related links:
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td>October 23, 2026</td>
+        <td>1.2</td>
+        <td>Updated for Tracer Plus and App Store distribution. Clarified exports, imports, deletion, backups, support, TestFlight, and optional Apple diagnostic sharing. Clarified that this policy covers the app, not the website. Added our commitment not to sell this information or use it for advertising. Moved license information to the License Information page and open-source notices to Settings → About.</td>
+      </tr>
       <tr>
         <td>2026-05-27</td>
         <td>1.1</td>

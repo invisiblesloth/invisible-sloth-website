@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const EFFECTIVE_DATE = '2026-09-01';
+const WEBSITE_EFFECTIVE_DATE = '2026-09-01';
 const LEGAL_PAGES = [
   {
     route: 'privacy',
@@ -47,6 +47,36 @@ const LEGAL_PAGES = [
       'Source code and third-party materials',
       'Hosting and repository providers',
     ],
+  },
+  {
+    route: 'tracer/privacy',
+    title: 'Tracer Privacy Policy',
+    canonicalUrl: 'https://invisiblesloth.com/tracer/privacy/',
+    effectiveDate: 'October 23, 2026',
+    changelogVersion: '1.2',
+    headings: [
+      'The short version',
+      '1. What this policy covers',
+      '2. Information stored on your device',
+      '3. How information can leave your device',
+      '4. Data export, import, and sharing',
+      '5. Support and TestFlight information',
+      '6. Apple platform services and local diagnostics',
+      '7. Data retention, deletion, and security',
+      "8. Children's privacy",
+      '9. Changes to this policy',
+      '10. Contact',
+      'Changelog',
+    ],
+    subheadings: [],
+  },
+  {
+    route: 'tracer/terms',
+    title: 'Tracer License Information',
+    canonicalUrl: 'https://invisiblesloth.com/tracer/terms/',
+    updatedDate: 'October 23, 2026',
+    headings: ['App Store', 'Tracer Plus', 'TestFlight', 'Contact', 'Changelog'],
+    subheadings: [],
   },
 ];
 
@@ -94,8 +124,12 @@ async function checkSourcePage(page) {
 
   const frontmatter = frontmatterMatch[1];
   const body = content.slice(frontmatterMatch[0].length);
+  const layoutPath = path.posix.relative(
+    path.posix.dirname(relativePath),
+    'src/layouts/LegalDocumentLayout.astro',
+  );
   const expectedFrontmatter = [
-    'layout: ../layouts/LegalDocumentLayout.astro',
+    `layout: ${layoutPath}`,
     `title: ${page.title}`,
     `canonicalUrl: ${page.canonicalUrl}`,
   ];
@@ -123,14 +157,15 @@ async function checkSourcePage(page) {
     fail(`${relativePath} subsection headings no longer match the approved legal document.`);
   }
 
+  const effectiveDate = page.effectiveDate ?? WEBSITE_EFFECTIVE_DATE;
   const changelogIndex = body.indexOf('## Changelog');
   if (changelogIndex !== -1) {
     const introduction = body.slice(0, changelogIndex);
     const changelog = body.slice(changelogIndex);
 
     for (const line of [
-      `**Effective date:** ${EFFECTIVE_DATE}<br>`,
-      `**Last updated:** ${EFFECTIVE_DATE}`,
+      ...(page.updatedDate ? [] : [`**Effective date:** ${effectiveDate}<br>`]),
+      `**Last updated:** ${page.updatedDate ?? effectiveDate}`,
     ]) {
       if (!changelog.includes(line)) {
         fail(`${relativePath} changelog is missing required publication metadata: ${line}`);
@@ -139,6 +174,19 @@ async function checkSourcePage(page) {
 
     if (/\*\*(?:Effective date|Last updated):\*\*/.test(introduction)) {
       fail(`${relativePath} must keep publication dates out of the introduction.`);
+    }
+  }
+
+  if (page.updatedDate && !body.includes(`**Last updated:** ${page.updatedDate}`)) {
+    fail(`${relativePath} is missing the approved last-updated date.`);
+  }
+
+  if (page.changelogVersion) {
+    const firstRow = body.match(/<tbody>\s*<tr>([\s\S]*?)<\/tr>/)?.[1] ?? '';
+    const cells = Array.from(firstRow.matchAll(/<td>([\s\S]*?)<\/td>/g), (match) => match[1]);
+
+    if (cells[0] !== effectiveDate || cells[1] !== page.changelogVersion) {
+      fail(`${relativePath} must begin its changelog with ${effectiveDate}, version ${page.changelogVersion}.`);
     }
   }
 
@@ -204,6 +252,27 @@ async function checkBuiltPage(page) {
     }
   }
 
+  const effectiveDate = page.effectiveDate ?? WEBSITE_EFFECTIVE_DATE;
+  const publicationMetadata = [
+    ...(page.updatedDate ? [] : [`<strong>Effective date:</strong> ${effectiveDate}`]),
+    `<strong>Last updated:</strong> ${page.updatedDate ?? effectiveDate}`,
+  ];
+
+  for (const markup of publicationMetadata) {
+    if (!html.includes(markup)) {
+      fail(`${relativePath} is missing approved rendered publication metadata: ${markup}`);
+    }
+  }
+
+  if (page.changelogVersion) {
+    const firstRow = html.match(/<tbody>\s*<tr>([\s\S]*?)<\/tr>/)?.[1] ?? '';
+    const cells = Array.from(firstRow.matchAll(/<td>([\s\S]*?)<\/td>/g), (match) => match[1]);
+
+    if (cells[0] !== effectiveDate || cells[1] !== page.changelogVersion) {
+      fail(`${relativePath} must render ${effectiveDate}, version ${page.changelogVersion} first in its changelog.`);
+    }
+  }
+
   const robots = html.match(/<meta\b[^>]*\bname="robots"[^>]*>/)?.[0] ?? '';
 
   if (/noindex/i.test(robots)) {
@@ -213,10 +282,35 @@ async function checkBuiltPage(page) {
   checkExternalAnchors(relativePath, html);
 }
 
+async function checkTracerLinkLabels() {
+  for (const relativePath of [
+    'dist/terms/index.html',
+    'dist/tracer/index.html',
+    'dist/tracer/privacy/index.html',
+  ]) {
+    const absolutePath = path.join(ROOT, relativePath);
+    if (!existsSync(absolutePath)) {
+      fail(`${relativePath} is missing. Run npm run build before npm run check:legal.`);
+      continue;
+    }
+
+    const html = await readFile(absolutePath, 'utf8');
+    const links = Array.from(
+      html.matchAll(/<a\b[^>]*\bhref="\/tracer\/terms\/"[^>]*>([\s\S]*?)<\/a>/g),
+      (match) => match[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim(),
+    );
+    if (links.length === 0 || links.some((label) => !label.includes('License Information'))) {
+      fail(`${relativePath} must label Tracer license links as License Information.`);
+    }
+  }
+}
+
 for (const page of LEGAL_PAGES) {
   await checkSourcePage(page);
   await checkBuiltPage(page);
 }
+
+await checkTracerLinkLabels();
 
 if (failures.length > 0) {
   console.error('Legal page check failed:');
