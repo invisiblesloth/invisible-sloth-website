@@ -131,6 +131,46 @@ const supportDocuments: ProductSupportDocumentLink[] = [
             documents={supportDocuments}
           />
         </div>
+
+        <Container size="sm">
+          <ContentSection
+            id="data-and-backups"
+            heading="Data and Backups"
+            headingLevel="h3"
+            visualLevel="h4"
+            bodyMode="prose"
+          >
+            <p>
+              Your records are stored on your iPhone. Tracer has no account, cloud sync, or
+              automatic backup service. Invisible Sloth does not keep a recovery copy.
+              Apple-managed device backups may include Tracer data, depending on your device
+              settings.
+            </p>
+            <p><strong>In Tracer, open Settings → Your Data.</strong></p>
+            <ul>
+              <li>
+                <strong>Export Backup</strong> creates a JSON file. Use the iOS share sheet
+                to save it somewhere you can reach from another device, such as iCloud Drive.
+                Confirm the file is there and keep it.
+              </li>
+              <li>
+                <strong>Export CSV</strong> creates a file for spreadsheets. Requires Tracer Plus.
+                A CSV file can’t restore your Tracer records.
+              </li>
+              <li>
+                <strong>Import Backup</strong> restores records from a saved JSON backup. When
+                you confirm <strong>Replace All Data</strong>, Tracer replaces all current
+                activities and entries with the records in that backup. Save a current JSON
+                backup before importing.
+              </li>
+            </ul>
+            <p>
+              <strong>Restore Purchases</strong> is on the Tracer Plus screen in Settings. It
+              restores access to Tracer Plus. To restore your records, use <strong>Import Backup</strong>
+              with a saved JSON backup.
+            </p>
+          </ContentSection>
+        </Container>
       </section>
     </section>
   </main>
@@ -146,6 +186,8 @@ const supportDocuments: ProductSupportDocumentLink[] = [
   }
 
   .tracer-page__support {
+    display: grid;
+    gap: var(--space-section-block);
     padding-block-end: var(--space-section-block);
   }
 
