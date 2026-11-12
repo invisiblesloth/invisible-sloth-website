@@ -1,3 +1,5 @@
+import { TRACER_OPERATING_SYSTEM } from './tracerProductStatus';
+
 export type SocialImage = {
   src: string;
   alt: string;
@@ -156,9 +158,8 @@ export function createTracerJsonLd(
         '@id': TRACER_APP_ID,
         url: TRACER_URL,
         name: 'Tracer',
-        description:
-          'Tracer is currently in private beta. It is an on-device time tracker for iPhone with no account or cloud service.',
-        operatingSystem: 'iOS 18 or later',
+        description: pageDescription,
+        operatingSystem: TRACER_OPERATING_SYSTEM,
         applicationCategory: 'UtilitiesApplication',
         publisher: idReference(ORGANIZATION_ID),
       },

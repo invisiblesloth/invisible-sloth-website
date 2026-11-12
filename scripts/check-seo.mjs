@@ -62,9 +62,9 @@ const ROUTES = [
   {
     path: '/tracer/',
     output: 'dist/tracer/index.html',
-    title: 'Tracer: Private Time Tracker for iPhone | Invisible Sloth',
+    title: 'Tracer: Personal Time Tracker for iPhone | Invisible Sloth',
     description:
-      'Tracer is a private, on-device time tracker for iPhone. Track activities, edit or add entries, review reports, and export your data—no account required.',
+      'Keep a clear record of your time with Tracer for iPhone. Track projects, hobbies, work, and everyday life. No sign-up or subscription.',
     structuredData: 'tracer',
   },
   {
@@ -246,8 +246,7 @@ function expectedTracerGraph(route) {
         '@id': `${SITE_ORIGIN}/tracer/#app`,
         url: `${SITE_ORIGIN}/tracer/`,
         name: 'Tracer',
-        description:
-          'Tracer is currently in private beta. It is an on-device time tracker for iPhone with no account or cloud service.',
+        description: route.description,
         operatingSystem: 'iOS 18 or later',
         applicationCategory: 'UtilitiesApplication',
         publisher: { '@id': `${SITE_ORIGIN}/#organization` },

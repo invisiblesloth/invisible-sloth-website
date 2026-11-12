@@ -5,17 +5,15 @@ import PageHeader from "../../components/PageHeader.svelte";
 import RichTextBlock from "../../components/RichTextBlock.svelte";
 import ProductStatus from "../../components/ProductStatus.svelte";
 import ContentSection from "../../components/ContentSection.svelte";
-import FeatureList from "../../components/FeatureList.svelte";
 import ProductSupport from "../../components/ProductSupport.svelte";
 import type { PageHeaderMedia } from "../../components/PageHeader.svelte";
-import type { FeatureListItem } from "../../components/FeatureList.svelte";
 import type { ProductSupportDocumentLink } from "../../components/ProductSupport.svelte";
 import { TRACER_PRODUCT_STATUS } from "../../lib/tracerProductStatus";
 import { createTracerJsonLd, TRACER_URL } from "../../lib/seo";
 
-const pageTitle = "Tracer: Private Time Tracker for iPhone | Invisible Sloth";
+const pageTitle = "Tracer: Personal Time Tracker for iPhone | Invisible Sloth";
 const pageDescription =
-  "Tracer is a private, on-device time tracker for iPhone. Track activities, edit or add entries, review reports, and export your data—no account required.";
+  "Keep a clear record of your time with Tracer for iPhone. Track projects, hobbies, work, and everyday life. No sign-up or subscription.";
 const jsonLd = createTracerJsonLd(pageTitle, pageDescription);
 
 const tracerPreviewMedia: PageHeaderMedia = {
@@ -37,28 +35,6 @@ const tracerPreviewMedia: PageHeaderMedia = {
   },
   captionText: "Composite preview of Tracer; not an in-app screenshot.",
 };
-
-const tracerFeatures: FeatureListItem[] = [
-  {
-    title: "Keep everything on your iPhone.",
-    description:
-      "Your activities, entries, and notes stay on your device. Exporting or sharing is your call.",
-  },
-  {
-    title: "Run one timer at a time.",
-    description: "Starting a new activity automatically stops and saves the previous one.",
-  },
-  {
-    title: "Edit any time.",
-    description:
-      "Add notes, change start or end times, change the activity for an entry, or record time you forgot to track.",
-  },
-  {
-    title: "See totals by activity.",
-    description:
-      "Review the week or day chart, browse the log of recorded entries, and see totals for each activity over time.",
-  },
-];
 
 const supportDocuments: ProductSupportDocumentLink[] = [
   {
@@ -83,21 +59,16 @@ const supportDocuments: ProductSupportDocumentLink[] = [
     <section class="tracer-page__section">
       <PageHeader
         title="Tracer"
-        excerpt="Simple, On-Device Time Tracking"
+        excerpt="Keep a clear record of your time. No sign-up or subscription."
         media={tracerPreviewMedia}
       />
 
       <Container size="sm" class="tracer-page__content-group">
         <RichTextBlock>
           <p>
-            Tracer is a small time tracker for iPhone. No sign-up, no account, no cloud
-            service. Create the activities you want to track, run one at a time, and edit
-            entries any time — add time you forgot, fix mistakes, or look back at how your
-            time was spent.
-          </p>
-          <p>
-            Tracer is built for people who want a straightforward record of their time
-            without joining another service or sharing their data.
+            Tracer is a personal time tracker for iPhone. Track projects, hobbies, work, and
+            everyday life, and see how you spend your time. The app has no servers, ads, or
+            third-party analytics.
           </p>
         </RichTextBlock>
       </Container>
@@ -107,13 +78,37 @@ const supportDocuments: ProductSupportDocumentLink[] = [
       </Container>
 
       <Container size="sm" class="tracer-page__content-group">
-        <ContentSection
-          heading="Features"
-          headingLevel="h2"
-          visualLevel="h2"
-          bodyMode="structured"
-        >
-          <FeatureList items={tracerFeatures} />
+        <ContentSection heading="Use Tracer Free" headingLevel="h2" bodyMode="prose">
+          <ul>
+            <li>Track one activity at a time. Save it and start the next in one step.</li>
+            <li>
+              Change the activity or start time while the timer is running. Add or edit
+              entries manually, and add notes to activities and entries.
+            </li>
+            <li>
+              Browse and edit your history. Review daily and weekly charts and see totals
+              for today, this week, this month, and more.
+            </li>
+            <li>
+              Create new activities when you have fewer than three active. Give each activity
+              its own color, and archive activities to make room while keeping their history.
+              The same limit applies when restoring archived activities.
+            </li>
+            <li>
+              Back up and restore your records. See <a href="#data-and-backups">Data and Backups</a>
+              for details.
+            </li>
+          </ul>
+        </ContentSection>
+      </Container>
+
+      <Container size="sm" class="tracer-page__content-group">
+        <ContentSection heading="Tracer Plus" headingLevel="h2" bodyMode="prose">
+          <p>
+            An optional one-time purchase unlocks unlimited active activities, CSV export
+            for spreadsheets, and new Tracer Plus features as they’re released. Tracer Plus
+            supports Family Sharing. Each person’s records stay separate.
+          </p>
         </ContentSection>
       </Container>
 

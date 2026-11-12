@@ -43,12 +43,12 @@
     {
       id: 'tracer',
       title: 'Tracer',
-      subhead: 'Simple, On-Device Time Tracking',
+      subhead: 'Personal Time Tracking for iPhone',
       description:
-        'Tracer is a minimal time tracker with no sign-up or accounts, and everything runs on your device. Create activities and start tracking. Track one thing or everything, edit entries whenever you need. Tracer helps you build habits and gives you a clear picture of how you spend your time.',
+        'Keep a clear record of your time. Track projects, hobbies, work, and everyday life without signing up or subscribing.',
       badges: [
         { variant: 'apple', label: 'Apple Platforms' },
-        { variant: 'default', label: 'In External Testing' },
+        { variant: 'default', label: 'On the App Store' },
       ],
     },
     {
