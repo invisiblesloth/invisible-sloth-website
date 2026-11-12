@@ -513,7 +513,7 @@ function validateTracerLaunchStatus(route, pageElements) {
   const statusClass = homepage ? 'badge__label' : 'product-status__headline';
   const expectedStatus = homepage ? 'On the App Store' : 'Available on the App Store in the U.S.';
   const statusLabels = [...elements(scope)]
-    .filter((element) => hasClass(element, statusClass))
+    .filter((element) => hasClass(element, statusClass) && !isHiddenInPage(element))
     .map(renderedText);
   if (!statusLabels.includes(expectedStatus)) {
     fail(`${route.output} is missing the visible Tracer launch status "${expectedStatus}".`);
