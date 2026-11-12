@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
+import { parse } from 'parse5';
 import {
   getNavigationAriaCurrent,
   hasExactActiveNavigationItem,
@@ -373,17 +374,26 @@ function validateInternalLinks(route, html) {
   }
 }
 
-function validateTracerSupportAnchors(route, html) {
-  if (route.path !== '/tracer/') {
-    return;
+function* elements(node) {
+  if (node.tagName) {
+    yield node;
   }
 
-  const sectionIds = tagsNamed(html, 'section').map((tag) => parseAttributes(tag).get('id'));
+  for (const child of node.childNodes ?? []) {
+    yield* elements(child);
+  }
+}
 
+function elementAttribute(element, name) {
+  return element.attrs.find((attribute) => attribute.name === name)?.value;
+}
+
+function validateTracerSupportAnchors(route, pageElements) {
   for (const id of ['support', 'data-and-backups']) {
-    const count = sectionIds.filter((sectionId) => sectionId === id).length;
-    if (count !== 1) {
-      fail(`${route.output} must contain exactly one section with id="${id}"; found ${count}.`);
+    const targets = pageElements.filter((element) => elementAttribute(element, 'id') === id);
+    if (targets.length !== 1 || targets[0].tagName !== 'section') {
+      const tags = targets.map((element) => element.tagName).join(', ') || 'none';
+      fail(`${route.output} must have one unique section with id="${id}"; found ${tags}.`);
     }
   }
 }
@@ -536,7 +546,9 @@ function validatePage(route, html) {
 
   validateStructuredData(route, html);
   validateInternalLinks(route, html);
-  validateTracerSupportAnchors(route, html);
+  if (route.path === '/tracer/') {
+    validateTracerSupportAnchors(route, [...elements(parse(html))]);
+  }
   validateActiveTracerNavigation(route, html);
 }
 
