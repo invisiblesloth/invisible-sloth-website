@@ -467,6 +467,10 @@ function nearestSection(node) {
   }
 }
 
+function hasClass(element, className) {
+  return (elementAttribute(element, 'class') ?? '').split(/\s+/).includes(className);
+}
+
 function validateTracerSupportAnchors(route, pageElements) {
   const supportHeading = pageElements.find((element) => element.tagName === 'h2' &&
     renderedText(element) === 'Support' && !isHiddenInPage(element));
@@ -483,6 +487,39 @@ function validateTracerSupportAnchors(route, pageElements) {
     } else if (id === 'data-and-backups' && !hasSectionHeading(targets[0], 'h3', 'Data and Backups')) {
       fail(`${route.output} id="${id}" must belong to the Data and Backups section.`);
     }
+  }
+
+  const backupLinks = pageElements
+    .filter((element) => element.tagName === 'a' && renderedText(element) === 'Data and Backups')
+    .map((element) => elementAttribute(element, 'href'));
+  assertDeepEqual(backupLinks, ['#data-and-backups'], `${route.output} Data and Backups link`);
+}
+
+function validateTracerLaunchStatus(route, pageElements) {
+  const homepage = route.path === '/';
+  const scope = homepage
+    ? pageElements.filter((element) => hasClass(element, 'project-card')).find((card) =>
+        [...elements(card)].some((element) =>
+          hasClass(element, 'project-card__title') && renderedText(element) === 'Tracer',
+        ),
+      )
+    : pageElements.find((element) => element.tagName === 'main' && hasClass(element, 'tracer-page'));
+
+  if (!scope) {
+    fail(`${route.output} is missing the rendered Tracer content.`);
+    return;
+  }
+
+  const statusClass = homepage ? 'badge__label' : 'product-status__headline';
+  const expectedStatus = homepage ? 'On the App Store' : 'Available on the App Store in the U.S.';
+  const statusLabels = [...elements(scope)]
+    .filter((element) => hasClass(element, statusClass))
+    .map(renderedText);
+  if (!statusLabels.includes(expectedStatus)) {
+    fail(`${route.output} is missing the visible Tracer launch status "${expectedStatus}".`);
+  }
+  if (/private beta|in external testing/i.test(renderedText(scope))) {
+    fail(`${route.output} still contains Tracer beta availability wording.`);
   }
 }
 
@@ -634,8 +671,12 @@ function validatePage(route, html) {
 
   validateStructuredData(route, html);
   validateInternalLinks(route, html);
-  if (route.path === '/tracer/') {
-    validateTracerSupportAnchors(route, [...elements(parse(html))]);
+  if (route.path === '/' || route.path === '/tracer/') {
+    const pageElements = [...elements(parse(html))];
+    if (route.path === '/tracer/') {
+      validateTracerSupportAnchors(route, pageElements);
+    }
+    validateTracerLaunchStatus(route, pageElements);
   }
   validateActiveTracerNavigation(route, html);
 }
