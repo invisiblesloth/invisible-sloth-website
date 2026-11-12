@@ -373,6 +373,21 @@ function validateInternalLinks(route, html) {
   }
 }
 
+function validateTracerSupportAnchors(route, html) {
+  if (route.path !== '/tracer/') {
+    return;
+  }
+
+  const sectionIds = tagsNamed(html, 'section').map((tag) => parseAttributes(tag).get('id'));
+
+  for (const id of ['support', 'data-and-backups']) {
+    const count = sectionIds.filter((sectionId) => sectionId === id).length;
+    if (count !== 1) {
+      fail(`${route.output} must contain exactly one section with id="${id}"; found ${count}.`);
+    }
+  }
+}
+
 function decodeAstroSerializedValue(value) {
   if (Array.isArray(value)) {
     if (value[0] === 0) {
@@ -521,6 +536,7 @@ function validatePage(route, html) {
 
   validateStructuredData(route, html);
   validateInternalLinks(route, html);
+  validateTracerSupportAnchors(route, html);
   validateActiveTracerNavigation(route, html);
 }
 
