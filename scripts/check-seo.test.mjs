@@ -126,3 +126,26 @@ test('resolves inline display overrides without matching text in other declarati
     html, backup, (markup) => withAttribute(markup, 'style="DISPLAY: /* comment */ NONE !important; display:block"'),
   ), /id="data-and-backups" must be visible/);
 });
+
+const backupTarget = (node) => attribute(node, 'id') === 'data-and-backups';
+
+test('ignores display:none with an invalid priority', () => {
+  checkMutation(product, (html) => editElement(
+    html, backupTarget, (markup) => withAttribute(markup, 'style="display:none !importnt"'),
+  ));
+});
+
+test('ignores an invalid priority on a later display override', () => {
+  checkMutation(product, (html) => editElement(
+    html, backupTarget, (markup) => withAttribute(markup, 'style="display:none; display:block !importnt"'),
+  ), /id="data-and-backups" must be visible/);
+});
+
+test('honors mixed-case important inline display priorities', () => {
+  checkMutation(product, (html) => editElement(
+    html, backupTarget, (markup) => withAttribute(markup, 'style="display:none !important; display:block !ImPoRtAnT"'),
+  ));
+  checkMutation(product, (html) => editElement(
+    html, backupTarget, (markup) => withAttribute(markup, 'style="display:none !ImPoRtAnT; display:block"'),
+  ), /id="data-and-backups" must be visible/);
+});

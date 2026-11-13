@@ -401,7 +401,10 @@ function hasInlineDisplayNone(style) {
         ident.decode(declaration.property).toLowerCase() !== 'display') {
       continue;
     }
-    if (display?.important && !declaration.important) {
+    const priority = declaration.important;
+    const important = priority === true ||
+      (typeof priority === 'string' && ident.decode(priority).toLowerCase() === 'important');
+    if ((priority && !important) || (display?.important && !important)) {
       continue;
     }
 
@@ -409,7 +412,7 @@ function hasInlineDisplayNone(style) {
     const token = tokens?.size === 1 ? tokens.first : undefined;
     const isNone = token?.type === 'Identifier' && ident.decode(token.name).toLowerCase() === 'none';
     if (isNone || lexer.matchProperty('display', declaration.value).matched) {
-      display = { important: declaration.important, isNone };
+      display = { important, isNone };
     }
   }
   return display?.isNone === true;
