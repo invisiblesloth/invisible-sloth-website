@@ -389,33 +389,37 @@ function elementAttribute(element, name) {
   return element.attrs.find((attribute) => attribute.name === name)?.value;
 }
 
-// Resolve literal inline display declarations without simulating the stylesheet cascade.
-function hasInlineDisplayNone(style) {
+// Resolve literal inline hiding declarations without simulating the stylesheet cascade.
+function isHiddenByInlineStyle(style) {
   if (!style) {
     return false;
   }
 
-  let display;
+  const declarations = new Map();
   for (const declaration of parseCss(style, { context: 'declarationList' }).children) {
-    if (declaration.type !== 'Declaration' ||
-        ident.decode(declaration.property).toLowerCase() !== 'display') {
+    if (declaration.type !== 'Declaration') {
+      continue;
+    }
+    const property = ident.decode(declaration.property).toLowerCase();
+    if (property !== 'display' && property !== 'visibility') {
       continue;
     }
     const priority = declaration.important;
     const important = priority === true ||
       (typeof priority === 'string' && ident.decode(priority).toLowerCase() === 'important');
-    if ((priority && !important) || (display?.important && !important)) {
+    if ((priority && !important) || (declarations.get(property)?.important && !important)) {
       continue;
     }
 
     const tokens = declaration.value.children;
     const token = tokens?.size === 1 ? tokens.first : undefined;
-    const isNone = token?.type === 'Identifier' && ident.decode(token.name).toLowerCase() === 'none';
-    if (isNone || lexer.matchProperty('display', declaration.value).matched) {
-      display = { important, isNone };
+    const keyword = token?.type === 'Identifier' ? ident.decode(token.name).toLowerCase() : undefined;
+    const hides = property === 'display' ? keyword === 'none' : keyword === 'hidden';
+    if (hides || lexer.matchProperty(property, declaration.value).matched) {
+      declarations.set(property, { important, hides });
     }
   }
-  return display?.isNone === true;
+  return [...declarations.values()].some(({ hides }) => hides);
 }
 
 function isHidden(node) {
@@ -426,7 +430,7 @@ function isHidden(node) {
   return elementAttribute(node, 'hidden') !== undefined ||
     classes.includes('hidden') ||
     classes.includes('invisible') ||
-    hasInlineDisplayNone(elementAttribute(node, 'style'));
+    isHiddenByInlineStyle(elementAttribute(node, 'style'));
 }
 
 function isHiddenInPage(node) {

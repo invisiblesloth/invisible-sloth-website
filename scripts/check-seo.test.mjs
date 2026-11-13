@@ -100,7 +100,9 @@ for (const id of ['support', 'data-and-backups']) {
   });
 
   test(`rejects a hidden ${id} target or ancestor`, () => {
-    for (const value of ['hidden', 'class="hidden"', 'class="invisible"', 'style="display:none"']) {
+    for (const value of [
+      'hidden', 'class="hidden"', 'class="invisible"', 'style="display:none"', 'style="visibility:hidden"',
+    ]) {
       checkMutation(product, (html) => editElement(html, match, (markup) => {
         // Keep existing classes when adding a visibility utility.
         if (value.startsWith('class=') && /^<[^>]* class="/.test(markup)) {
@@ -128,6 +130,12 @@ test('resolves inline display overrides without matching text in other declarati
 });
 
 const backupTarget = (node) => attribute(node, 'id') === 'data-and-backups';
+
+test('honors a later inline visibility override', () => {
+  checkMutation(product, (html) => editElement(
+    html, backupTarget, (markup) => withAttribute(markup, 'style="visibility:hidden; visibility:visible"'),
+  ));
+});
 
 test('ignores display:none with an invalid priority', () => {
   checkMutation(product, (html) => editElement(
