@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
+import { ident, lexer, parse as parseCss } from 'css-tree';
 import { parse } from 'parse5';
 import {
   getNavigationAriaCurrent,
@@ -388,6 +389,32 @@ function elementAttribute(element, name) {
   return element.attrs.find((attribute) => attribute.name === name)?.value;
 }
 
+// Resolve literal inline display declarations without simulating the stylesheet cascade.
+function hasInlineDisplayNone(style) {
+  if (!style) {
+    return false;
+  }
+
+  let display;
+  for (const declaration of parseCss(style, { context: 'declarationList' }).children) {
+    if (declaration.type !== 'Declaration' ||
+        ident.decode(declaration.property).toLowerCase() !== 'display') {
+      continue;
+    }
+    if (display?.important && !declaration.important) {
+      continue;
+    }
+
+    const tokens = declaration.value.children;
+    const token = tokens?.size === 1 ? tokens.first : undefined;
+    const isNone = token?.type === 'Identifier' && ident.decode(token.name).toLowerCase() === 'none';
+    if (isNone || lexer.matchProperty('display', declaration.value).matched) {
+      display = { important: declaration.important, isNone };
+    }
+  }
+  return display?.isNone === true;
+}
+
 function isHidden(node) {
   if (!node.tagName) {
     return false;
@@ -395,7 +422,8 @@ function isHidden(node) {
   const classes = (elementAttribute(node, 'class') ?? '').split(/[\t\n\f\r ]+/);
   return elementAttribute(node, 'hidden') !== undefined ||
     classes.includes('hidden') ||
-    classes.includes('invisible');
+    classes.includes('invisible') ||
+    hasInlineDisplayNone(elementAttribute(node, 'style'));
 }
 
 function isHiddenInPage(node) {
@@ -425,7 +453,18 @@ function hasSectionHeading(section, tagName, title) {
   return section.childNodes.some((child) => child.tagName === tagName && renderedText(child) === title);
 }
 
+function nearestSection(node) {
+  for (let parent = node.parentNode; parent; parent = parent.parentNode) {
+    if (parent.tagName === 'section') {
+      return parent;
+    }
+  }
+}
+
 function validateTracerSupportAnchors(route, pageElements) {
+  const supportHeading = pageElements.find((element) => element.tagName === 'h2' &&
+    renderedText(element) === 'Support' && !isHiddenInPage(element));
+  const supportSection = supportHeading && nearestSection(supportHeading);
   for (const id of ['support', 'data-and-backups']) {
     const targets = pageElements.filter((element) => elementAttribute(element, 'id') === id);
     if (targets.length !== 1 || targets[0].tagName !== 'section') {
@@ -433,6 +472,8 @@ function validateTracerSupportAnchors(route, pageElements) {
       fail(`${route.output} must have one unique section with id="${id}"; found ${tags}.`);
     } else if (isHiddenInPage(targets[0])) {
       fail(`${route.output} section with id="${id}" must be visible.`);
+    } else if (id === 'support' && targets[0] !== supportSection) {
+      fail(`${route.output} id="support" must belong to the nearest section containing the visible Support heading.`);
     } else if (id === 'data-and-backups' && !hasSectionHeading(targets[0], 'h3', 'Data and Backups')) {
       fail(`${route.output} id="${id}" must belong to the Data and Backups section.`);
     }

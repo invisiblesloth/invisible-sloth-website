@@ -45,6 +45,7 @@ jobs:
         run: |
           npm run build
           npm run check:seo
+          npm run test:seo
           npm run check:legal
           npm run check:rich-text
           npm run build-storybook
