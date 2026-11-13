@@ -388,12 +388,27 @@ function elementAttribute(element, name) {
   return element.attrs.find((attribute) => attribute.name === name)?.value;
 }
 
+function isHidden(node) {
+  return node.attrs?.some((attribute) => attribute.name === 'hidden');
+}
+
+function isHiddenInPage(node) {
+  for (let current = node; current; current = current.parentNode) {
+    if (isHidden(current)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function validateTracerSupportAnchors(route, pageElements) {
   for (const id of ['support', 'data-and-backups']) {
     const targets = pageElements.filter((element) => elementAttribute(element, 'id') === id);
     if (targets.length !== 1 || targets[0].tagName !== 'section') {
       const tags = targets.map((element) => element.tagName).join(', ') || 'none';
       fail(`${route.output} must have one unique section with id="${id}"; found ${tags}.`);
+    } else if (isHiddenInPage(targets[0])) {
+      fail(`${route.output} section with id="${id}" must be visible.`);
     }
   }
 }
