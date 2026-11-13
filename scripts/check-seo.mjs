@@ -389,7 +389,11 @@ function elementAttribute(element, name) {
 }
 
 function isHidden(node) {
-  return node.attrs?.some((attribute) => attribute.name === 'hidden');
+  if (!node.tagName) {
+    return false;
+  }
+  const classes = (elementAttribute(node, 'class') ?? '').split(/[\t\n\f\r ]+/);
+  return elementAttribute(node, 'hidden') !== undefined || classes.includes('hidden');
 }
 
 function isHiddenInPage(node) {
