@@ -490,9 +490,12 @@ function validateTracerSupportAnchors(route, pageElements) {
   }
 
   const backupLinks = pageElements
-    .filter((element) => element.tagName === 'a' && renderedText(element) === 'Data and Backups')
+    .filter(
+      (element) => element.tagName === 'a' && !isHiddenInPage(element) &&
+        renderedText(element) === 'Data and Backups',
+    )
     .map((element) => elementAttribute(element, 'href'));
-  assertDeepEqual(backupLinks, ['#data-and-backups'], `${route.output} Data and Backups link`);
+  assertDeepEqual(backupLinks, ['#data-and-backups'], `${route.output} visible Data and Backups link`);
 }
 
 function validateTracerLaunchStatus(route, pageElements) {
