@@ -157,3 +157,42 @@ test('honors mixed-case important inline display priorities', () => {
     html, backupTarget, (markup) => withAttribute(markup, 'style="display:none !ImPoRtAnT; display:block"'),
   ), /id="data-and-backups" must be visible/);
 });
+
+const backupLink = (node) => node.tagName === 'a' && attribute(node, 'href') === '#data-and-backups';
+const launchBadgeLabel = (node) => node.tagName === 'span' &&
+  node.childNodes.some((child) => child.value === 'On the App Store');
+
+test('requires the backup link in Use Tracer Free and allows a second link in the footer', () => {
+  const diagnostic = /visible Data and Backups link in Use Tracer Free/;
+  checkMutation(product, (html) => editElement(html, backupLink, (link) => {
+    return link.replace('href="#data-and-backups"', 'href="#support"');
+  }), diagnostic);
+
+  const footerLink = '<a href="#data-and-backups">Data and Backups</a></footer>';
+  checkMutation(product, (html) => editElement(html, backupLink, () => '')
+    .replace('</footer>', footerLink), diagnostic);
+  checkMutation(product, (html) => html.replace('</footer>', footerLink));
+});
+
+test('rejects launch content hidden by inline display on the element or an ancestor', () => {
+  const cases = [
+    [product, backupLink, /visible Data and Backups link in Use Tracer Free/],
+    [product, (node) => attribute(node, 'class')?.includes('product-status__headline'),
+      /missing the visible Tracer launch status/],
+    ['dist/index.html', launchBadgeLabel, /missing the visible Tracer launch status/],
+  ];
+  for (const [file, match, diagnostic] of cases) {
+    checkMutation(file, (html) => editElement(
+      html, match, (markup) => withAttribute(markup, 'style="display:none"'),
+    ), diagnostic);
+    checkMutation(file, (html) => editElement(
+      html, match, (markup) => `<span style="display:none">${markup}</span>`,
+    ), diagnostic);
+  }
+});
+
+test('requires the visible homepage badge label even when its title remains', () => {
+  checkMutation('dist/index.html', (html) => editElement(
+    html, launchBadgeLabel, (label) => label.replace('>On the App Store<', '><'),
+  ), /missing the visible Tracer launch status/);
+});
