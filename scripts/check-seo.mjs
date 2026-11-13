@@ -393,7 +393,9 @@ function isHidden(node) {
     return false;
   }
   const classes = (elementAttribute(node, 'class') ?? '').split(/[\t\n\f\r ]+/);
-  return elementAttribute(node, 'hidden') !== undefined || classes.includes('hidden');
+  return elementAttribute(node, 'hidden') !== undefined ||
+    classes.includes('hidden') ||
+    classes.includes('invisible');
 }
 
 function isHiddenInPage(node) {
@@ -405,6 +407,24 @@ function isHiddenInPage(node) {
   return false;
 }
 
+function textContent(node) {
+  if (node.nodeName === '#text') {
+    return node.value;
+  }
+  if (['script', 'style', 'template'].includes(node.tagName) || isHidden(node)) {
+    return '';
+  }
+  return (node.childNodes ?? []).map(textContent).join('');
+}
+
+function renderedText(node) {
+  return textContent(node).replace(/\s+/g, ' ').trim();
+}
+
+function hasSectionHeading(section, tagName, title) {
+  return section.childNodes.some((child) => child.tagName === tagName && renderedText(child) === title);
+}
+
 function validateTracerSupportAnchors(route, pageElements) {
   for (const id of ['support', 'data-and-backups']) {
     const targets = pageElements.filter((element) => elementAttribute(element, 'id') === id);
@@ -413,6 +433,8 @@ function validateTracerSupportAnchors(route, pageElements) {
       fail(`${route.output} must have one unique section with id="${id}"; found ${tags}.`);
     } else if (isHiddenInPage(targets[0])) {
       fail(`${route.output} section with id="${id}" must be visible.`);
+    } else if (id === 'data-and-backups' && !hasSectionHeading(targets[0], 'h3', 'Data and Backups')) {
+      fail(`${route.output} id="${id}" must belong to the Data and Backups section.`);
     }
   }
 }
