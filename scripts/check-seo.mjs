@@ -488,14 +488,24 @@ function validateTracerSupportAnchors(route, pageElements) {
       fail(`${route.output} id="${id}" must belong to the Data and Backups section.`);
     }
   }
+}
 
-  const backupLinks = pageElements
+function validateTracerBackupLink(route, pageElements) {
+  const freeSection = pageElements.find(
+    (element) => element.tagName === 'section' && !isHiddenInPage(element) &&
+      hasSectionHeading(element, 'h2', 'Use Tracer Free'),
+  );
+  const backupLinks = (freeSection ? [...elements(freeSection)] : [])
     .filter(
       (element) => element.tagName === 'a' && !isHiddenInPage(element) &&
         renderedText(element) === 'Data and Backups',
     )
     .map((element) => elementAttribute(element, 'href'));
-  assertDeepEqual(backupLinks, ['#data-and-backups'], `${route.output} visible Data and Backups link`);
+  assertDeepEqual(
+    backupLinks,
+    ['#data-and-backups'],
+    `${route.output} visible Data and Backups link in Use Tracer Free`,
+  );
 }
 
 function validateTracerLaunchStatus(route, pageElements) {
@@ -678,6 +688,7 @@ function validatePage(route, html) {
     const pageElements = [...elements(parse(html))];
     if (route.path === '/tracer/') {
       validateTracerSupportAnchors(route, pageElements);
+      validateTracerBackupLink(route, pageElements);
     }
     validateTracerLaunchStatus(route, pageElements);
   }
