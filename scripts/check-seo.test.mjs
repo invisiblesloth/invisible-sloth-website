@@ -174,7 +174,7 @@ test('requires the backup link in Use Tracer Free and allows a second link in th
   checkMutation(product, (html) => html.replace('</footer>', footerLink));
 });
 
-test('rejects launch content hidden by inline display on the element or an ancestor', () => {
+test('rejects launch content hidden by inline styles on the element or an ancestor', () => {
   const cases = [
     [product, backupLink, /visible Data and Backups link in Use Tracer Free/],
     [product, (node) => attribute(node, 'class')?.includes('product-status__headline'),
@@ -182,12 +182,14 @@ test('rejects launch content hidden by inline display on the element or an ances
     ['dist/index.html', launchBadgeLabel, /missing the visible Tracer launch status/],
   ];
   for (const [file, match, diagnostic] of cases) {
-    checkMutation(file, (html) => editElement(
-      html, match, (markup) => withAttribute(markup, 'style="display:none"'),
-    ), diagnostic);
-    checkMutation(file, (html) => editElement(
-      html, match, (markup) => `<span style="display:none">${markup}</span>`,
-    ), diagnostic);
+    for (const style of ['display:none', 'visibility:hidden']) {
+      checkMutation(file, (html) => editElement(
+        html, match, (markup) => withAttribute(markup, `style="${style}"`),
+      ), diagnostic);
+      checkMutation(file, (html) => editElement(
+        html, match, (markup) => `<span style="${style}">${markup}</span>`,
+      ), diagnostic);
+    }
   }
 });
 
