@@ -1,4 +1,4 @@
-export const LOGO_VARIANTS = ['standard', 'technical'] as const;
+export const LOGO_VARIANTS = ['standard', 'technical', 'tracer'] as const;
 
 export const LOGO_NAMED_SIZES = {
   sm: '48px',

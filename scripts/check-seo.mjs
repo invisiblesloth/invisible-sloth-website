@@ -508,7 +508,7 @@ function validateTracerBackupLink(route, pageElements) {
   );
 }
 
-function validateTracerLaunchStatus(route, pageElements) {
+function validateTracerStatus(route, pageElements) {
   const homepage = route.path === '/';
   const scope = homepage
     ? pageElements.filter((element) => hasClass(element, 'project-card')).find((card) =>
@@ -524,15 +524,15 @@ function validateTracerLaunchStatus(route, pageElements) {
   }
 
   const statusClass = homepage ? 'badge__label' : 'product-status__headline';
-  const expectedStatus = homepage ? 'On the App Store' : 'Available on the App Store in the U.S.';
+  const expectedStatus = homepage ? 'In External Testing' : 'Tracer is currently in private beta.';
   const statusLabels = [...elements(scope)]
     .filter((element) => hasClass(element, statusClass) && !isHiddenInPage(element))
     .map(renderedText);
   if (!statusLabels.includes(expectedStatus)) {
-    fail(`${route.output} is missing the visible Tracer launch status "${expectedStatus}".`);
+    fail(`${route.output} is missing the visible Tracer status "${expectedStatus}".`);
   }
-  if (/private beta|in external testing/i.test(renderedText(scope))) {
-    fail(`${route.output} still contains Tracer beta availability wording.`);
+  if (/\bon the app store\b/i.test(renderedText(scope))) {
+    fail(`${route.output} still contains Tracer App Store availability wording.`);
   }
 }
 
@@ -690,7 +690,7 @@ function validatePage(route, html) {
       validateTracerSupportAnchors(route, pageElements);
       validateTracerBackupLink(route, pageElements);
     }
-    validateTracerLaunchStatus(route, pageElements);
+    validateTracerStatus(route, pageElements);
   }
   validateActiveTracerNavigation(route, html);
 }

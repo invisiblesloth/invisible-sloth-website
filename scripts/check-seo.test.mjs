@@ -159,8 +159,8 @@ test('honors mixed-case important inline display priorities', () => {
 });
 
 const backupLink = (node) => node.tagName === 'a' && attribute(node, 'href') === '#data-and-backups';
-const launchBadgeLabel = (node) => node.tagName === 'span' &&
-  node.childNodes.some((child) => child.value === 'On the App Store');
+const tracerBadgeLabel = (node) => node.tagName === 'span' &&
+  node.childNodes.some((child) => child.value === 'In External Testing');
 
 test('requires the backup link in Use Tracer Free and allows a second link in the footer', () => {
   const diagnostic = /visible Data and Backups link in Use Tracer Free/;
@@ -174,12 +174,12 @@ test('requires the backup link in Use Tracer Free and allows a second link in th
   checkMutation(product, (html) => html.replace('</footer>', footerLink));
 });
 
-test('rejects launch content hidden by inline styles on the element or an ancestor', () => {
+test('rejects backup navigation and Tracer status hidden by inline styles on the element or an ancestor', () => {
   const cases = [
     [product, backupLink, /visible Data and Backups link in Use Tracer Free/],
     [product, (node) => attribute(node, 'class')?.includes('product-status__headline'),
-      /missing the visible Tracer launch status/],
-    ['dist/index.html', launchBadgeLabel, /missing the visible Tracer launch status/],
+      /missing the visible Tracer status/],
+    ['dist/index.html', tracerBadgeLabel, /missing the visible Tracer status/],
   ];
   for (const [file, match, diagnostic] of cases) {
     for (const style of ['display:none', 'visibility:hidden']) {
@@ -195,6 +195,6 @@ test('rejects launch content hidden by inline styles on the element or an ancest
 
 test('requires the visible homepage badge label even when its title remains', () => {
   checkMutation('dist/index.html', (html) => editElement(
-    html, launchBadgeLabel, (label) => label.replace('>On the App Store<', '><'),
-  ), /missing the visible Tracer launch status/);
+    html, tracerBadgeLabel, (label) => label.replace('>In External Testing<', '><'),
+  ), /missing the visible Tracer status/);
 });

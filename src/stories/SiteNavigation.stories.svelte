@@ -2,6 +2,7 @@
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import SiteNavigation from '../components/SiteNavigation.svelte';
   import type { SiteNavigationProps } from '../components/SiteNavigation.svelte';
+  import { LOGO_VARIANTS } from '../lib/logo';
   import {
     resolveNavigationSections,
     type NavigationSection,
@@ -58,6 +59,7 @@
           'homeHref',
           'homeLabel',
           'logoAlt',
+          'logoVariant',
           'menuButtonLabel',
           'closeButtonLabel',
           'dialogLabel',
@@ -97,11 +99,17 @@
       homeHref: { control: 'text', description: 'Destination for the home logo link.' },
       homeLabel: { control: 'text', description: 'Accessible name for the home logo link.' },
       logoAlt: { control: 'text', description: 'Alternative text used by the unlinked logo.' },
+      logoVariant: {
+        control: 'select',
+        options: [...LOGO_VARIANTS],
+        description: 'Logo artwork passed to SiteHeader.',
+      },
       menuButtonLabel: { control: 'text', description: 'Accessible menu-button label.' },
       closeButtonLabel: { control: 'text', description: 'Accessible close-button label.' },
       dialogLabel: { control: 'text', description: 'Accessible drawer-dialog label.' },
       navigationLabel: { control: 'text', description: 'Accessible navigation landmark label.' },
       class: { control: false, description: 'Optional root navigation-shell class hook.' },
+      trailingLink: { control: false, description: 'Optional text link passed to the trailing region of SiteHeader.' },
       onClose: {
         action: 'closed',
         description: 'Semantic close callback receiving button, escape, backdrop, or navigation.',

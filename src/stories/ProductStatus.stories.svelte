@@ -4,7 +4,7 @@
   import { TRACER_PRODUCT_STATUS } from '../lib/tracerProductStatus';
 
   const longStatusText =
-    'Tracer is available on the App Store in the U.S. for anyone who wants to keep a clear record of time spent on projects, hobbies, work, and everyday life.';
+    'Tracer is currently in private beta with a small group while the core timer, entry editing, and on-device data workflows are being tested.';
   const longDetailText = `${TRACER_PRODUCT_STATUS.detail} No sign-up or subscription is required to start tracking your time.`;
   const longUnbrokenTokenText =
     'Tracer availability reference: TracerAvailabilityStatusSuperLongUnbrokenTokenThatShouldStillWrapInsideTheStatusPanelAtCompactWidthsWithoutEscapingTheCanvas.';

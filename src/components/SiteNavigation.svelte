@@ -1,5 +1,7 @@
 <script module lang="ts">
   import type { Snippet } from 'svelte';
+  import type { LogoVariant } from '../lib/logo';
+  import type { SiteHeaderProps } from './SiteHeader.svelte';
   import type {
     NavigationCloseReason,
     NavigationNavigateCallback,
@@ -16,6 +18,8 @@
     homeHref?: string;
     homeLabel?: string;
     logoAlt?: string;
+    logoVariant?: LogoVariant;
+    trailingLink?: SiteHeaderProps['trailingLink'];
     menuButtonLabel?: string;
     closeButtonLabel?: string;
     dialogLabel?: string;
@@ -42,6 +46,8 @@
     homeHref = '/',
     homeLabel = DEFAULT_LOGO_LINK_LABEL,
     logoAlt = DEFAULT_LOGO_ALT,
+    logoVariant = undefined,
+    trailingLink = undefined,
     menuButtonLabel = 'Open navigation menu',
     closeButtonLabel = 'Close navigation menu',
     dialogLabel = 'Navigation menu',
@@ -134,6 +140,8 @@
       {homeHref}
       {homeLabel}
       {logoAlt}
+      {logoVariant}
+      {trailingLink}
       leading={hasNavigation ? menuTrigger : undefined}
     />
 

@@ -1,15 +1,15 @@
 ---
 title: "Tracer"
-subhead: "Personal Time Tracking for iPhone"
+subhead: "A Personal Time Tracker for iPhone"
 order: 1
 badges:
   - label: "Apple Platforms"
     variant: "apple"
-  - label: "On the App Store"
+  - label: "In External Testing"
     variant: "default"
 button:
   label: "Learn More About Tracer"
   href: "/tracer/"
 ---
 
-Keep a clear record of your time. Track projects, hobbies, work, and everyday life without signing up or subscribing.
+Keep a clear record of your time. Track projects, hobbies, work, and everyday life. No sign-up or subscription required. Start a timer, switch between activities, and add or edit entries whenever you need. Browse your history, explore daily and weekly charts, and see how you spend your time. Your records are stored on your iPhone.

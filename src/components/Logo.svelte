@@ -13,6 +13,7 @@
   import { warnOnce } from '../lib/devWarnings';
   import {
     DEFAULT_LOGO_ALT,
+    LOGO_VARIANTS,
     isBlankString,
     isLogoVariant,
     normalizeLogoAlt,
@@ -42,7 +43,7 @@
     if (!isLogoVariant(variant)) {
       warnOnce(
         'logo:invalid-variant',
-        '[Logo] `variant` must be "standard" or "technical". Falling back to "standard".'
+        `[Logo] \`variant\` must be one of: ${LOGO_VARIANTS.join(', ')}. Falling back to "standard".`
       );
     }
 
@@ -90,6 +91,10 @@
     background-image: url('/logos/logo-technical-light.svg');
   }
 
+  .logo--tracer .logo__mark {
+    background-image: url('/assets/tracer-app-icon-light.png');
+  }
+
   @media (prefers-color-scheme: dark) {
     .logo--standard .logo__mark {
       background-image: url('/logos/logo-standard-dark.svg');
@@ -97,6 +102,10 @@
 
     .logo--technical .logo__mark {
       background-image: url('/logos/logo-technical-dark.svg');
+    }
+
+    .logo--tracer .logo__mark {
+      background-image: url('/assets/tracer-app-icon-dark.png');
     }
   }
 
@@ -108,11 +117,19 @@
     background-image: url('/logos/logo-technical-dark.svg');
   }
 
+  :global(html[data-theme='dark']) .logo--tracer .logo__mark {
+    background-image: url('/assets/tracer-app-icon-dark.png');
+  }
+
   :global(html[data-theme='light']) .logo--standard .logo__mark {
     background-image: url('/logos/logo-standard-light.svg');
   }
 
   :global(html[data-theme='light']) .logo--technical .logo__mark {
     background-image: url('/logos/logo-technical-light.svg');
+  }
+
+  :global(html[data-theme='light']) .logo--tracer .logo__mark {
+    background-image: url('/assets/tracer-app-icon-light.png');
   }
 </style>

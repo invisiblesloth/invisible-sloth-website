@@ -2,7 +2,7 @@
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import Logo from '../components/Logo.svelte';
   import LogoLink from '../components/LogoLink.svelte';
-  import { DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
+  import { DEFAULT_LOGO_LINK_LABEL, LOGO_VARIANTS } from '../lib/logo';
 
   const defaultLogoAlt = 'Invisible Sloth logo featuring Sloth-Luc, the ghost sloth';
 
@@ -19,7 +19,7 @@
       },
     },
     argTypes: {
-      variant: { control: false, options: ['technical', 'standard'], description: 'Shared artwork variant; defaults to standard. Unsupported variants fall back to standard with a development warning.' },
+      variant: { control: false, options: [...LOGO_VARIANTS], description: 'Shared artwork variant; defaults to standard. Unsupported variants fall back to standard with a development warning.' },
       size: { control: false, description: 'Shared size: sm (48px), md (96px, the default), lg (160px), xl (192px), or a CSS size string. Blank sizes fall back to md.' },
       alt: { control: false, description: 'Logo-only image name when non-decorative. Blank text falls back to the default logo description with a development warning.' },
       decorative: { control: false, description: 'Logo-only flag hiding the mark from assistive technology and removing its image role and label. LogoLink always uses a decorative nested mark.' },

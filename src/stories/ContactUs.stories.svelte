@@ -4,7 +4,7 @@
   import type { ContactUsProps } from '../components/ContactUs.svelte';
 
   const contactText: ContactUsProps['text'] =
-    'For questions, support, or just to say hi, email us at';
+    'For questions or just to say hi, email us at';
   const contactEmail: ContactUsProps['email'] = 'hello@invisiblesloth.com';
   const longContactText: ContactUsProps['text'] =
     'For partnership conversations, support questions, press notes, project follow-ups, and anything else that needs a careful human response, email us at';

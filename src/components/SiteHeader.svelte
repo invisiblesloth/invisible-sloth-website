@@ -1,18 +1,22 @@
 <script module lang="ts">
   import type { Snippet } from 'svelte';
+  import type { LogoVariant } from '../lib/logo';
 
   export type SiteHeaderProps = {
     homeHref?: string;
     homeLabel?: string;
     logoAlt?: string;
+    logoVariant?: LogoVariant;
     leading?: Snippet;
     trailing?: Snippet;
+    trailingLink?: { href: string; label: string };
     class?: string;
   };
 </script>
 
 <script lang="ts">
   import BrandHomeMark from './internal/BrandHomeMark.svelte';
+  import Button from './Button.svelte';
   import { DEFAULT_LOGO_ALT, DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
 
   /**
@@ -32,20 +36,25 @@
    * @prop {string} homeHref - URL for logo link (default: '/') - set to empty string to disable link
    * @prop {string} homeLabel - Accessible name for the logo link (default: 'Invisible Sloth home')
    * @prop {string} logoAlt - Alt text used only for the standalone logo when homeHref is empty
+   * @prop {LogoVariant} logoVariant - Artwork displayed by the logo (default: 'technical')
    * @prop {Snippet} leading - Optional leading header region
    * @prop {Snippet} trailing - Optional trailing header region
+   * @prop {object} trailingLink - Text link shown when no trailing snippet is supplied
    */
 
   let {
     homeHref = '/',
     homeLabel = DEFAULT_LOGO_LINK_LABEL,
     logoAlt = DEFAULT_LOGO_ALT,
+    logoVariant = 'technical',
     leading = undefined,
     trailing = undefined,
+    trailingLink = undefined,
     class: className = '',
   }: SiteHeaderProps = $props();
 
-  const hasSideRegions = $derived(Boolean(leading || trailing));
+  const hasTrailingRegion = $derived(Boolean(trailing || trailingLink));
+  const hasSideRegions = $derived(Boolean(leading || hasTrailingRegion));
   const headerClasses = $derived(
     ['site-header', hasSideRegions ? 'site-header--with-side-regions' : '', className]
       .filter(Boolean)
@@ -68,16 +77,20 @@
       {homeHref}
       {homeLabel}
       {logoAlt}
-      variant="technical"
+      variant={logoVariant}
       size="var(--header-logo-size)"
     />
 
     {#if hasSideRegions}
       <div
         class="site-header__side site-header__side--trailing"
-        aria-hidden={trailing ? undefined : 'true'}
+        aria-hidden={hasTrailingRegion ? undefined : 'true'}
       >
-        {@render trailing?.()}
+        {#if trailing}
+          {@render trailing()}
+        {:else if trailingLink}
+          <Button variant="text" href={trailingLink.href} label={trailingLink.label} data-header-link />
+        {/if}
       </div>
     {/if}
   </div>
@@ -140,6 +153,12 @@
 
   .site-header__side--trailing {
     justify-content: flex-end;
+  }
+
+  @media (max-width: 631px) {
+    .site-header__side--trailing > :global([data-header-link]) {
+      --button-padding-inline: var(--space-200);
+    }
   }
 
   @media (min-width: 1015px) {

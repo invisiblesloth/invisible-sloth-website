@@ -6,7 +6,7 @@
   import { DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
   import type { NavigationSection } from '../lib/navigation';
 
-  const contactText = 'For questions, support, or just to say hi, email us at';
+  const contactText = 'For questions or just to say hi, email us at';
   const contactEmail = 'hello@invisiblesloth.com';
   const footerSections: NavigationSection[] = [
     {

@@ -41,9 +41,7 @@
 <div class={contactUsClasses}>
   <p class="contact-us__text text-body-large">
     {normalizedText}
-    <a href={emailHref} class="contact-us__link text-link">
-      <span>{normalizedEmail}</span>
-    </a>
+    <a href={emailHref} class="contact-us__link text-link"><strong>{normalizedEmail}</strong></a>.
   </p>
 </div>
 

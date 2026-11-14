@@ -1,12 +1,12 @@
 ---
 import SiteChrome from "../../layouts/SiteChrome.astro";
 import Container from "../../components/Container.astro";
+import Figure from "../../components/Figure.svelte";
 import PageHeader from "../../components/PageHeader.svelte";
 import RichTextBlock from "../../components/RichTextBlock.svelte";
 import ProductStatus from "../../components/ProductStatus.svelte";
 import ContentSection from "../../components/ContentSection.svelte";
 import ProductSupport from "../../components/ProductSupport.svelte";
-import type { PageHeaderMedia } from "../../components/PageHeader.svelte";
 import type { ProductSupportDocumentLink } from "../../components/ProductSupport.svelte";
 import { TRACER_PRODUCT_STATUS } from "../../lib/tracerProductStatus";
 import { createTracerJsonLd, TRACER_URL } from "../../lib/seo";
@@ -16,24 +16,28 @@ const pageDescription =
   "Keep a clear record of your time with Tracer for iPhone. Track projects, hobbies, work, and everyday life. No sign-up or subscription.";
 const jsonLd = createTracerJsonLd(pageTitle, pageDescription);
 
-const tracerPreviewMedia: PageHeaderMedia = {
-  image: {
-    src: "/assets/tracer-preview-activities-tracker-01.png",
-    srcset: [
-      "/assets/tracer-preview-activities-tracker-01-640.png 640w",
-      "/assets/tracer-preview-activities-tracker-01-1024.png 1024w",
-      "/assets/tracer-preview-activities-tracker-01-1512.png 1512w",
-      "/assets/tracer-preview-activities-tracker-01.png 3000w",
-    ].join(", "),
-    sizes:
-      "(min-width: 1176px) 1128px, (min-width: 1015px) calc(100vw - 96px), (min-width: 632px) calc(100vw - 64px), calc(100vw - 32px)",
-    alt: "Composite preview of the Tracer iPhone app activities list and running timer.",
-    width: 3000,
-    height: 2000,
-    loading: "eager",
-    fetchPriority: "high",
+const tracerScreenshotSize = { width: 1680, height: 1120 };
+const tracerScreenshots = {
+  tracker: {
+    src: "/assets/tracer-running-tracker.png",
+    alt: "Tracer’s running tracker with controls to stop and save or start the next activity.",
   },
-  captionText: "Composite preview of Tracer; not an in-app screenshot.",
+  editEntry: {
+    src: "/assets/tracer-edit-entry.png",
+    alt: "Tracer’s Edit Entry screen showing the activity, start and end times, and a note.",
+  },
+  report: {
+    src: "/assets/tracer-time-reports.png",
+    alt: "Tracer Reports showing daily and weekly charts and time totals by activity.",
+  },
+  plusActivities: {
+    src: "/assets/tracer-plus-activity-list.png",
+    alt: "Tracer’s Activities list showing more than three active activities.",
+  },
+  settings: {
+    src: "/assets/tracer-data-and-backups-settings.png",
+    alt: "The Your Data section of Tracer Settings showing Export Backup, Export CSV for Tracer Plus, and Import Backup.",
+  },
 };
 
 const supportDocuments: ProductSupportDocumentLink[] = [
@@ -59,16 +63,15 @@ const supportDocuments: ProductSupportDocumentLink[] = [
     <section class="tracer-page__section">
       <PageHeader
         title="Tracer"
-        excerpt="Keep a clear record of your time. No sign-up or subscription."
-        media={tracerPreviewMedia}
+        excerpt="Keep a clear record of your time. No sign-up or subscription required."
       />
 
       <Container size="sm" class="tracer-page__content-group">
         <RichTextBlock>
           <p>
             Tracer is a personal time tracker for iPhone. Track projects, hobbies, work, and
-            everyday life, and see how you spend your time. The app has no servers, ads, or
-            third-party analytics.
+            everyday life, and see how you spend your time. Your records stay on your iPhone.
+            The app has no servers, ads, or third-party analytics.
           </p>
         </RichTextBlock>
       </Container>
@@ -78,25 +81,52 @@ const supportDocuments: ProductSupportDocumentLink[] = [
       </Container>
 
       <Container size="sm" class="tracer-page__content-group">
-        <ContentSection heading="Use Tracer Free" headingLevel="h2" bodyMode="prose">
-          <ul>
-            <li>Track one activity at a time. Save it and start the next in one step.</li>
-            <li>
-              Change the activity or start time while the timer is running. Add or edit
-              entries manually, and add notes to activities and entries.
+        <ContentSection heading="Use Tracer Free" headingLevel="h2" bodyMode="structured">
+          <ul class="tracer-page__free-features" role="list">
+            <li class="tracer-page__illustrated-feature">
+              <div class="tracer-page__feature-copy">
+                <strong class="text-title-medium-prominent">Track one activity at a time.</strong>
+                <p class="text-body-responsive-tight">
+                  Start tracking, then save and start the next activity in one step.
+                </p>
+              </div>
+              <Figure imageProps={{ ...tracerScreenshots.tracker, ...tracerScreenshotSize }} />
+            </li>
+            <li class="tracer-page__illustrated-feature">
+              <div class="tracer-page__feature-copy">
+                <strong class="text-title-medium-prominent">Make changes whenever you need.</strong>
+                <p class="text-body-responsive-tight">
+                  Change the activity or start time while tracking. Add or edit entries manually,
+                  and add notes to activities and entries.
+                </p>
+              </div>
+              <Figure imageProps={{ ...tracerScreenshots.editEntry, ...tracerScreenshotSize }} />
+            </li>
+            <li class="tracer-page__illustrated-feature">
+              <div class="tracer-page__feature-copy">
+                <strong class="text-title-medium-prominent">See how you spend your time.</strong>
+                <p class="text-body-responsive-tight">
+                  Browse your history, explore daily and weekly charts, and see totals for today,
+                  this week, this month, and more.
+                </p>
+              </div>
+              <Figure imageProps={{ ...tracerScreenshots.report, ...tracerScreenshotSize }} />
             </li>
             <li>
-              Browse and edit your history. Review daily and weekly charts and see totals
-              for today, this week, this month, and more.
+              <strong class="text-title-medium-prominent">Make room as your activities change.</strong>
+              <p class="text-body-responsive-tight">
+                Create up to three active activities, each with its own color. Archive activities
+                to make room without losing their history. Creating or restoring an activity
+                requires an available slot.
+              </p>
             </li>
             <li>
-              Create new activities when you have fewer than three active. Give each activity
-              its own color, and archive activities to make room while keeping their history.
-              The same limit applies when restoring archived activities.
-            </li>
-            <li>
-              Back up and restore your records. See <a href="#data-and-backups">Data and Backups</a>
-              for details.
+              <strong class="text-title-medium-prominent">Keep a backup of your records.</strong>
+              <p class="text-body-responsive-tight">
+                Export a JSON backup and import it when you need to restore your records.
+                See <a class="text-link" href="#data-and-backups"><strong>Data and Backups</strong></a>
+                for details.
+              </p>
             </li>
           </ul>
         </ContentSection>
@@ -105,11 +135,15 @@ const supportDocuments: ProductSupportDocumentLink[] = [
       <Container size="sm" class="tracer-page__content-group">
         <ContentSection heading="Tracer Plus" headingLevel="h2" bodyMode="prose">
           <p>
-            An optional one-time purchase unlocks unlimited active activities, CSV export
-            for spreadsheets, and new Tracer Plus features as they’re released. Tracer Plus
-            supports Family Sharing. Each person’s records stay separate.
+            An optional one-time purchase unlocks unlimited active activities and CSV export
+            for spreadsheets. Your purchase also includes every Tracer Plus feature we add in
+            the future. Tracer Plus supports Family Sharing. Each person’s records stay separate.
           </p>
         </ContentSection>
+        <Figure
+          class="tracer-page__plus-figure"
+          imageProps={{ ...tracerScreenshots.plusActivities, ...tracerScreenshotSize }}
+        />
       </Container>
 
       <section id="support" class="tracer-page__support">
@@ -124,48 +158,47 @@ const supportDocuments: ProductSupportDocumentLink[] = [
             ]}
             documentsHeading="Tracer App Documents"
             documents={supportDocuments}
-          />
-        </div>
-
-        <Container size="sm">
-          <ContentSection
-            id="data-and-backups"
-            heading="Data and Backups"
-            headingLevel="h3"
-            visualLevel="h4"
-            bodyMode="prose"
           >
-            <p>
-              Your records are stored on your iPhone. Tracer has no account, cloud sync, or
-              automatic backup service. Invisible Sloth does not keep a recovery copy.
-              Apple-managed device backups may include Tracer data, depending on your device
-              settings.
-            </p>
-            <p><strong>In Tracer, open Settings → Your Data.</strong></p>
-            <ul>
-              <li>
-                <strong>Export Backup</strong> creates a JSON file. Use the iOS share sheet
-                to save it somewhere you can reach from another device, such as iCloud Drive.
-                Confirm the file is there and keep it.
-              </li>
-              <li>
-                <strong>Export CSV</strong> creates a file for spreadsheets. Requires Tracer Plus.
-                A CSV file can’t restore your Tracer records.
-              </li>
-              <li>
-                <strong>Import Backup</strong> restores records from a saved JSON backup. When
-                you confirm <strong>Replace All Data</strong>, Tracer replaces all current
-                activities and entries with the records in that backup. Save a current JSON
-                backup before importing.
-              </li>
-            </ul>
-            <p>
-              <strong>Restore Purchases</strong> is on the Tracer Plus screen in Settings. It
-              restores access to Tracer Plus. To restore your records, use <strong>Import Backup</strong>
-              with a saved JSON backup.
-            </p>
-          </ContentSection>
-        </Container>
+            <ContentSection
+              id="data-and-backups"
+              heading="Data and Backups"
+              headingLevel="h3"
+              visualLevel="h4"
+              bodyMode="prose"
+            >
+              <p>
+                Your records are stored on your iPhone. Tracer has no account, cloud sync, or
+                automatic backup service. Invisible Sloth does not keep a recovery copy.
+                Apple-managed device backups may include Tracer data, depending on your device
+                settings.
+              </p>
+              <p>In Tracer, find these options under <strong>Settings → Your Data</strong>.</p>
+              <Figure imageProps={{ ...tracerScreenshots.settings, ...tracerScreenshotSize }} />
+              <ul>
+                <li>
+                  <strong>Export Backup</strong> creates a JSON file. Use the iOS share sheet
+                  to save it somewhere you can reach from another device, such as iCloud Drive.
+                  Confirm the file is there and keep it.
+                </li>
+                <li>
+                  <strong>Export CSV</strong> requires Tracer Plus and creates a file for
+                  spreadsheets. CSV files can’t restore your Tracer records.
+                </li>
+                <li>
+                  <strong>Import Backup</strong> restores records from a saved JSON backup. When
+                  you confirm <strong>Replace All Data</strong>, Tracer replaces all current
+                  activities and entries with the records in that backup. It does not merge them.
+                  Save a current JSON backup before importing.
+                </li>
+              </ul>
+              <p>
+                <strong>Restore Purchases</strong> is on the Tracer Plus screen in Settings. It
+                restores access to Tracer Plus. To restore your records, use <strong>Import Backup</strong>
+                with a saved JSON backup.
+              </p>
+            </ContentSection>
+          </ProductSupport>
+        </div>
       </section>
     </section>
   </main>
@@ -180,9 +213,46 @@ const supportDocuments: ProductSupportDocumentLink[] = [
     padding-block-end: var(--space-section-block);
   }
 
-  .tracer-page__support {
+  .tracer-page__free-features {
     display: grid;
-    gap: var(--space-section-block);
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-gutter);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tracer-page__free-features > li,
+  .tracer-page__feature-copy {
+    display: grid;
+    gap: var(--space-100);
+  }
+
+  .tracer-page__free-features p {
+    margin: 0;
+  }
+
+  .tracer-page__free-features > .tracer-page__illustrated-feature {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-gutter);
+  }
+
+  :global(.tracer-page .tracer-page__plus-figure) {
+    margin-block-start: var(--space-gutter);
+  }
+
+  @media (min-width: 1015px) {
+    .tracer-page__free-features > li > strong,
+    .tracer-page__feature-copy > strong {
+      font-family: var(--typography-title-large-family);
+      font-size: var(--typography-title-large-size);
+      font-weight: var(--typography-title-large-weight-prominent);
+      line-height: var(--typography-title-large-line-height);
+      letter-spacing: var(--typography-title-large-letter-spacing);
+    }
+  }
+
+  .tracer-page__support {
     padding-block-end: var(--space-section-block);
   }
 

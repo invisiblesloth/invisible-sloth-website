@@ -66,6 +66,7 @@ const FOOTER_LINK_SECTIONS: NavigationSection[] = [
     ],
   },
 ];
+const FOOTER_CONTACT_TEXT = "For questions or just to say hi, email us at";
 const TRACER_NAVIGATION_HREF = "/tracer";
 
 const normalizeNavigationPath = (value?: string): string | undefined => {
@@ -116,9 +117,7 @@ const normalizeExplicitActiveHref = (value?: string): string | undefined => {
   return trimmed;
 };
 
-const inferActiveHref = (pathname: string): string | undefined => {
-  const normalizedPathname = normalizeNavigationPath(pathname);
-
+const inferActiveHref = (normalizedPathname?: string): string | undefined => {
   if (normalizedPathname === "/") {
     return "/";
   }
@@ -147,9 +146,16 @@ const effectiveNavigationSections =
   navigationSections === undefined ? DEFAULT_NAVIGATION_SECTIONS : navigationSections;
 const resolvedNavigationSections = resolveNavigationSections(effectiveNavigationSections);
 const hasNavigation = resolvedNavigationSections.length > 0;
+const normalizedPathname = normalizeNavigationPath(Astro.url.pathname);
+const inferredActiveHref = inferActiveHref(normalizedPathname);
+const isTracerPage = inferredActiveHref === TRACER_NAVIGATION_HREF;
+const headerLogoVariant = isTracerPage ? "tracer" : "technical";
+const trailingLink = isTracerPage && normalizedPathname !== TRACER_NAVIGATION_HREF
+  ? { href: `${TRACER_NAVIGATION_HREF}/`, label: "Back to Tracer" }
+  : undefined;
 const resolvedActiveHref =
   activeHref === undefined
-    ? inferActiveHref(Astro.url.pathname)
+    ? inferredActiveHref
     : normalizeExplicitActiveHref(activeHref);
 ---
 
@@ -160,13 +166,15 @@ const resolvedActiveHref =
         sections={resolvedNavigationSections}
         activeHref={resolvedActiveHref}
         homeHref="/"
+        logoVariant={headerLogoVariant}
+        trailingLink={trailingLink}
         client:idle
       >
         <slot />
 
         <SiteFooter homeHref="/">
           <ContactUs
-            text="For questions, support, or just to say hi, email us at"
+            text={FOOTER_CONTACT_TEXT}
             email="hello@invisiblesloth.com"
           />
           <FooterLinks sections={FOOTER_LINK_SECTIONS} />
@@ -174,13 +182,13 @@ const resolvedActiveHref =
       </SiteNavigation>
     ) : (
       <>
-        <SiteHeader homeHref="/" />
+        <SiteHeader homeHref="/" logoVariant={headerLogoVariant} trailingLink={trailingLink} />
 
         <slot />
 
         <SiteFooter homeHref="/">
           <ContactUs
-            text="For questions, support, or just to say hi, email us at"
+            text={FOOTER_CONTACT_TEXT}
             email="hello@invisiblesloth.com"
           />
           <FooterLinks sections={FOOTER_LINK_SECTIONS} />

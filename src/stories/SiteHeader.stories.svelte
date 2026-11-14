@@ -4,7 +4,7 @@
   import Button from '../components/Button.svelte';
   import Menu from '../icons/Menu.svelte';
   import Close from '../icons/Close.svelte';
-  import { DEFAULT_LOGO_LINK_LABEL } from '../lib/logo';
+  import { DEFAULT_LOGO_LINK_LABEL, LOGO_VARIANTS } from '../lib/logo';
 
   const { Story } = defineMeta({
     title: 'Organisms/SiteHeader',
@@ -13,7 +13,7 @@
     parameters: {
       layout: 'fullscreen',
       controls: {
-        include: ['homeHref', 'homeLabel', 'logoAlt'],
+        include: ['homeHref', 'homeLabel', 'logoAlt', 'logoVariant'],
       },
       docs: {
         description: {
@@ -41,7 +41,13 @@
         description:
           'Alt text used only for the standalone logo when homeHref is empty. Linked logos use homeLabel on the link.',
       },
+      logoVariant: {
+        control: 'select',
+        options: [...LOGO_VARIANTS],
+        description: 'Header artwork. Defaults to the technical Invisible Sloth logo.',
+      },
       class: { control: false, description: 'Optional root header class hook.' },
+      trailingLink: { control: false, description: 'Optional text link shown when no trailing snippet is supplied.' },
     },
   });
 </script>

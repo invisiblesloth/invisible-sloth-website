@@ -57,11 +57,17 @@
 
 <a
   class={logoLinkClasses}
+  class:logo-link--tracer={variant === 'tracer'}
   href={normalizedHref}
   aria-label={normalizedLabel}
   data-logo-hover-tilt
 >
   <Logo {variant} {size} decorative />
+  {#if variant === 'tracer'}
+    <div class="logo-link__hover-mark">
+      <Logo variant="technical" {size} decorative />
+    </div>
+  {/if}
 </a>
 
 <style>
@@ -76,6 +82,39 @@
     line-height: 0;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  .logo-link--tracer {
+    position: relative;
+  }
+
+  .logo-link__hover-mark {
+    position: absolute;
+    inset: 0;
+    display: none;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .logo-link__hover-mark {
+      display: block;
+    }
+
+    .logo-link--tracer:hover > :global(.logo) {
+      opacity: 0;
+    }
+
+    .logo-link--tracer:hover > .logo-link__hover-mark {
+      opacity: 1;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .logo-link--tracer > :global(.logo),
+    .logo-link__hover-mark {
+      transition: opacity 100ms ease-out;
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {

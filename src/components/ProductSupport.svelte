@@ -1,4 +1,5 @@
 <script module lang="ts">
+  import type { Snippet } from 'svelte';
   import type { SvelteHTMLElements } from 'svelte/elements';
   import type { ProductSupportDocumentLink } from '../lib/productSupport';
 
@@ -29,6 +30,7 @@
     documents: ProductSupportDocumentLink[];
     headingLevel?: SupportHeadingLevel;
     documentsHeadingLevel?: DocumentsHeadingLevel;
+    children?: Snippet;
     class?: string;
   };
 
@@ -65,6 +67,7 @@
    * @prop {ProductSupportDocumentLink[]} documents - Required non-empty document link list
    * @prop {string} headingLevel - Semantic heading level for heading, h2-h6
    * @prop {string} documentsHeadingLevel - Optional semantic heading level for documentsHeading, h3-h6; derives from headingLevel when omitted
+   * @prop {Snippet} children - Optional support content between the introduction and documents
    * @prop {string} class - Additional classes merged onto the root panel
    */
   import { normalizeOptionProp } from '../lib/componentValidation';
@@ -82,6 +85,7 @@
     documents,
     headingLevel = 'h2',
     documentsHeadingLevel,
+    children,
     class: className = '',
     ...restProps
   }: ProductSupportProps = $props();
@@ -158,6 +162,11 @@
   </div>
 
   <div class="product-support__divider" aria-hidden="true"></div>
+
+  {#if children}
+    {@render children()}
+    <div class="product-support__divider" aria-hidden="true"></div>
+  {/if}
 
   <div class="product-support__content">
     <Heading
