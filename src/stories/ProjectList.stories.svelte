@@ -48,7 +48,6 @@
         'Keep a clear record of your time. Track projects, hobbies, work, and everyday life without signing up or subscribing.',
       badges: [
         { variant: 'apple', label: 'Apple Platforms' },
-        { variant: 'default', label: 'In External Testing' },
       ],
     },
     {

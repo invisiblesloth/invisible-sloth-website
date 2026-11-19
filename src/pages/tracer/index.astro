@@ -4,11 +4,11 @@ import Container from "../../components/Container.astro";
 import Figure from "../../components/Figure.svelte";
 import PageHeader from "../../components/PageHeader.svelte";
 import RichTextBlock from "../../components/RichTextBlock.svelte";
-import ProductStatus from "../../components/ProductStatus.svelte";
+import AppStoreBadge from "../../components/AppStoreBadge.svelte";
 import ContentSection from "../../components/ContentSection.svelte";
 import ProductSupport from "../../components/ProductSupport.svelte";
 import type { ProductSupportDocumentLink } from "../../components/ProductSupport.svelte";
-import { TRACER_PRODUCT_STATUS } from "../../lib/tracerProductStatus";
+import { TRACER_APP_STORE_URL } from "../../lib/tracerAppStore.js";
 import { createTracerJsonLd, TRACER_URL } from "../../lib/seo";
 
 const pageTitle = "Tracer: Personal Time Tracker for iPhone | Invisible Sloth";
@@ -66,7 +66,7 @@ const supportDocuments: ProductSupportDocumentLink[] = [
         excerpt="Keep a clear record of your time. No sign-up or subscription required."
       />
 
-      <Container size="sm" class="tracer-page__content-group">
+      <Container size="sm" class="tracer-page__content-group tracer-page__intro-group">
         <RichTextBlock>
           <p>
             Tracer is a personal time tracker for iPhone. Track projects, hobbies, work, and
@@ -77,8 +77,11 @@ const supportDocuments: ProductSupportDocumentLink[] = [
         </RichTextBlock>
       </Container>
 
-      <Container size="md" class="tracer-page__content-group">
-        <ProductStatus {...TRACER_PRODUCT_STATUS} />
+      <Container size="md" class="tracer-page__content-group tracer-page__download-group">
+        <div class="tracer-page__download">
+          <AppStoreBadge href={TRACER_APP_STORE_URL} />
+          <p class="text-label-large">For iPhone</p>
+        </div>
       </Container>
 
       <Container size="sm" class="tracer-page__content-group">
@@ -202,6 +205,10 @@ const supportDocuments: ProductSupportDocumentLink[] = [
               </p>
             </ContentSection>
           </ProductSupport>
+          <p class="tracer-page__trademark-credit text-body-small">
+            Apple, the Apple logo, iPhone, and App Store are trademarks of Apple Inc.,
+            registered in the U.S. and other countries.
+          </p>
         </div>
       </section>
     </section>
@@ -209,6 +216,24 @@ const supportDocuments: ProductSupportDocumentLink[] = [
 </SiteChrome>
 
 <style>
+  .tracer-page__download {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .tracer-page__download p {
+    margin: 0;
+    color: var(--color-on-background-dim);
+  }
+
+  .tracer-page__trademark-credit {
+    margin: var(--space-gutter) 0 0;
+    padding-inline: var(--space-rail-inline);
+    color: var(--color-on-background-dim);
+  }
+
   .tracer-page__section {
     padding-block-start: var(--space-section-block);
   }
@@ -275,6 +300,14 @@ const supportDocuments: ProductSupportDocumentLink[] = [
   @media (min-width: 1176px) {
     :global(.tracer-page .tracer-page__content-group) {
       padding-inline: 0;
+    }
+
+    :global(.tracer-page .tracer-page__intro-group) {
+      padding-block-end: var(--space-section-block-sm);
+    }
+
+    :global(.tracer-page .tracer-page__download-group) {
+      padding-block-end: var(--space-section-block-lg);
     }
 
     .tracer-page__support-rail {

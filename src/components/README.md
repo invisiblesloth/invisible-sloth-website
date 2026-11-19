@@ -26,6 +26,16 @@ Narrow interactive controls expose typed props plus limited root hooks where
 already supported. Accessibility naming and interaction remain component-owned.
 `LogoLink` fits this tier.
 
+`AppStoreBadge` accepts only optional `href`; it owns the official artwork,
+accessible name, focus, and minimum clear space. Omitted destinations silently
+render a noninteractive image. Blank, non-string, or invalid destinations recover
+to that image with a browser/development `warnOnce`. Accepted destinations are
+absolute HTTPS `apps.apple.com` product URLs with a positive numeric app ID,
+optional country/app-name segments, and optional query/fragment. Parent composition
+owns placement and rhythm; no root hooks or arbitrary attributes are forwarded.
+Outer whitespace is trimmed; embedded whitespace, ASCII control characters, and
+backslashes are rejected rather than silently repaired by URL parsing.
+
 ### Root-Hook Components
 
 Root-hook components expose root `class` for layout hooks, global utilities, and

@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 import { ident, lexer, parse as parseCss } from 'css-tree';
 import { parse } from 'parse5';
+import { TRACER_APP_STORE_URL } from '../src/lib/tracerAppStore.js';
+import { resolveAppStoreHref } from '../src/lib/appStoreBadge.js';
 import {
   getNavigationAriaCurrent,
   hasExactActiveNavigationItem,
@@ -523,16 +525,82 @@ function validateTracerStatus(route, pageElements) {
     return;
   }
 
-  const statusClass = homepage ? 'badge__label' : 'product-status__headline';
-  const expectedStatus = homepage ? 'In External Testing' : 'Tracer is currently in private beta.';
-  const statusLabels = [...elements(scope)]
-    .filter((element) => hasClass(element, statusClass) && !isHiddenInPage(element))
-    .map(renderedText);
-  if (!statusLabels.includes(expectedStatus)) {
-    fail(`${route.output} is missing the visible Tracer status "${expectedStatus}".`);
+  const content = [...elements(scope)];
+  const copy = renderedText(scope);
+  if (/currently in private beta|In External Testing/i.test(copy)) {
+    fail(`${route.output} contains obsolete Tracer testing status.`);
   }
-  if (/\bon the app store\b/i.test(renderedText(scope))) {
-    fail(`${route.output} still contains Tracer App Store availability wording.`);
+
+  if (homepage) {
+    const badges = content.filter((element) => hasClass(element, 'badge__label') &&
+      !isHiddenInPage(element)).map(renderedText);
+    assertDeepEqual(badges, ['Apple Platforms'], `${route.output} visible Tracer platform badge`);
+    const learnMoreLinks = content.filter((element) => element.tagName === 'a' &&
+      renderedText(element) === 'Learn More About Tracer' && !isHiddenInPage(element));
+    assertDeepEqual(learnMoreLinks.map((element) => elementAttribute(element, 'href')),
+      ['/tracer/'], `${route.output} visible Learn More About Tracer link`);
+    return;
+  }
+
+  const download = content.find((element) => hasClass(element, 'tracer-page__download'));
+  if (!download || ![...elements(download)].some((element) => element.tagName === 'p' &&
+    renderedText(element) === 'For iPhone' && !isHiddenInPage(element))) {
+    fail(`${route.output} is missing the visible For iPhone download label.`);
+  }
+
+  const expectedDestination = resolveAppStoreHref(TRACER_APP_STORE_URL);
+  if (expectedDestination.invalid) {
+    fail('TRACER_APP_STORE_URL must be omitted or a valid App Store product URL.');
+  }
+  const badgeImages = content.filter((element) => element.tagName === 'img' &&
+    elementAttribute(element, 'src') === '/assets/download-on-the-app-store.svg');
+  if (badgeImages.length !== 1 || isHiddenInPage(badgeImages[0])) {
+    fail(`${route.output} must contain exactly one visible App Store badge image.`);
+    return;
+  }
+  const image = badgeImages[0];
+  assertEqual(elementAttribute(image, 'alt'), 'Download on the App Store',
+    `${route.output} App Store badge alt text`);
+  const ancestors = [];
+  for (let node = image; node && node !== scope; node = node.parentNode) ancestors.push(node);
+  // Accessibility can be suppressed by main/body/html as well as the badge's
+  // immediate wrapper. Interaction checks below remain local to the badge.
+  for (let node = image; node; node = node.parentNode) {
+    if (node.tagName && (elementAttribute(node, 'aria-hidden') === 'true' ||
+      elementAttribute(node, 'inert') !== undefined)) {
+      fail(`${route.output} App Store badge must be accessible.`);
+      break;
+    }
+  }
+  const links = ancestors.filter((node) => node.tagName === 'a');
+  if (expectedDestination.href === undefined) {
+    if (ancestors.some((node) => ['a', 'button', 'input', 'select', 'textarea', 'summary'].includes(node.tagName) ||
+      elementAttribute(node, 'role') !== undefined || elementAttribute(node, 'tabindex') !== undefined ||
+      elementAttribute(node, 'contenteditable') !== undefined)) {
+      fail(`${route.output} pending App Store badge must be noninteractive with no enclosing link, role, or tab stop.`);
+    }
+  } else {
+    if (links.length !== 1 || image.parentNode !== links[0]) {
+      fail(`${route.output} linked App Store badge must have exactly one enclosing link.`);
+      return;
+    }
+    const link = links[0];
+    assertEqual(elementAttribute(link, 'href'), expectedDestination.href,
+      `${route.output} App Store badge destination`);
+    if (!['', '_self', undefined].includes(elementAttribute(link, 'target'))) {
+      fail(`${route.output} App Store badge must open in the same tab.`);
+    }
+    if (elementAttribute(link, 'aria-label') !== undefined ||
+      elementAttribute(link, 'aria-labelledby') !== undefined ||
+      elementAttribute(image, 'aria-label') !== undefined ||
+      elementAttribute(image, 'aria-labelledby') !== undefined ||
+      elementAttribute(image, 'role') !== undefined ||
+      elementAttribute(link, 'role') !== undefined ||
+      elementAttribute(link, 'tabindex') !== undefined ||
+      elementAttribute(link, 'download') !== undefined ||
+      renderedText(link) !== '') {
+      fail(`${route.output} App Store link must retain its native link behavior and image accessible name.`);
+    }
   }
 }
 

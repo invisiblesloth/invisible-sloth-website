@@ -1,13 +1,16 @@
 <script module lang="ts">
   import { defineMeta } from '@storybook/addon-svelte-csf';
   import ProductStatus from '../components/ProductStatus.svelte';
-  import { TRACER_PRODUCT_STATUS } from '../lib/tracerProductStatus';
+  const sampleStatus = {
+    text: 'A product update is being prepared.',
+    detail: 'More information will be shared here when it is ready.',
+  };
 
   const longStatusText =
-    'Tracer is currently in private beta with a small group while the core timer, entry editing, and on-device data workflows are being tested.';
-  const longDetailText = `${TRACER_PRODUCT_STATUS.detail} No sign-up or subscription is required to start tracking your time.`;
+    'A product update is being prepared with a small group while the core workflows, editing controls, and on-device data features are being tested.';
+  const longDetailText = `${sampleStatus.detail} Check back here for further information about the update.`;
   const longUnbrokenTokenText =
-    'Tracer availability reference: TracerAvailabilityStatusSuperLongUnbrokenTokenThatShouldStillWrapInsideTheStatusPanelAtCompactWidthsWithoutEscapingTheCanvas.';
+    'Product availability reference: ProductAvailabilityStatusSuperLongUnbrokenTokenThatShouldStillWrapInsideTheStatusPanelAtCompactWidthsWithoutEscapingTheCanvas.';
 
   const { Story } = defineMeta({
     title: 'Molecules/ProductStatus',
@@ -25,7 +28,7 @@
         },
       },
     },
-    args: TRACER_PRODUCT_STATUS,
+    args: sampleStatus,
     argTypes: {
       text: {
         control: 'text',
@@ -91,7 +94,7 @@
 <Story
   name="Long Unbroken Token"
   args={{
-    text: TRACER_PRODUCT_STATUS.text,
+    text: sampleStatus.text,
     detail: longUnbrokenTokenText,
   }}
 >

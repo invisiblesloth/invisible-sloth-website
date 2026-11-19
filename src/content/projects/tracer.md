@@ -5,8 +5,6 @@ order: 1
 badges:
   - label: "Apple Platforms"
     variant: "apple"
-  - label: "In External Testing"
-    variant: "default"
 button:
   label: "Learn More About Tracer"
   href: "/tracer/"
