@@ -32,7 +32,7 @@ const tracerScreenshots = {
   },
   plusActivities: {
     src: "/assets/tracer-plus-activity-list.png",
-    alt: "Tracer’s Activities list showing more than three active activities.",
+    alt: "Tracer’s Activities list with more than three activities ready to track.",
   },
   settings: {
     src: "/assets/tracer-data-and-backups-settings.png",
@@ -70,8 +70,9 @@ const supportDocuments: ProductSupportDocumentLink[] = [
         <RichTextBlock>
           <p>
             Tracer is a personal time tracker for iPhone. Track projects, hobbies, work, and
-            everyday life, and see how you spend your time. Your records stay on your iPhone.
-            The app has no servers, ads, or third-party analytics.
+            everyday life, and see how you spend your time. Tracer tracks one activity at a time,
+            by design. Your records stay on your iPhone. The app has no servers, ads, or
+            third-party analytics.
           </p>
         </RichTextBlock>
       </Container>
@@ -85,9 +86,10 @@ const supportDocuments: ProductSupportDocumentLink[] = [
           <ul class="tracer-page__free-features" role="list">
             <li class="tracer-page__illustrated-feature">
               <div class="tracer-page__feature-copy">
-                <strong class="text-title-medium-prominent">Track one activity at a time.</strong>
+                <strong class="text-title-medium-prominent">Start, switch, and save in one step.</strong>
                 <p class="text-body-responsive-tight">
-                  Start tracking, then save and start the next activity in one step.
+                  Start tracking. When you’re done, stop and save, or save and start the next
+                  activity together.
                 </p>
               </div>
               <Figure imageProps={{ ...tracerScreenshots.tracker, ...tracerScreenshotSize }} />
@@ -113,11 +115,11 @@ const supportDocuments: ProductSupportDocumentLink[] = [
               <Figure imageProps={{ ...tracerScreenshots.report, ...tracerScreenshotSize }} />
             </li>
             <li>
-              <strong class="text-title-medium-prominent">Make room as your activities change.</strong>
+              <strong class="text-title-medium-prominent">Keep the activities you need ready to track.</strong>
               <p class="text-body-responsive-tight">
-                Create up to three active activities, each with its own color. Archive activities
-                to make room without losing their history. Creating or restoring an activity
-                requires an available slot.
+                Give each activity its own color. On Tracer Free, you can create or restore an
+                activity when you have fewer than three in your list. Archive activities to make
+                room without losing their history.
               </p>
             </li>
             <li>
@@ -135,14 +137,16 @@ const supportDocuments: ProductSupportDocumentLink[] = [
       <Container size="sm" class="tracer-page__content-group">
         <ContentSection heading="Tracer Plus" headingLevel="h2" bodyMode="prose">
           <p>
-            An optional one-time purchase unlocks unlimited active activities and CSV export
-            for spreadsheets. Your purchase also includes every Tracer Plus feature we add in
-            the future. Tracer Plus supports Family Sharing. Each person’s records stay separate.
+            An optional one-time purchase lets you keep as many activities in your list as you
+            like, and adds CSV export for spreadsheets. Your purchase also includes every Tracer Plus
+            feature we add in the future. Tracer Plus supports Family Sharing. Each person’s records
+            stay separate.
           </p>
         </ContentSection>
         <Figure
           class="tracer-page__plus-figure"
           imageProps={{ ...tracerScreenshots.plusActivities, ...tracerScreenshotSize }}
+          captionText="With Plus, your list can hold as many activities as you want. The timer still runs one at a time."
         />
       </Container>
 

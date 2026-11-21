@@ -74,7 +74,7 @@ const LEGAL_PAGES = [
     route: 'tracer/terms',
     title: 'Tracer License Information',
     canonicalUrl: 'https://invisiblesloth.com/tracer/terms/',
-    updatedDate: 'October 23, 2026',
+    updatedDate: 'November 21, 2026',
     headings: ['App Store', 'Tracer Plus', 'TestFlight', 'Contact', 'Changelog'],
     subheadings: [],
   },
@@ -92,6 +92,24 @@ function arraysMatch(actual, expected) {
 
 function countMatches(content, pattern) {
   return Array.from(content.matchAll(pattern)).length;
+}
+
+function checkFirstChangelogRow(relativePath, content, page, effectiveDate) {
+  if (!page.updatedDate && !page.changelogVersion) {
+    return;
+  }
+
+  const expectedCells = [page.updatedDate ?? effectiveDate];
+  if (page.changelogVersion) {
+    expectedCells.push(page.changelogVersion);
+  }
+
+  const firstRow = content.match(/<tbody>\s*<tr>([\s\S]*?)<\/tr>/)?.[1] ?? '';
+  const cells = Array.from(firstRow.matchAll(/<td>([\s\S]*?)<\/td>/g), (match) => match[1]);
+
+  if (!arraysMatch(cells.slice(0, expectedCells.length), expectedCells)) {
+    fail(`${relativePath} must begin its changelog with ${expectedCells.join(', version ')}.`);
+  }
 }
 
 function checkExternalAnchors(relativePath, content) {
@@ -181,14 +199,7 @@ async function checkSourcePage(page) {
     fail(`${relativePath} is missing the approved last-updated date.`);
   }
 
-  if (page.changelogVersion) {
-    const firstRow = body.match(/<tbody>\s*<tr>([\s\S]*?)<\/tr>/)?.[1] ?? '';
-    const cells = Array.from(firstRow.matchAll(/<td>([\s\S]*?)<\/td>/g), (match) => match[1]);
-
-    if (cells[0] !== effectiveDate || cells[1] !== page.changelogVersion) {
-      fail(`${relativePath} must begin its changelog with ${effectiveDate}, version ${page.changelogVersion}.`);
-    }
-  }
+  checkFirstChangelogRow(relativePath, body, page, effectiveDate);
 
   if (body.includes('**Publisher:**')) {
     fail(`${relativePath} must not include redundant publisher metadata.`);
@@ -264,14 +275,7 @@ async function checkBuiltPage(page) {
     }
   }
 
-  if (page.changelogVersion) {
-    const firstRow = html.match(/<tbody>\s*<tr>([\s\S]*?)<\/tr>/)?.[1] ?? '';
-    const cells = Array.from(firstRow.matchAll(/<td>([\s\S]*?)<\/td>/g), (match) => match[1]);
-
-    if (cells[0] !== effectiveDate || cells[1] !== page.changelogVersion) {
-      fail(`${relativePath} must render ${effectiveDate}, version ${page.changelogVersion} first in its changelog.`);
-    }
-  }
+  checkFirstChangelogRow(relativePath, html, page, effectiveDate);
 
   const robots = html.match(/<meta\b[^>]*\bname="robots"[^>]*>/)?.[0] ?? '';
 

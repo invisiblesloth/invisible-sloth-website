@@ -23,7 +23,7 @@ If we stop updating Tracer or remove it from the App Store, that alone does not 
 
 Tracer Plus supports Family Sharing. Family Sharing shares the purchase, not your records.
 
-If your purchase is refunded or Family Sharing ends, Plus features become unavailable unless you still have Tracer Plus through another purchase or family member. Your records are not changed or removed, and you can keep using all your existing active activities. The Free limit applies when you create activities or restore archived activities.
+If your purchase is refunded or Family Sharing ends, Plus features become unavailable unless you still have Tracer Plus through another purchase or family member. Your records are not changed or removed, and you can keep using all the activities already in your list. The Free limit applies when you create activities or restore archived activities.
 
 Find Restore Purchases on the Tracer Plus screen in Settings. It restores Tracer Plus, not your records. To restore your records, import a backup you exported earlier. Apple handles payments and refunds under its own terms. You can request a refund through <a href="https://reportaproblem.apple.com/" target="_blank" rel="noopener noreferrer">Apple's Report a Problem service</a>; Apple determines eligibility.
 
@@ -50,7 +50,7 @@ Related links:
 
 ## Changelog
 
-**Last updated:** October 23, 2026
+**Last updated:** November 21, 2026
 
 <div class="legal-document__table-scroll">
   <table>
@@ -61,6 +61,10 @@ Related links:
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td>November 21, 2026</td>
+        <td>Reworded the description of activities available after Tracer Plus access ends.</td>
+      </tr>
       <tr>
         <td>October 23, 2026</td>
         <td>Replaced the Tracer Terms of Use with License Information covering Apple licensing, Tracer Plus purchase commitments, Family Sharing, refunds, and TestFlight purchases.</td>
